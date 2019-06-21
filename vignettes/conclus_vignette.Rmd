@@ -19,20 +19,30 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
+
+
 # Introduction
 
-CONCLUS is a tool for robust clustering and positive marker features selection of single-cell RNA-seq (sc-RNA-seq) datasets. Of note, CONCLUS does not cover the preprocessing steps of sequencing files obtained following next-generation sequencing. CONCLUS requires to start with a raw-count matrix with reads or unique molecular identifiers (UMIs). The columns of the count matrix must contain cells and the rows -- genes. CONCLUS takes advantage of a large number of cells in scRNA-seq datasets to collect statistics, so we recommend to apply this tool if you have at least 100 cells.
+CONCLUS is a tool for robust clustering and positive marker features selection of single-cell RNA-seq (sc-RNA-seq) datasets. Of note, CONCLUS does not cover the preprocessing steps of sequencing files obtained following next-generation sequencing. You can find a good resource to start [here](https://scrnaseq-course.cog.sanger.ac.uk/website/index.html). CONCLUS requires to start with a raw-count matrix with reads or unique molecular identifiers (UMIs). The columns of the count matrix must contain cells and the rows -- genes. CONCLUS needs a large number of cells to collect statistics, we recommend using CONCLUS if you have at least 100 cells.
 
-In this vignette, we demonstrate how to use CONCLUS on a sc-RNA-seq dataset from [*Bergiers et al. eLife 2018*](https://elifesciences.org/articles/29312). The design for this experiment is described in ([*Figure 4—figure supplement 2*](https://elifesciences.org/articles/29312/figures#fig4s2)). Bergiers et al. goal was to analyze the effect of the simultaneous expression of eight transcription factors (8TFs) *Runx1* and its partner *Cbfb*, *Gata2*, *Tal1*, *Fli1*, *Lyl1*, *Erg* and *Lmo2* in *in vitro* differentiated embryonic stem cells (ESCs) in comparison to control. They knocked-in a polycistronic transgenic construct allowing to over-express eigth transcription factors (i8TFs) simultaneously after adding doxycycline (dox). The Empty ESC line did not have any transgene. There were **four conditions**: E_minus (Empty no dox), E_plus (Empty with dox), i8TFs_minus (i8TFs no dox) and i8TFs_plus (i8TFs with dox). 
+In this vignette, we demonstrate how to use CONCLUS on a sc-RNA-seq dataset from [*Bergiers et al. eLife 2018*](https://elifesciences.org/articles/29312). The design for this experiment is described in ([*Figure 4—figure supplement 2*](https://elifesciences.org/articles/29312/figures#fig4s2)). Bergiers et al. goal was to analyze the effect of the simultaneous expression of eight transcription factors (8TFs): *Runx1* - and its partner - *Cbfb*, *Gata2*, *Tal1*, *Fli1*, *Lyl1*, *Erg* and *Lmo2* in *in vitro* differentiated embryonic stem cells (ESCs) in comparison to control. They knocked-in a polycistronic transgenic construct allowing to over-express eigth transcription factors (i8TFs) simultaneously after adding doxycycline (dox). The Empty ESC line did not have any transgene. There were **four conditions**: E_minus (Empty no dox), E_plus (Empty with dox), i8TFs_minus (i8TFs no dox) and i8TFs_plus (i8TFs with dox). 
 
-This sc-RNA-seq experiment was performed using the SMARTer ICELL8 Single-Cell System. The protocol was based on 3'end RNA sequencing where each mRNA molecule is labeled with a unique molecular identifier (UMI) during reverse transcription in every single cell. The analysis performed by *Bergiers et al.* was based on the dimensionality reduction algorithm called Principal Component Analysis (PCA), and they found that there was a major gene expression difference between i8TFs_plus and the other three conditions (*Figure 4—figure supplement 2*). **However, it was not clear if other subclusters could be identified consistently in this dataset besides the two major clusters. In the current tutorial, we show how CONCLUS can help us to answer this question.**
+This sc-RNA-seq experiment was performed using the SMARTer ICELL8 Single-Cell System. The protocol was based on 3' end RNA sequencing where each mRNA molecule is labeled with a unique molecular identifier (UMI) during reverse transcription in every single cell. The analysis performed by *Bergiers et al.* was based on the dimensionality reduction algorithm called Principal Component Analysis (PCA), and they found that there was a major gene expression difference between i8TFs_plus and the other three conditions (*Figure 4—figure supplement 2*). **However, it was not clear if other subclusters could be identified consistently in this dataset besides the two major clusters. In the current tutorial, we show how CONCLUS can help us to answer this question.**
 
 CONCLUS clustering relies on the non-linear dimensionality reduction algorithm called t-Distributed Stochastic Neighbor Embedding (t-SNE). The workflow generates multiple t-SNE plots with a range of parameters including a different selection of genes extracted from PCA. We determined that the following combination of principal components (PC) worked consistently well for many sc-RNA-seq datasets: PC1to4, PC1to6, PC1to8, PC1to10, PC1to20, PC1to40, PC1to50. Two values of perplexity (30 and 40) were used when generating t-SNE giving a total of 14 different plots. 
 CONCLUS then use the Density-based spatial clustering of applications with noise (DBSCAN) algorithm for identification of clusters in each generated t-SNE plot. In addition to the t-SNE parameters, we need to use multiple values for two DBSCAN parameters called Epsilon and MinPts. An optimal combination of Epsilon and MinPts gives clusters of reasonable size with few "outliers" cells that were not assigned to any of the groups. In CONCLUS, we are using three values of epsilon and two of MinPoints. In total, CONCLUS calculates 84 clustering solutions and a comparison between them is made to define a Consensus clustering solution.
 
+
 # Getting started with CONCLUS
+
 ```{r}
-# required R >= 3.4. In the current vignette, we used R 3.5.0.
+# required R >= 3.4.
+if(!requireNamespace("devtools"))
+	install.packages(“devtools”)
+
+library(devtools)
+install_github(“PolinaPavlovich/CONCLUS”, dependencies = TRUE)
+
 library(conclus)
 ```
 
