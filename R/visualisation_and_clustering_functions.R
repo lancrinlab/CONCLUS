@@ -50,7 +50,7 @@ getTSNEresults <- function(expressionMatrix, cores=1,
                                perp=rep(perplexities, each=length(PCs)),
                                .combine='cbind') %dopar% {
                                    library(SingleCellExperiment)
-                        scater::plotTSNE(SingleCellExperiment(assays=list(
+                        scater::runTSNE(SingleCellExperiment(assays=list(
                             logcounts=t(PCAData[,1:PCA]))),
                         scale_features=FALSE, perplexity=perp,
                         rand_seed=randomSeed, theme_size=13, return_SCESet=FALSE)
