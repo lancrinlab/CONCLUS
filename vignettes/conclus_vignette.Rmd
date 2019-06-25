@@ -38,7 +38,7 @@ CONCLUS then use the Density-based spatial clustering of applications with noise
 ```{r}
 # required R >= 3.4.
 if(!requireNamespace("devtools"))
-	install.packages(“devtools”)
+	install.packages("devtools")
 
 library(devtools)
 install_github(“PolinaPavlovich/CONCLUS”, dependencies = TRUE)
