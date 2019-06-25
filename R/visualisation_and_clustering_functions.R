@@ -93,7 +93,7 @@ getTSNEresults <- function(expressionMatrix, cores=1,
       pagecentre=pagecentre, colormodel=colormodel,
       useDingbats=useDingbats, useKerning=useKerning,
       fillOddEven=fillOddEven, compress=compress)
-  print(tSNE)
+	tSNE <- plotTSNE(tSNE)
   dev.off()
 
 
