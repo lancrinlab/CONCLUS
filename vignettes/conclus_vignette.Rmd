@@ -41,7 +41,9 @@ if(!requireNamespace("devtools"))
 	install.packages("devtools")
 
 library(devtools)
-install_github(“PolinaPavlovich/CONCLUS”, dependencies = TRUE)
+
+if(!requireNamespace("conclus"))
+	install_github("PolinaPavlovich/CONCLUS", dependencies = TRUE)
 
 library(conclus)
 ```
