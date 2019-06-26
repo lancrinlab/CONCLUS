@@ -50,10 +50,14 @@ getTSNEresults <- function(expressionMatrix, cores=1,
                                perp=rep(perplexities, each=length(PCs)),
                                .combine='cbind') %dopar% {
                                    library(SingleCellExperiment)
-                        scater::runTSNE(SingleCellExperiment(assays=list(
+                        tmp <- scater::runTSNE(
+								SingleCellExperiment(assays=list(
                             logcounts=t(PCAData[,1:PCA]))),
                         scale_features=FALSE, perplexity=perp,
-                        rand_seed=randomSeed, theme_size=13, return_SCESet=FALSE)
+                        rand_seed=randomSeed, theme_size=13, 
+						return_SCESet=FALSE)
+				
+						scater::plotTSNE(tmp)
                         }
     parallel::stopCluster(myCluster)
     message(paste("Calculated", length(PCs)*length(perplexities),
@@ -93,7 +97,7 @@ getTSNEresults <- function(expressionMatrix, cores=1,
       pagecentre=pagecentre, colormodel=colormodel,
       useDingbats=useDingbats, useKerning=useKerning,
       fillOddEven=fillOddEven, compress=compress)
-	tSNE <- plotTSNE(tSNE)
+	print(tSNE)
   dev.off()
 
 
