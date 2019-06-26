@@ -28,4 +28,4 @@ export(testClustering)
 importFrom(foreach,"%dopar%")
 import(ggplot2, pheatmap, zoo, dynamicTreeCut, factoextra, 
 digest, RColorBrewer, doParallel, BiocParallel, scran, 
-monocle, KEGGREST, AnnotationDbi, SingleCellExperiment, Cairo)
+monocle, KEGGREST, AnnotationDbi, SingleCellExperiment, Cairo, rvest)
