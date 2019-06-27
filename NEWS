@@ -1,4 +1,4 @@
-## 0.99.1
+## 0.99.1 (Nicolas Descostes)
 
 - Modification of the getTSNEresults to include updates on scater package
 - Include missing packages into NAMESPACE file
