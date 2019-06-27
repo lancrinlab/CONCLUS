@@ -14,6 +14,7 @@ library(KEGGREST)
 library(AnnotationDbi)
 library(SingleCellExperiment)
 library(Cairo)
+library(curl)
 
 source("/home/descostes/git/CONCLUS/R/visualisation_and_clustering_functions.R")
 
@@ -340,12 +341,96 @@ tSNEstate[[10]]
 ## 9 Collect publicly available info about marker genes
 
 result <- getGenesInfo(markersClusters, groupBy = "clusters",
-		getUniprot = FALSE) # please change to getUniprot = TRUE
+		getUniprot = TRUE) # please change to getUniprot = TRUE
+
+outputDir <- file.path(dataDirectory, "/marker_genes/getGenesInfo")
+dir.create(outputDir, showWarnings=F)
+write.table(result, file = file.path(outputDir, 
+				"Bergiers_markersClusters_top10_clusters9_genesInfo.csv"),
+		quote = FALSE, sep = ";", row.names = FALSE)
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+#------------ testing ncbi retrieval
+
+genes = markersClusters 
+databaseDir = system.file("extdata", package = "conclus") 
+groupBy = "clusters"
+orderGenes = "initial"
+getUniprot = TRUE
+silent = FALSE
+coresGenes = 20
+
+
+NCBI <- unname(unlist( foreach::foreach(NCBIid=result$Entrez.Gene.ID) %dopar% getNCBIentry(NCBIid) ))
+
+
+for(NCBIid in result$Entrez.Gene.ID){
+	
+	print(NCBIid)
+	data <- NULL
+	if(!is.na(NCBIid)){
+		url <- paste0("https://www.ncbi.nlm.nih.gov/gene?cmd=Retrieve&dopt=full_report&list_uids=",
+				NCBIid)
+		webpage <- read_html(url)
+		data_html <- html_nodes(webpage,'#summaryDl dd:nth-child(20)')
+		data <- html_text(data_html)
+		data <- gsub(" See more", "", data)
+		data <- gsub("\n          human\n          all\n", "", data)
+		data <- gsub(";", ",", data)
+		
+		rm(url, data_html, webpage)
+	}
+	#if(!S4Vectors::isEmpty(data)){
+	#	return(data)
+	#}else{
+	#	return(NA)
+	#}
+}
 
 
 
