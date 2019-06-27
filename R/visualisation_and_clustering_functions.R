@@ -267,7 +267,8 @@ chooseStatePalette <- function(statesNumber){
 #' @export
 #' @return A SingleCellExperiment object.
 
-runCONCLUS <- function(sceObject, dataDirectory, experimentName,
+runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData,
+		               species,
                        colorPalette="default",
                        statePalette="default",
                        clusteringMethod="ward.D2",
@@ -285,6 +286,9 @@ runCONCLUS <- function(sceObject, dataDirectory, experimentName,
 
   initialisePath(dataDirectory)
 
+  sceObject <- normaliseCountMatrix(countMatrix, species = species, 
+		  colData = columnsMetaData)
+  
   # Generating 2D tSNE plots
   if(!tSNEalreadyGenerated){
       tSNEResults <- generateTSNECoordinates(sceObject, dataDirectory,
