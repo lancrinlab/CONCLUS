@@ -3,3 +3,5 @@
 - Modification of the getTSNEresults to include updates on scater package
 - Include missing packages into NAMESPACE file
 - Re-structuration and modifications of the vignette
+- add normalization step to runCONCLUS function
+- add cores parameter to calls of generateTSNECoordinates
