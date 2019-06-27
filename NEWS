@@ -1,6 +1,5 @@
-## 0.99.0
+## 0.99.1
 
-- change package version
-- delete conclus.Rproj and conclus_manual.pdf
-- delete conclus_vignette.R
-- Modify vignette
+- Modification of the getTSNEresults to include updates on scater package
+- Include missing packages into NAMESPACE file
+- Re-structuration and modifications of the vignette
