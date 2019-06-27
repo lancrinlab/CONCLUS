@@ -39,11 +39,12 @@ If you have any questions about the tool or suggestions, please contact Polina P
 Polina Pavlovich: development of a concept, writing the algorithm, refining the coding style, writing help documentation, writing the vignette, building the package.  
 Konstantin Chukreev: creating a frame of a user-friendly tool, selecting the coding style, writing help documentation.  
 Dr. Christophe Lancrin: project leader, inspiration, ideas, testing the code, writing the vignette.
+Dr. Nicolas Descostes: comments, code modifications and vignette writing.
 
 Andreas Buness: critics, ideas.  
 Dr. Maya Shvartsman: testing the code, comments.  
 Kerstin Ganter: testing the code.  
-Dr. Nicolas Descostes: comments.
+
 
 ## Acknowledgment:
 We are grateful to Emmy Tsang from EMBL Rome for useful discussion and a helpful idea.
