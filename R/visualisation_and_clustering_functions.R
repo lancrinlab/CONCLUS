@@ -294,7 +294,8 @@ runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData,
       tSNEResults <- generateTSNECoordinates(sceObject, dataDirectory,
                                              experimentName, PCs=PCs,
                                              perplexities=perplexities,
-                                             randomSeed = randomSeed)
+                                             randomSeed = randomSeed,
+											 cores = cores)
   }else{
       tSNEResults <- readRDS(file.path(dataDirectory, "output_tables",
                                      paste0(tSNEresExp,"_tSNEResults.rds")))
@@ -1818,7 +1819,8 @@ runClustering <- function(tSNEResults, # for deleteOutliers = FALSE
                                                      dataDirectory,
                                                      experimentName, PCs=PCs,
                                                      perplexities=perplexities,
-                                                     randomSeed=randomSeed)
+                                                     randomSeed=randomSeed,
+													 cores = cores)
 
       dbscanResultsFiltered <- runDBSCAN(tSNEResultsFiltered, sceObjectFiltered,
                                          dataDirectory,
