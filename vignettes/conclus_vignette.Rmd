@@ -29,11 +29,6 @@ preprocessing steps of sequencing files obtained following next-generation
 sequencing. You can find a good resource to start with 
 [here](https://scrnaseq-course.cog.sanger.ac.uk/website/index.html). 
 
-CONCLUS requires to start with a raw-count matrix with reads or unique molecular 
-identifiers (UMIs). The columns of the count matrix must contain cells and the 
-rows -- genes. CONCLUS needs a large number of cells to collect statistics, 
-we recommend using CONCLUS if you have at least 100 cells.
-
 CONCLUS is organized into the following steps:
 
   + Generation of multiple t-SNE plots with a range of parameters including 
@@ -59,13 +54,57 @@ library(devtools)
 
 if(!requireNamespace("conclus"))
 	install_github("PolinaPavlovich/CONCLUS", dependencies = TRUE)
-
-library(conclus)
 ```
 
 ## Quick start
 
+CONCLUS requires to start with a raw-count matrix with reads or unique molecular 
+identifiers (UMIs). The columns of the count matrix must contain cells and the 
+rows -- genes. CONCLUS needs a large number of cells to collect statistics, 
+we recommend using CONCLUS if you have at least 100 cells.
+
+```{r}
+library(conclus)
+
+outputDirectory <- "./YourOutputDirectory" ## Replace by the path to the directory in which results should be written
+experimentName <- "Bergiers"
+
+countMatrix <- read.delim(file.path(system.file("extdata", package = "conclus"),
+                                    "Bergiers_counts_matrix_filtered.tsv"), 
+                          stringsAsFactors = FALSE)
+columnsMetaData <- read.delim(file.path(system.file("extdata", package = "conclus"), 
+                                "Bergiers_colData_filtered.tsv"))
+
+sceObjectCONCLUS <- runCONCLUS(outputDirectory, 
+                               experimentName,
+                               columnsMetaData,
+		                       species = "mmu", 
+                               plotPDFcellSim = TRUE, # FALSE for > 2500 cells
+                               k = 10, cores = 1,
+                               statePalette = c("bisque", "cadetblue2", 
+                                                "coral1", "cornflowerblue"),
+                               deleteOutliers = FALSE)
+                               
+exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName, 
+                        "clusters_table.tsv")
+```
+
+Five folders will appear in your outputDirectory: 
+
+  + *output_tables*:
+  
+    - _cellsSimilarityMatrix.csv:
+    - _clustersSimilarityMatrix.csv:
+    - _clusters_table.tsv:
+    - _dbscan_results.tsv:
+    - _tSNEResults.rds: 
+  
+  + *pictures*:
+  + *marker_genes*: 
+  + *tsnes*: 
+
 ### Data
+
 
 In this vignette, we demonstrate how to use CONCLUS on a sc-RNA-seq dataset from [*Bergiers et al. eLife 2018*](https://elifesciences.org/articles/29312). The design for this experiment is described in ([*Figure 4—figure supplement 2*](https://elifesciences.org/articles/29312/figures#fig4s2)). Bergiers et al. goal was to analyze the effect of the simultaneous expression of eight transcription factors (8TFs): *Runx1* - and its partner - *Cbfb*, *Gata2*, *Tal1*, *Fli1*, *Lyl1*, *Erg* and *Lmo2* in *in vitro* differentiated embryonic stem cells (ESCs) in comparison to control. They knocked-in a polycistronic transgenic construct allowing to over-express eigth transcription factors (i8TFs) simultaneously after adding doxycycline (dox). The Empty ESC line did not have any transgene. There were **four conditions**: E_minus (Empty no dox), E_plus (Empty with dox), i8TFs_minus (i8TFs no dox) and i8TFs_plus (i8TFs with dox). 
 
@@ -75,36 +114,18 @@ This sc-RNA-seq experiment was performed using the SMARTer ICELL8 Single-Cell Sy
 In the current document, we introduce you detailed vignette explaining all steps of CONCLUS. 
 **For a quick start, we recommend you, after Section 4, jump directly to Section 6. Section 5 is purely informative, and you can return to it later to learn more about CONCLUS. If you have a dataset with more than 3000 cells, we recommend you to skip Section 4 too to save time.**
 
-Before starting, we need to specify an output directory. Most of the CONCLUS functions save plots and tables into *dataDirectory*. Every output file will start with *experimentName*. We call our experiment "Bergiers" as the surname of the first author of the selected paper.
-```{r}
-# setting necessary parameters
-# dataDirectory is output directory
-dataDirectory <- "YourOutputDirectory"
-experimentName <- "Bergiers"
-```
 
-Next, we need to read a count matrix and metadata table into R. We use example data stored inside the conclus package.
-
-```{r}
-# please do not change the path and filenames
-countMatrix <- read.delim(file.path(system.file("extdata", package = "conclus"),
-                                    "Bergiers_counts_matrix_filtered.tsv"), 
-                          stringsAsFactors = FALSE)
-colData <- read.delim(file.path(system.file("extdata", package = "conclus"), 
-                                "Bergiers_colData_filtered.tsv"))
-```
-
-Labels of the four conditions are in the *state* column of *colData*.
+Labels of the four conditions are in the *state* column of *columnsMetaData*.
 
 To avoid a bias in the clustering analysis due to the high expression of the eight transcription factors construct, we deleted genes *Cbfb*, *Gata2*, *Tal1*, *Fli1*, *Lyl1*, *Erg* and *Lmo2*, so they are not present in the provided *countMatrix*. Highly abundant embryonic hemoglobins with names starting with "Hba" or "Hbb" were also excluded because they seemed to be a primary source of contamination.
 
 # Genes and cells filtering, normalization
-CONCLUS uses Scran and Scater packages for normalization. Beforehand, the function will annotate genes creating *rowData* and add statistics about cells into *colData*. If you already have *colData* and *rowData* you can give it to the function. It will keep your columns and add new ones at the end. If you do not want to lose any cells after quality metrics check, select *alreadyCellFiltered = TRUE*, by default it is *FALSE*. Before *scran* and *scater* normalization the function will call *scran::quickCluster*, if you want to skip this step, type *runQuickCluster = FALSE*, by default it is *TRUE*. We recommend to use *runQuickCluster = TRUE* for medium-size datasets with 500-10000 cells. However, it can take significant time for a larger amount of cells and will not be useful for small sets of 200-300 samples. 
+CONCLUS uses Scran and Scater packages for normalization. Beforehand, the function will annotate genes creating *rowData* and add statistics about cells into *columnsMetaData*. If you already have *columnsMetaData* and *rowData* you can give it to the function. It will keep your columns and add new ones at the end. If you do not want to lose any cells after quality metrics check, select *alreadyCellFiltered = TRUE*, by default it is *FALSE*. Before *scran* and *scater* normalization the function will call *scran::quickCluster*, if you want to skip this step, type *runQuickCluster = FALSE*, by default it is *TRUE*. We recommend to use *runQuickCluster = TRUE* for medium-size datasets with 500-10000 cells. However, it can take significant time for a larger amount of cells and will not be useful for small sets of 200-300 samples. 
 
 ```{r}
 # 1. Normalisation
 sceObject <- conclus::normaliseCountMatrix(countMatrix, species = "mmu", 
-                                  colData = colData)
+                                  colData = columnsMetaData)
 ```
 The function *normaliseCountMatrix* returns an *sceObject* with slots *counts*, *exprs*, *colData*, *rowData*. *rowData* keeps information about GO terms containing genes on the cell surface or involved in secretion. This information can help to study cross-talk between cell types or find surface protein-coding marker genes suitable for flow cytometry. The columns with the GO terms are *go_id* and *name_1006*.
 
@@ -131,17 +152,17 @@ head(rowdataSCE)
 # Test clustering
 The *TestClustering* function runs one clustering round out of the 84 (default) rounds that CONCLUS normally performs. This step can be useful to determine if the default DBSCAN parameters are suitable for your dataset. By default, they are *dbscanEpsilon = c(1.3, 1.4, 1.5)*, *minPts = c(3,4)*. If the dashed horizontal line in the k-NN distance plot lays on the “knee” of the curve (as shown below), it means that optimal epsilon is equal to the intersection of the line to the y-axis. In our example, optimal epsilon is 1.4 for 4-NN distance where 4 corresponds to MinPts. 
 
-Upon execution of the code below, five folders will appear in your dataDirectory: *output_tables*, *pictures*, *marker_genes*, *tsnes*, and *test_clustering* in your *dataDirectory*. In the "test_clustering", the three plots below will be saved where one corresponds to the “distance_graph.pdf”, another one to “test_tSNE.pdf” *p[[1]]*, and the last one will be saved as “test_clustering.pdf” *p[[3]]*.
+In the "test_clustering" folder under outputDirectory, the three plots below will be saved where one corresponds to the “distance_graph.pdf”, another one to “test_tSNE.pdf” *p[[1]]*, and the last one will be saved as “test_clustering.pdf” *p[[3]]*.
 
 ```{r fig.height=5, fig.width=6}
 # 2. Test step (optional)
-p <- conclus::testClustering(sceObject, dataDirectory, experimentName)
+p <- conclus::testClustering(sceObject, outputDirectory, experimentName)
 ```
 
 ```{r fig.height=5, fig.width=6}
-# saved as "dataDirectory/test_clustering/test_tSNE.pdf"
+# saved as "outputDirectory/test_clustering/test_tSNE.pdf"
 p[[1]]
-# saved as "dataDirectory/test_clustering/test_clustering.pdf"
+# saved as "outputDirectory/test_clustering/test_clustering.pdf"
 p[[3]]
 ```
 
@@ -150,12 +171,12 @@ p[[3]]
 In this section, we will implement step by step what the main function of the workflow *runCONCLUS* does. Firstly, it creates needed output folders if you did not run *testClustering* beforehand. Then it generates an object of fourteen (by default) tables with tSNE coordinates. Fourteen because it will vary seven values of principal components *PCs=c(4, 6, 8, 10, 20, 40, 50)*, two values of perplexity *perplexities=c(30, 40)*, and random seed 42 in all possible combinations. One can change these parameters if necessary. We found that this combination works well for sc-RNA-seq datasets with 400-2000 cells. If you have 4000-9000 cells and expect more than 15 clusters, we recommend you to take more first PCs and higher perplexity, for example, *PCs=c(8, 10, 20, 40, 50, 80, 100)* and *perplexities=c(200, 240)*.
 
 ```{r}
-initialisePath(dataDirectory)
+initialisePath(outputDirectory)
 # default parameters, can be selected by a user
 PCs=c(4, 6, 8, 10, 20, 40, 50)
 perplexities=c(30, 40)
 randomSeed = 42
-tSNEResults <- generateTSNECoordinates(sceObject, dataDirectory, 
+tSNEResults <- generateTSNECoordinates(sceObject, outputDirectory, 
                                           experimentName, PCs=PCs, 
                                           perplexities=perplexities,
                                           randomSeed = randomSeed)
@@ -183,7 +204,7 @@ epsilon=c(1.3, 1.4, 1.5)
 minPoints=c(3, 4)
 cores=14
 message("Running dbscan using ", cores, " cores.")
-dbscanResults <- conclus::runDBSCAN(tSNEResults, sceObject, dataDirectory, 
+dbscanResults <- conclus::runDBSCAN(tSNEResults, sceObject, outputDirectory, 
                            experimentName, epsilon=epsilon, 
                            minPoints=minPoints,
                            cores=cores)
@@ -220,7 +241,7 @@ clustersNumber <- length(unique(SummarizedExperiment::colData(sceObjectFiltered)
 colorPalette <- conclus::choosePalette(colorPalette, clustersNumber)
 
 # Plotting stability of clusters
-conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, dataDirectory,
+conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDirectory,
                  experimentName, colorPalette, 
                  orderClusters = orderClusters, 
                  statePalette = statePalette, 
@@ -242,7 +263,7 @@ minPoints=c(3, 4)
 cores=14
 clusteringMethod="ward.D2"
 k=10 # split the dendrogram with cutree function into 10 groups
-clusteringResults <- conclus::runClustering(tSNEResults, sceObject, dataDirectory, 
+clusteringResults <- conclus::runClustering(tSNEResults, sceObject, outputDirectory, 
                                        experimentName,
                                        epsilon=epsilon, minPoints=minPoints, 
                                        k=k, deepSplit=deepSplit,
@@ -268,7 +289,7 @@ clustersNumber <- length(unique(SummarizedExperiment::colData(sceObjectFiltered)
 colorPalette <- conclus::choosePalette(colorPalette, clustersNumber)
 
 # Plotting cluster stablility
-conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, dataDirectory,
+conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDirectory,
                  experimentName, colorPalette, 
                  orderClusters = orderClusters, 
                  statePalette = statePalette, 
@@ -282,14 +303,14 @@ We will call this combination *consensus clusters* and use it everywhere later. 
 ## Plot t-SNE colored by clusters or conditions
 
 ```{r}
-tSNEclusters <- conclus::plotClusteredTSNE(sceObjectFiltered, dataDirectory, experimentName,
+tSNEclusters <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
                     PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
                     columnName = "clusters", returnPlot = TRUE)
-tSNEnoColor <- conclus::plotClusteredTSNE(sceObjectFiltered, dataDirectory, experimentName,
+tSNEnoColor <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
                 PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
                 columnName = "noColor", returnPlot = TRUE)
 if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered)) %in% "state")){
-  tSNEstate <- conclus::plotClusteredTSNE(sceObjectFiltered, dataDirectory, experimentName,
+  tSNEstate <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
                     PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
                     columnName = "state", returnPlot = TRUE)
 }
@@ -312,7 +333,7 @@ clustersSimilarityMatrix <-
   
 conclus::plotClustersSimilarity(clustersSimilarityMatrix, 
                        sceObjectFiltered,
-                       dataDirectory = dataDirectory, 
+                       dataDirectory = outputDirectory, 
                        experimentName = experimentName, 
                        colorPalette = colorPalette,
                        statePalette = statePalette,
@@ -349,9 +370,9 @@ where
 6. $i=([1,...,nClusters] \: except \: for \: [k])$
 
 ```{r}
-conclus::rankGenes(sceObjectFiltered, clustersSimilarityMatrix, dataDirectory, 
+conclus::rankGenes(sceObjectFiltered, clustersSimilarityMatrix, outputDirectory, 
             experimentName)
-rankedGenesClus5 <- read.delim(file.path(dataDirectory, "marker_genes",
+rankedGenesClus5 <- read.delim(file.path(outputDirectory, "marker_genes",
                                "Bergiers_cluster_5_genes.tsv"),
                                stringsAsFactors = FALSE)
 head(rankedGenesClus5, n = 10)
@@ -359,9 +380,9 @@ head(rankedGenesClus5, n = 10)
 ## Export key matrices 
 The last part of the *runCONCLUS* function is saving *cellsSimilarityMatrix* and *clustersSimilarityMatrix* in the folder *output_tables* and  returning *sceObjectFiltered*.
 ```{r}
-conclus::exportMatrix(cellsSimilarityMatrix, dataDirectory, experimentName, 
+conclus::exportMatrix(cellsSimilarityMatrix, outputDirectory, experimentName, 
            "cellsSimilarityMatrix")
-conclus::exportMatrix(clustersSimilarityMatrix, dataDirectory, experimentName, 
+conclus::exportMatrix(clustersSimilarityMatrix, outputDirectory, experimentName, 
            "clustersSimilarityMatrix")
 ```
 
@@ -372,10 +393,10 @@ For your information, *runCONCLUS* saves *cellsSimilarityMatrix* and *clustersSi
 ```{r}
 # Reminder where we stopped.
 # 2. Test step (optional)
-#testClustering(sceObject, dataDirectory, experimentName)
+#testClustering(sceObject, outputDirectory, experimentName)
 
 # 3. Running the analysis and saving the consensus clustering solution
-sceObjectCONCLUS <- conclus::runCONCLUS(sceObject, dataDirectory, experimentName, 
+sceObjectCONCLUS <- conclus::runCONCLUS(sceObject, outputDirectory, experimentName, 
                                plotPDFcellSim = TRUE, # FALSE for > 2500 cells
                                k = 10,
                                cores = 14, # 14 for servers, 1 for PC
@@ -383,7 +404,7 @@ sceObjectCONCLUS <- conclus::runCONCLUS(sceObject, dataDirectory, experimentName
                                                 "coral1", "cornflowerblue"),
                                deleteOutliers = FALSE  # TRUE takes more time
                                )
-conclus::exportClusteringResults(sceObjectCONCLUS, dataDirectory, experimentName, 
+conclus::exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName, 
                         "clusters_table.tsv")
 ```
 
@@ -396,13 +417,13 @@ We ask the function *plotCellHeatmap* to order clusters and genes by similarity 
 ```{r}
 # 4. Plotting heatmaps
 genesNumber <- 10
-markersClusters <- conclus::getMarkerGenes(dataDirectory, sceObjectCONCLUS, 
+markersClusters <- conclus::getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
                                   experimentName = experimentName,
                                   genesNumber = genesNumber)
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- T  # F to show normalized counts
-conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory, 
+conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
                        length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
@@ -430,7 +451,7 @@ The second heatmap shows also shows the order of genes and clusters by similarit
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- F  # F to show normalized counts
-conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory, 
+conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
                        length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
@@ -460,11 +481,11 @@ Imaging you looked through all these 93 genes and decided the cell types of each
 To merge and rename groups, we export the “Bergiers_clusters_table.tsv” file, rename the groups “9” and “10” as "newCluster", and overwrite the file.
 
 ```{r}
-clustersTable <- read.delim(file.path(dataDirectory, "output_tables",                                                    paste0(experimentName, "_clusters_table.tsv")), 
+clustersTable <- read.delim(file.path(outputDirectory, "output_tables",                                                    paste0(experimentName, "_clusters_table.tsv")), 
                             stringsAsFactors = FALSE)
 clustersTable$clusters[clustersTable$clusters == "9"] <- "newCluster"
 clustersTable$clusters[clustersTable$clusters == "10"] <- "newCluster"
-write.table(clustersTable, file.path(dataDirectory, "output_tables",                                                    paste0(experimentName, "_clusters_table.tsv")), 
+write.table(clustersTable, file.path(outputDirectory, "output_tables",                                                    paste0(experimentName, "_clusters_table.tsv")), 
             quote = FALSE, sep = "\t")
 ```
 
@@ -472,15 +493,15 @@ Now we use *runCONCLUS* again to overwrite old marker genes and save new heatmap
 ```{r}
 # 5. Correcting clustering manually (optional)
 sceObjectCONCLUS <- conclus::addClusteringManually(fileName = "clusters_table.tsv", 
-    dataDirectory = dataDirectory, 
+    dataDirectory = outputDirectory, 
     experimentName = experimentName,
     sceObject = sceObjectCONCLUS, 
     columnName = "clusters")
 
 # 5.1 Redo the analysis with manual clustering (optional)
-sceObjectCONCLUS <- conclus::runCONCLUS(sceObjectCONCLUS, dataDirectory, experimentName, 
+sceObjectCONCLUS <- conclus::runCONCLUS(sceObjectCONCLUS, outputDirectory, experimentName, 
                         preClustered = TRUE,
-                        tSNEalreadyGenerated = TRUE, # to use t-SNE coords from dataDirectory/tsnes
+                        tSNEalreadyGenerated = TRUE, # to use t-SNE coords from outputDirectory/tsnes
                         tSNEresExp = experimentName,
                         cores = 14, # 14 for servers, 1 for PC
                         statePalette = c("bisque", "cadetblue2", 
@@ -489,13 +510,13 @@ sceObjectCONCLUS <- conclus::runCONCLUS(sceObjectCONCLUS, dataDirectory, experim
 
 ```{r}
 genesNumber <- 10
-markersClusters <- getMarkerGenes(dataDirectory, sceObjectCONCLUS, 
+markersClusters <- getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
                                   experimentName = experimentName,
                                   genesNumber = genesNumber)
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- T  # F to show normalized counts
-conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory, 
+conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
                        length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
@@ -522,10 +543,10 @@ conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory,
 *PlotGeneExpression* allows visualizing the normalized expression of one gene in a t-SNE plot. It can be useful to check to inspect specificity of top markers.
 ```{r}
 # 6. Plot gene expression in a selected tSNE plot
-conclus::plotGeneExpression("Ccl3", experimentName, dataDirectory, 
+conclus::plotGeneExpression("Ccl3", experimentName, outputDirectory, 
                    sceObject = sceObjectCONCLUS,
                    tSNEpicture = 10, returnPlot = TRUE)
-conclus::plotGeneExpression("Lama1", experimentName, dataDirectory, 
+conclus::plotGeneExpression("Lama1", experimentName, outputDirectory, 
                    sceObject = sceObjectCONCLUS,
                    tSNEpicture = 10, returnPlot = TRUE)
 tSNEstate[[10]]
@@ -542,7 +563,7 @@ result <- getGenesInfo(markersClusters, groupBy = "clusters",
                        getUniprot = FALSE) # please change to getUniprot = TRUE
 
 # 7.1 save the result
-outputDir <- file.path(dataDirectory, "/marker_genes/getGenesInfo")
+outputDir <- file.path(outputDirectory, "/marker_genes/getGenesInfo")
 dir.create(outputDir, showWarnings=F)
 write.table(result, file = file.path(outputDir, 
                                      "Bergiers_markersClusters_top10_clusters9_genesInfo.csv"),
@@ -554,19 +575,19 @@ write.table(result, file = file.path(outputDir,
 
 ```{r}
 # 8. saveGenesInfo example
-saveMarkersLists(experimentName, dataDirectory)
+saveMarkersLists(experimentName, outputDirectory)
 ```
 
-The result will be saved into the "dataDirectory/marker_genes/saveGenesInfo" directory. 
+The result will be saved into the "outputDirectory/marker_genes/saveGenesInfo" directory. 
 ```{r}
-saveGenesInfo(dataDirectory, sep = ";", header = TRUE, 
+saveGenesInfo(outputDirectory, sep = ";", header = TRUE, 
               startFromFile = 9, getUniprot = FALSE) # please change to getUniprot = TRUE
 ```
 
 # Save the SingleCellExperiment object
 We recommend you to save the sceObject after running the workflow to be able to track and reproduce your analysis in the future.
 ```{r}
-saveRDS(sceObjectCONCLUS, file.path(dataDirectory, paste0("output_tables/", 
+saveRDS(sceObjectCONCLUS, file.path(outputDirectory, paste0("output_tables/", 
                                 experimentName, "_sceObjectAfterCONCLUS.rds")))
 ```
 
