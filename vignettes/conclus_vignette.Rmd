@@ -93,23 +93,41 @@ Five folders will appear in your outputDirectory:
 
   + *output_tables*:
   
-    - _cellsSimilarityMatrix.csv:
-    - _clustersSimilarityMatrix.csv:
-    - _clusters_table.tsv:
-    - _dbscan_results.tsv:
-    - _tSNEResults.rds: 
+    - _cellsSimilarityMatrix.csv: Similarity matrix used to define the consensus clusters using every cells.
+    - _clustersSimilarityMatrix.csv: Simplified similarity matrix with cell averaged values per cluster.
+    - _clusters_table.tsv: Cell-cluster corresponding table for defined consensus clusters.
+    - _dbscan_results.tsv: Cell-cluster corresponding table for each db-scan parameter.
+    - _tSNEResults.rds: Saved RDS object containing a matrix of all t-SNE results (for different PCs and perplexities, see below).  
   
-  + *pictures*:
-  + *marker_genes*: 
-  + *tsnes*: 
+  + *pictures*: This folder contains two similarity matrices clustering. One using all cells and the other averaged by cluster.
+                It also contains a subfolder "tSNE_pictures" containing all tSNEs generated with different PCs and perplexities
+                and colored by condition, by cluster found by dbscan or uncolored (see below for details).
+  + *marker_genes*: This folder contains a list of marker genes, ordered by decreasing score, for each consensus cluster.
+  + *tsnes*: Folder containing, for each PCs/complexity values, the tSNE coordinates of each cell.
+
+Further details about how all results are generated can be found below.
+
 
 ### Data
 
+In this vignette, we demonstrate how to use CONCLUS on a sc-RNA-seq dataset from 
+[*Bergiers et al. eLife 2018*](https://elifesciences.org/articles/29312). The design for this experiment is described in 
+([*Figure 4—figure supplement 2*](https://elifesciences.org/articles/29312/figures#fig4s2)). Bergiers et al. goal was to analyze 
+the effect of the simultaneous expression of eight transcription factors (8TFs): *Runx1* - and its partner - *Cbfb*, *Gata2*, 
+*Tal1*, *Fli1*, *Lyl1*, *Erg* and *Lmo2* in *in vitro* differentiated embryonic stem cells (ESCs) in comparison to control. 
+They knocked-in a polycistronic transgenic construct allowing to over-express eigth transcription factors (i8TFs) simultaneously 
+after adding doxycycline (dox). The Empty ESC line did not have any transgene. 
+There were **four conditions**: E_minus (Empty no dox), E_plus (Empty with dox), i8TFs_minus (i8TFs no dox) and i8TFs_plus 
+(i8TFs with dox). 
 
-In this vignette, we demonstrate how to use CONCLUS on a sc-RNA-seq dataset from [*Bergiers et al. eLife 2018*](https://elifesciences.org/articles/29312). The design for this experiment is described in ([*Figure 4—figure supplement 2*](https://elifesciences.org/articles/29312/figures#fig4s2)). Bergiers et al. goal was to analyze the effect of the simultaneous expression of eight transcription factors (8TFs): *Runx1* - and its partner - *Cbfb*, *Gata2*, *Tal1*, *Fli1*, *Lyl1*, *Erg* and *Lmo2* in *in vitro* differentiated embryonic stem cells (ESCs) in comparison to control. They knocked-in a polycistronic transgenic construct allowing to over-express eigth transcription factors (i8TFs) simultaneously after adding doxycycline (dox). The Empty ESC line did not have any transgene. There were **four conditions**: E_minus (Empty no dox), E_plus (Empty with dox), i8TFs_minus (i8TFs no dox) and i8TFs_plus (i8TFs with dox). 
+This sc-RNA-seq experiment was performed using the SMARTer ICELL8 Single-Cell System. The protocol was based on 3' end RNA 
+sequencing where each mRNA molecule is labeled with a unique molecular identifier (UMI) during reverse transcription in every 
+single cell. The analysis performed by *Bergiers et al.* was based on the dimensionality reduction algorithm called Principal 
+Component Analysis (PCA), and they found that there was a major gene expression difference between i8TFs_plus and the other three 
+conditions (*Figure 4—figure supplement 2*). **However, it was not clear if other subclusters could be identified consistently in 
+this dataset besides the two major clusters. In the current tutorial, we show how CONCLUS can help us to answer this question.**
 
-This sc-RNA-seq experiment was performed using the SMARTer ICELL8 Single-Cell System. The protocol was based on 3' end RNA sequencing where each mRNA molecule is labeled with a unique molecular identifier (UMI) during reverse transcription in every single cell. The analysis performed by *Bergiers et al.* was based on the dimensionality reduction algorithm called Principal Component Analysis (PCA), and they found that there was a major gene expression difference between i8TFs_plus and the other three conditions (*Figure 4—figure supplement 2*). **However, it was not clear if other subclusters could be identified consistently in this dataset besides the two major clusters. In the current tutorial, we show how CONCLUS can help us to answer this question.**
-
+--!!!!! STOP HERE
 
 In the current document, we introduce you detailed vignette explaining all steps of CONCLUS. 
 **For a quick start, we recommend you, after Section 4, jump directly to Section 6. Section 5 is purely informative, and you can return to it later to learn more about CONCLUS. If you have a dataset with more than 3000 cells, we recommend you to skip Section 4 too to save time.**
