@@ -1,7 +1,7 @@
 ## Export functions
 
 export(addClusteringManually, calculateClustersSimilarity, 
-clusterCellsInternal, exportClusteringResults, 
+clusterCellsInternal, exportClusteringResults, exportMatrix)
 export(generateTSNECoordinates)
 export(getGenesInfo)
 export(getMarkerGenes)
