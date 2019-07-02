@@ -13,4 +13,5 @@
 - move .getTSNEresults to sharedInternals.R
 - simplify testClustering for pdf parameters
 - remove first call of testClustering and keep internal function code only
-- remove testClustering and move it to testClustering.R
+- move testClustering to testClustering.R
+- move .choosePalette to sharedInternals.R
