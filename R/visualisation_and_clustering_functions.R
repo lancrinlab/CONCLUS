@@ -1,14 +1,6 @@
-# #cran
-# install.packages(c("ggplot2", "Matrix", "dbscan", "pheatmap", "fpc",
-#"dynamicTreeCut", "factoextra", "digest", "RColorBrewer", "doParallel"))
-# #bioconductor
-# source("https://bioconductor.org/biocLite.R")
-# biocLite(c("BiocParallel", "scran", "scater", "monocle",
-#"SingleCellExperiment", "KEGGREST"))
 
-suppressMessages(library(BiocParallel, warn.conflicts = F))
-suppressMessages(library(scran, warn.conflicts = F))
-suppressMessages(library(ggplot2, warn.conflicts = F))
+
+
 suppressMessages(library(scater, warn.conflicts = F))
 suppressMessages(library(Matrix, warn.conflicts = F))
 suppressMessages(library(monocle, warn.conflicts = F))
@@ -180,7 +172,7 @@ testClustering <- function(sceObject, dataDirectory, experimentName,
 #'
 #' @return Color palette with the number of colors equal to the clusterNumber parameter.
 #' @export
-choosePalette <- function(colorPalette, clustersNumber){
+.choosePalette <- function(colorPalette, clustersNumber){
 
   colorPalette26 <- c( "yellow", "darkgoldenrod1", "coral1", "deeppink",
                        "indianred", "coral4", "darkblue", "darkmagenta",
@@ -335,7 +327,7 @@ runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData,
               dnn=list("Cells distribution by clusters")))
 
   clustersNumber <- length(unique(SummarizedExperiment::colData(sceObjectFiltered)$clusters))
-  colorPalette <- choosePalette(colorPalette, clustersNumber)
+  colorPalette <- .choosePalette(colorPalette, clustersNumber)
 
   # Plotting cluster stablility and 2D visualisations
   plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, dataDirectory,
@@ -958,7 +950,7 @@ plotCellSimilarity <- function(sceObject, cellsSimilarityMatrix, dataDirectory,
       numberElements <- NULL
   }else{
       numberElements <- length(unique(SummarizedExperiment::colData(sceObject)[,columnName]))
-      colorPalette <- choosePalette(colorPalette, numberElements)
+      colorPalette <- .choosePalette(colorPalette, numberElements)
   }
 
   outputDir <- file.path(dataDirectory, graphsDirectory, graphsTSNEDirectory,
@@ -1467,9 +1459,9 @@ generateAnnotationColors <- function(colData, colorPaletteParameter,
   states <- unique(colData$state)
   clusterNumber <- length(unique(colData$clusters))
 
-  colorAnnotationClusters <- choosePalette(colorPaletteParameter, clusterNumber)
+  colorAnnotationClusters <- .choosePalette(colorPaletteParameter, clusterNumber)
   #colorAnnotationState <- chooseStatePalette(length(states))
-  colorAnnotationState <- choosePalette(statePalette, length(states))
+  colorAnnotationState <- .choosePalette(statePalette, length(states))
   names(colorAnnotationState) <- states
   names(colorAnnotationClusters) <- clusters
 
