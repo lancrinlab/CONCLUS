@@ -454,8 +454,9 @@ generateTSNECoordinates <- function(sceObject, dataDirectory, experimentName,
 
   outputDir <- file.path(dataDirectory, tSNEDirectory)
   filesList <- list.files(outputDir, pattern = "_tsne_coordinates_")
-  deletedFiles <- sapply(filesList, function(fileName) deleteFile(fileName,
-                                                                  outputDir))
+  deletedFiles <- sapply(filesList, function(fileName) 
+			  file.remove(file.path(outputDir, fileName)))
+  
   for (i in 1:(length(PCs)*length(perplexities))){
     write.table(TSNEres[1, i][[1]],
                 file=file.path(dataDirectory, tSNEDirectory,
@@ -958,8 +959,8 @@ plotCellSimilarity <- function(sceObject, cellsSimilarityMatrix, dataDirectory,
   dir.create(outputDir, showWarnings = F)
 
   filesList <- list.files(outputDir, pattern = "_tsne_coordinates_")
-  deletedFiles <- sapply(filesList, function(fileName) deleteFile(fileName, 
-                                                                  outputDir))
+  deletedFiles <- sapply(filesList, function(fileName) 
+			  file.remove(file.path(outputDir, fileName)))
 
   PCA <- rep(PCs, length(perplexities))
   perp <- rep(perplexities, each=length(PCs))
@@ -1287,11 +1288,6 @@ plotClustersSimilarity <- function(clustersSimilarityMatrix, sceObject,
                           width=width, height=height, ...)
 }
 
-#' @export
-deleteFile <- function(fileName, outputDir){
-    file.remove(file.path(outputDir, fileName))
-}
-
 # rankGenesInternal() saves n files in your outputDir, n=number of groups
 rankGenesInternal <- function(expr, colData, column, simMed, outputDir,
                              experimentName){
@@ -1299,9 +1295,9 @@ rankGenesInternal <- function(expr, colData, column, simMed, outputDir,
     message("Ranking marker genes for each cluster.")
 
     filesList <- list.files(outputDir, pattern = "_genes.tsv")
-    deletedFiles <- sapply(filesList, function(fileName) deleteFile(fileName,
-                                                                    outputDir))
-
+    deletedFiles <- sapply(filesList, function(fileName)
+				file.remove(file.path(outputDir, fileName)))
+				
     stopifnot(all(colnames(expr) == rownames(colData)))
     groups <- unique(colData[,column])
     simMed = simMed + 0.05
@@ -2847,8 +2843,9 @@ saveMarkersLists <- function(experimentName, dataDirectory,
     dir.create(outputDir, showWarnings=F)
 
     filesList <- list.files(outputDir, pattern = "_markers.csv")
-    deletedFiles <- sapply(filesList, function(fileName) deleteFile(fileName,
-                                                                    outputDir))
+    deletedFiles <- sapply(filesList, function(fileName) 
+				file.remove(file.path(outputDir, fileName)))
+	
     fnames <- list.files(inputDir, pattern = pattern)
     for(i in 1:length(fnames)){
         tmp <- read.delim(file.path(inputDir, fnames[i]), stringsAsFactors = FALSE)
