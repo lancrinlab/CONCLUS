@@ -1,25 +1,14 @@
 ## Export functions
 
-export(addClusteringManually, calculateClustersSimilarity, 
-clusterCellsInternal, exportClusteringResults, exportMatrix)
-export(generateTSNECoordinates)
-export(getGenesInfo)
-export(getMarkerGenes)
-export(initialisePath)
-export(normaliseCountMatrix)
-export(normalizeCountMatrix)
-export(plotCellHeatmap)
-export(plotCellSimilarity)
-export(plotClusteredTSNE)
-export(plotClustersSimilarity)
-export(plotGeneExpression)
-export(rankGenes)
-export(runCONCLUS)
-export(runClustering)
-export(runDBSCAN)
-export(saveGenesInfo)
-export(saveMarkersLists)
-export(testClustering)
+export(addClusteringManually, calculateClustersSimilarity, clusterCellsInternal,
+exportClusteringResults, exportMatrix, generateTSNECoordinates, getGenesInfo,
+getMarkerGenes, initialisePath, normalizeCountMatrix, plotCellHeatmap, 
+plotCellSimilarity, plotClusteredTSNE, plotClustersSimilarity, 
+plotGeneExpression, rankGenes, runCONCLUS, runClustering, runDBSCAN, 
+saveGenesInfo, saveMarkersLists, testClustering)
+
+## Import functions and packages 
+
 importFrom(foreach,"%dopar%")
 import(ggplot2, pheatmap, zoo, dynamicTreeCut, factoextra, 
 digest, RColorBrewer, doParallel, BiocParallel, scran, 
