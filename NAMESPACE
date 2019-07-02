@@ -14,4 +14,5 @@ importFrom(foreach,"%dopar%")
 import(ggplot2, pheatmap, zoo, dynamicTreeCut, factoextra, 
 digest, RColorBrewer, doParallel, BiocParallel, scran, 
 monocle, KEGGREST, AnnotationDbi, SingleCellExperiment, Cairo, rvest, curl, 
-scater, Matrix, dbscan, fpc, matrixStats, dplyr, biomaRt, org.Mm.eg.db, xlsx)
+scater, Matrix, dbscan, fpc, matrixStats, dplyr, biomaRt, org.Mm.eg.db, xlsx,
+grDevices)
