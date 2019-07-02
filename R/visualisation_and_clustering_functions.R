@@ -4,7 +4,7 @@
 ### to get XY coordinates call psne_res[1,i][[1]] ###
 ### i = [1:length(PCs)*length(perplexities)] is a number of iteration ###
 
-getTSNEresults <- function(expressionMatrix, cores=1,
+.getTSNEresults <- function(expressionMatrix, cores=1,
                            PCs=c(4, 6, 8, 10, 20, 40, 50),
                            perplexities=c(30, 40), randomSeed=42){
     PCAData <- prcomp(t(expressionMatrix))$x
@@ -48,7 +48,7 @@ getTSNEresults <- function(expressionMatrix, cores=1,
 
   message("Generating TSNE.")
   #1. Generating 2D tSNE plots
-  tSNE <- getTSNEresults(expr = Biobase::exprs(sceObject), cores=1,
+  tSNE <- .getTSNEresults(expr = Biobase::exprs(sceObject), cores=1,
                          perplexities = perplexities,
                          PCs = PCs,
                          randomSeed = randomSeed)
@@ -419,7 +419,7 @@ generateTSNECoordinates <- function(sceObject, dataDirectory, experimentName,
 
   tSNEDirectory <- "tsnes"
   message(paste0("Running TSNEs using ", cores, " cores."))
-  TSNEres <- getTSNEresults(Biobase::exprs(sceObject), cores=cores, PCs=PCs,
+  TSNEres <- .getTSNEresults(Biobase::exprs(sceObject), cores=cores, PCs=PCs,
                             perplexities=perplexities, randomSeed=randomSeed)
 
   PCA <- rep(PCs, length(perplexities))
