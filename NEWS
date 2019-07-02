@@ -5,3 +5,7 @@
 - Re-structuration and modifications of the vignette
 - add normalization step to runCONCLUS function
 - add cores parameter to calls of generateTSNECoordinates
+- hide choosePalette function
+- remove deleteFile function
+- Reorganize import and exports in NameSpace
+- suppress packages loading from R code and put them in NAMESPACE
