@@ -1,16 +1,11 @@
 
 # Do not export this function.
-.testClustering <- function(sceObject, dataDirectory, experimentName,
+testClustering <- function(sceObject, dataDirectory, experimentName,
                            dbscanEpsilon=1.4,
                            minPts=5,
                            perplexities = c(30), PCs = c(4),
                            randomSeed = 42,
-                           width=7, height=7, onefile=FALSE, #pdf
-                           family, title, fonts, version,
-                           paper, encoding, bg, fg, pointsize,
-                           pagecentre, colormodel,
-                           useDingbats, useKerning,
-                           fillOddEven, compress){
+                           width=7, height=7, onefile=FALSE, ...){
 
   initialisePath(dataDirectory)
   dir.create(file.path(dataDirectory, "test_clustering"), showWarnings = F)
@@ -25,12 +20,7 @@
   message("Saving results.")
   #picture checker
   pdf(file.path(dataDirectory, "test_clustering", "test_tSNE.pdf"),
-      width=width, height=height, onefile=onefile, # not changed by default
-      family=family, title=title, fonts=fonts, version=version,
-      paper=paper, encoding=encoding, bg=bg, fg=fg, pointsize=pointsize,
-      pagecentre=pagecentre, colormodel=colormodel,
-      useDingbats=useDingbats, useKerning=useKerning,
-      fillOddEven=fillOddEven, compress=compress)
+      width=width, height=height, onefile=onefile, ...)
 	print(tSNE)
   dev.off()
 
@@ -38,23 +28,13 @@
   #2. Clustering with dbscan
   # choosing for the best epsilon
   pdf(file.path(dataDirectory, "test_clustering", "distance_graph.pdf"),
-      width=width, height=height, onefile=onefile, # not changed by default
-      family=family, title=title, fonts=fonts, version=version,
-      paper=paper, encoding=encoding, bg=bg, fg=fg, pointsize=pointsize,
-      pagecentre=pagecentre, colormodel=colormodel,
-      useDingbats=useDingbats, useKerning=useKerning,
-      fillOddEven=fillOddEven, compress=compress)
+      width=width, height=height, onefile=onefile, ...)
   plotDistanceGraphWithEpsilon(tSNE$data, epsilon=dbscanEpsilon,
                                minNeighbours = minPts)
   dev.off()
 
   pdf(file.path(dataDirectory, "test_clustering", "test_clustering.pdf"),
-      width=width, height=height, onefile=onefile, # not changed by default
-      family=family, title=title, fonts=fonts, version=version,
-      paper=paper, encoding=encoding, bg=bg, fg=fg, pointsize=pointsize,
-      pagecentre=pagecentre, colormodel=colormodel,
-      useDingbats=useDingbats, useKerning=useKerning,
-      fillOddEven=fillOddEven, compress=compress)
+      width=width, height=height, onefile=onefile, ...)
   print(plotTestClustering(tSNE$data, epsilon=dbscanEpsilon,
                            minNeighbours = minPts))
   dev.off()
@@ -100,6 +80,19 @@ testClustering <- function(sceObject, dataDirectory, experimentName,
                   perplexities = perplexities, PCs = PCs,
                   randomSeed = randomSeed,
                   width=width, height=height, ...)
+		  
+		  .testClustering <- function(sceObject, dataDirectory, experimentName,
+				  dbscanEpsilon=1.4,
+				  minPts=5,
+				  perplexities = c(30), PCs = c(4),
+				  randomSeed = 42,
+				  width=7, height=7, onefile=FALSE, #pdf
+				  family, title, fonts, version,
+				  paper, encoding, bg, fg, pointsize,
+				  pagecentre, colormodel,
+				  useDingbats, useKerning,
+				  fillOddEven, compress){
+			  
 }
 
 #' Choose palette for a plot.
