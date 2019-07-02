@@ -1,30 +1,3 @@
-
-
-
-suppressMessages(library(scater, warn.conflicts = F))
-suppressMessages(library(Matrix, warn.conflicts = F))
-suppressMessages(library(monocle, warn.conflicts = F))
-suppressMessages(library(SingleCellExperiment, warn.conflicts = F))
-suppressMessages(library(dbscan, warn.conflicts = F))
-suppressMessages(library(pheatmap, warn.conflicts = F))
-suppressMessages(library(fpc, warn.conflicts = F))
-suppressMessages(library(dynamicTreeCut, warn.conflicts = F))
-suppressMessages(library(factoextra, warn.conflicts = F))
-suppressMessages(library(digest, warn.conflicts = F))
-suppressMessages(library(KEGGREST, warn.conflicts = F))
-suppressMessages(library(RColorBrewer, warn.conflicts = F))
-suppressMessages(require(doParallel))
-suppressMessages(require(matrixStats))
-suppressMessages(library(AnnotationDbi, warn.conflicts = F))
-suppressMessages(library(dplyr, warn.conflicts = F))
-suppressMessages(library(biomaRt, warn.conflicts = F))
-suppressMessages(library(org.Mm.eg.db, warn.conflicts = F))
-suppressMessages(library(xlsx, warn.conflicts = F))
-suppressMessages(library(grDevices, warn.conflicts = F))
-suppressMessages(library(S4Vectors, warn.conflicts = F))
-suppressMessages(library(Biobase, warn.conflicts = F))
-suppressMessages(library(foreach, warn.conflicts = F))
-
 ### Internal function.
 ### this function calculates PCA and then tSNE with PCs and perplexities ###
 ### it returns a list of pSNE = PCA+tSNE results ###
