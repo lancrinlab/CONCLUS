@@ -1345,28 +1345,6 @@ plotCellHeatmap <- function(markersClusters, sceObject, dataDirectory,
                    width=width, height=height, ...)
 }
 
-exportData <- function(sceObject, dataDirectory, experimentName){
-  # exports all the data from workflow, including .RData files
-
-  outputDataDirectory <- "output_tables"
-
-  ################ EXPORT MATRIX, COLDATA, ROWDATA, FULL WORKSPACE
-  write.table(Biobase::exprs(sceObject), file=file.path(dataDirectory,
-            outputDataDirectory, paste0(experimentName, "_",
-                                        "expression_matrix.tsv")), sep="\t",
-            row.names = TRUE, quote = FALSE, col.names = TRUE)
-  write.table(SummarizedExperiment::colData(sceObject), file=file.path(dataDirectory,
-            outputDataDirectory, paste0(experimentName, "_",
-                                        "colData.tsv")), sep="\t",
-            row.names = TRUE, quote = FALSE, col.names = TRUE)
-  write.table(rowData(sceObject), file=file.path(dataDirectory,
-            outputDataDirectory, paste0(experimentName, "_",
-                                        "rowData.tsv")), sep="\t",
-            row.names = TRUE, quote = FALSE, col.names = TRUE)
-  save.image(file=file.path(dataDirectory, outputDataDirectory,
-                        paste0(experimentName, "_", "full_workspace.RData")))
-
-}
 
 #' DBSCAN clustering on t-SNE results.
 #' 
