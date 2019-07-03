@@ -395,7 +395,10 @@ rankedGenesClus5 <- read.delim(file.path(outputDirectory, "marker_genes",
                                stringsAsFactors = FALSE)
 head(rankedGenesClus5, n = 10)
 ```
-## Export key matrices 
+## Export key matrices
+
+!! integrate exportData to the vignette
+ 
 The last part of the *runCONCLUS* function is saving *cellsSimilarityMatrix* and *clustersSimilarityMatrix* in the folder *output_tables* and  returning *sceObjectFiltered*.
 ```{r}
 conclus::exportMatrix(cellsSimilarityMatrix, outputDirectory, experimentName, 
