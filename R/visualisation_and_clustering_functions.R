@@ -12,23 +12,6 @@ chooseStatePalette <- function(statesNumber){
 }
 
 
-#' Export matrix to a file.
-#' 
-#' The function allows you to export a matrix to a .csv file with a hard-coded filename (according to experimentName) 
-#' in the "dataDirectory/output_tables" directory for further analysis.
-#'
-#' @param matrix your matrix (e.g., expression matrix)
-#' @param dataDirectory CONCLUS output directory for a given experiment (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which will appear at the beginning of the filenames 
-#' (supposed to be the same for one experiment during the workflow).
-#' @param name name of the file. Will be placed after the experimentName header.
-#' @export
-exportMatrix <- function(matrix, dataDirectory, experimentName, name){
-
-  fileName <- paste0(experimentName, "_", name, ".csv")
-  write.table(matrix, file=file.path(dataDirectory, "output_tables", fileName),
-              sep = ",")
-}
 
 #' Create all needed directories for CONCLUS output.
 #'
