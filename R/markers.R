@@ -1,6 +1,23 @@
-# rankGenesInternal() saves n files in your outputDir, n=number of groups
-rankGenesInternal <- function(expr, colData, column, simMed, outputDir,
-		experimentName){
+#' Rank marker genes by statistical significance.
+#'
+#' This function searches marker genes for each cluster. It saves tables in the "dataDirectory/marker_genes" directory,
+#' one table per cluster.
+#' 
+#' @param sceObject a SingleCellExperiment object with your experiment.
+#' @param clustersSimilarityMatrix matrix, result of conclus::calculateClustersSimilarity() function.
+#' @param dataDirectory output directory for CONCLUS (supposed to be the same for one experiment during the workflow).
+#' @param experimentName name of the experiment which will appear in filenames (supposed to be the same for one experiment during the workflow).
+#' @export
+#' @param column name of the column with a clustering result.
+
+rankGenes <- function(sceObject, clustersSimilarityMatrix, dataDirectory,
+		experimentName, column="clusters"){
+	
+	markerGenesDirectory <- "marker_genes"
+	expr <- Biobase::exprs(sceObject)
+	colData <- SummarizedExperiment::colData(sceObject)
+	simMed <- clustersSimilarityMatrix
+	outputDir <- file.path(dataDirectory, markerGenesDirectory)
 	
 	message("Ranking marker genes for each cluster.")
 	
@@ -54,26 +71,4 @@ rankGenesInternal <- function(expr, colData, column, simMed, outputDir,
 	
 	rm(tTestFDR, tTestPval, i, k, l, x, y, t, df, otherGroups, submat,
 			weights, groups)
-}
-
-#' Rank marker genes by statistical significance.
-#'
-#' This function searches marker genes for each cluster. It saves tables in the "dataDirectory/marker_genes" directory,
-#' one table per cluster.
-#' 
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param clustersSimilarityMatrix matrix, result of conclus::calculateClustersSimilarity() function.
-#' @param dataDirectory output directory for CONCLUS (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which will appear in filenames (supposed to be the same for one experiment during the workflow).
-#' @export
-#' @param column name of the column with a clustering result.
-rankGenes <- function(sceObject, clustersSimilarityMatrix, dataDirectory,
-		experimentName, column="clusters"){
-	# 
-	
-	markerGenesDirectory <- "marker_genes"
-	rankGenesInternal(Biobase::exprs(sceObject), SummarizedExperiment::colData(sceObject), column,
-			clustersSimilarityMatrix,
-			file.path(dataDirectory, markerGenesDirectory), experimentName)
-	
 }
