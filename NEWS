@@ -65,3 +65,4 @@
 - hide addCellsInfo in normalization.R
 - move filterGenes to normalization.R
 - hide filterGenes in normalization.R
+- move getGenesInfo to markers.R
