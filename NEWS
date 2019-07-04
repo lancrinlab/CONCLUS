@@ -15,3 +15,14 @@
 - remove first call of testClustering and keep internal function code only
 - move testClustering to testClustering.R
 - move .choosePalette to sharedInternals.R
+- move runCONCLUS function to runCONCLUS.R
+- move exportMatrix to export.R
+- move exportData to export.R
+- move initialisePath to sharedInternals.R
+- move exportClusteringResults to export.R
+- delete plotDistanceGraph because not used
+- move plotDistanceGraphWithEpsilon to testClustering.R
+- hide plotDistanceGraphWithEpsilon
+- move plotTestClustering to testClustering.R
+- hide plotTestClustering
+- move plotCellSimilarity to plot.R
