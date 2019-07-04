@@ -239,7 +239,7 @@
 # This function creates colData or add columns mtGenes, genesNum,
 # codGenes, genesSum, codSum, mtPer, codPer, sumMtPer, sumCodPer to the
 # existing colData.
-addCellsInfo <- function(countMatrix, rowData, colData = NULL){
+.addCellsInfo <- function(countMatrix, rowData, colData = NULL){
 	message("Adding cell info for cells filtering.")
 	coldata <- data.frame(cellName = colnames(countMatrix),
 			stringsAsFactors = FALSE)
@@ -337,7 +337,7 @@ normaliseCountMatrix <- function(countMatrix,
 	if(method == "default"){
 		rowData <- .annotateGenes(countMatrix, species = species,
 				rowData = rowData, databaseDir = databaseDir)
-		colData <- addCellsInfo(countMatrix, rowData = rowData,
+		colData <- .addCellsInfo(countMatrix, rowData = rowData,
 				colData = colData)
 		if(!alreadyCellFiltered){
 			filterCellsResult <- .filterCells(countMatrix, colData)
