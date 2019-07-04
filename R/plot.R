@@ -1,3 +1,21 @@
+.generateAnnotationColors <- function(colData, colorPaletteParameter,
+		statePalette){
+	
+	clusters <- levels(colData$clusters)
+	states <- unique(colData$state)
+	clusterNumber <- length(unique(colData$clusters))
+	
+	colorAnnotationClusters <- .choosePalette(colorPaletteParameter, clusterNumber)
+	#colorAnnotationState <- chooseStatePalette(length(states))
+	colorAnnotationState <- .choosePalette(statePalette, length(states))
+	names(colorAnnotationState) <- states
+	names(colorAnnotationClusters) <- clusters
+	
+	return(list(state=colorAnnotationState, clusters=colorAnnotationClusters))
+}
+
+
+
 .plotCellSimilarity <- function(sceObject, cellsSimilarityMatrix, dataDirectory,
 		experimentName, colorPalette="default",
 		statePalette="default", clusteringMethod="ward.D2",
@@ -95,7 +113,7 @@
 		cluster_rows <- clusteringTree
 	}
 	
-	annotationColors <- generateAnnotationColors(colData, colorPalette,
+	annotationColors <- .generateAnnotationColors(colData, colorPalette,
 			statePalette)
 	columnsToPlot <- switch(is.null(colData$state) + 1, c("clusters", "state"),
 			c("clusters"))
@@ -485,7 +503,7 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 		cluster_rows <- hclust(dist(expressionMatrix), method="ward.D2")
 	}
 	
-	annotationColors <- generateAnnotationColors(colData, colorPalette,
+	annotationColors <- .generateAnnotationColors(colData, colorPalette,
 			statePalette)
 	columnsToPlot <- switch(is.null(colData$state) + 1, c("clusters", "state"),
 			c("clusters"))
@@ -782,7 +800,7 @@ plotGeneExpression <- function(geneName, experimentName, dataDirectory,
 	colDataSimilarity <- data.frame(clusters = clustersNames)
 	rownames(colDataSimilarity) <- colDataSimilarity$clusters
 	
-	annotationColors <- generateAnnotationColors(SummarizedExperiment::colData(sceObject),
+	annotationColors <- .generateAnnotationColors(SummarizedExperiment::colData(sceObject),
 			colorPalette,
 			statePalette)
 	
