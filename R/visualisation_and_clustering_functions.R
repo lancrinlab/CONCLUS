@@ -1550,27 +1550,6 @@ plotGeneExpression <- function(geneName, experimentName, dataDirectory,
                       width=width, height=height, ...)
 }
 
-#' exportClusteringResults
-#'
-#' The function saves clustering results into a table. Row names are cell names in the same order as in the sceObject.
-#'
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param dataDirectory output directory (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which appears at the beginning of the file name 
-#' (supposed to be the same for one experiment during the workflow).
-#' @param fileName the rest of output file name.
-#'
-#' @export
-exportClusteringResults <- function(sceObject, dataDirectory,
-                                    experimentName, fileName){
-
-  tableData <- S4Vectors::DataFrame(clusters = SummarizedExperiment::colData(sceObject)$clusters,
-                         row.names = SummarizedExperiment::colData(sceObject)$cellName)
-  write.table(tableData,
-              file = file.path(dataDirectory, "output_tables",
-                               paste0(experimentName,"_", fileName)),
-              sep = "\t", quote = FALSE)
-}
 
 #' addClusteringManually
 #'
