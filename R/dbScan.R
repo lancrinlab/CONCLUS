@@ -5,7 +5,7 @@
 ### number of iterations is equal to
 ### ncol is (TSNEtables)*length(epsilon)*length(epsilon)
 
-mkDbscan <- function(TSNEtables, cores = 14, epsilon = c(1.2, 1.5, 1.8),
+.mkDbscan <- function(TSNEtables, cores = 14, epsilon = c(1.2, 1.5, 1.8),
 		minPoints = c(15, 20)){
 	myCluster <- parallel::makeCluster(cores, # number of cores to use
 			type = "PSOCK") # type of cluster
@@ -49,7 +49,7 @@ runDBSCAN <- function(tSNEResults, sceObject, dataDirectory, experimentName,
 		tmp <- tSNEResults[1,i][[1]]
 		tSNEResults[1,i][[1]] <- tmp[colnames(sceObject),]
 	}
-	dbscanResults <- mkDbscan(tSNEResults, cores = cores, epsilon = epsilon,
+	dbscanResults <- .mkDbscan(tSNEResults, cores = cores, epsilon = epsilon,
 			minPoints = minPoints)
 	dbscanResults <- t(dbscanResults)
 	colnames(dbscanResults) <- SummarizedExperiment::colData(sceObject)$cellName
