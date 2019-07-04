@@ -36,56 +36,6 @@
 
 
 
-
-
-
-
-#' addClusteringManually
-#'
-#' The function replaces the content of the column "clusters" in the colData(sceObject) 
-#' with the clustering provided in the user table.
-#' The function will return the sceObject with cells which intersect with the cells from the input table.
-#'
-#' @param fileName a file with the clustering solution (for example, from previous CONCLUS runs).
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param dataDirectory output directory (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which appears in filenames (supposed to be the same for one experiment during the workflow).
-#' @param columnName name of the column with the clusters.
-#'
-#' @return A SingleCellExperiment object with the created/renewed column "clusters" in the colData(sceObject).
-#' @export
-addClusteringManually <- function(fileName, sceObject, dataDirectory,
-                                  experimentName, columnName = "clusters"){
-
-  tableData <- read.table(file.path(dataDirectory, "output_tables",
-                                paste0(experimentName,"_", fileName)), sep="\t")
-
-  if(all(rownames(SummarizedExperiment::colData(sceObject)) %in% rownames(tableData))){
-    if(ncol(tableData) == 1){
-      SummarizedExperiment::colData(sceObject)$clusters <-
-          factor(tableData[rownames(SummarizedExperiment::colData(sceObject)),])
-    } else {
-      SummarizedExperiment::colData(sceObject)$clusters <-
-          factor(tableData[rownames(SummarizedExperiment::colData(sceObject)),][,columnName])
-    }
-
-    return(sceObject)
-  } else {
-    message("Rownames in colData are not equal to rownames in table.
-Returning SCE object with cells intersecting with clusters_table.")
-      sceObject <- sceObject[ ,colnames(sceObject) %in%
-                                 intersect(colnames(sceObject),
-                                           rownames(tableData))]
-      tableData$randomColumn <- NA
-      tableData <- tableData[rownames(tableData) %in%
-                                 intersect(colnames(sceObject),
-                                           rownames(tableData)), ]
-      SummarizedExperiment::colData(sceObject)$clusters <-
-          factor(tableData[rownames(SummarizedExperiment::colData(sceObject)),][,columnName])
-    return(sceObject)
-  }
-}
-
 # This function assumes that rownames(countMatrix) are either ENSEMBL IDs or
 # or SYMBOLs. It will return a rowData with the same rownames as in countMatrix
 # but genes which are not ENSEMBL IDs or SYMBOLs will not receive the annotation.
