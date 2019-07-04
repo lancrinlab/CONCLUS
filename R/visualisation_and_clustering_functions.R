@@ -76,15 +76,6 @@ checkTSNEPicture <- function(tSNEResults, sceObject){
     geom_point(size=I(1))
 }
 
-plotDistanceGraph <- function(tSNEResults, minNeighbours=5, tSNEIndex=3){
-  # plots kNN distance graph
-  # for choosing right values
-  # of epsilon for further DBSCAN analysis
-
-
-  tSNECoords <- tSNEResults[1,tSNEIndex][[1]]
-  dbscan::kNNdistplot(tSNECoords, k=minNeighbours)
-}
 
 plotDistanceGraphWithEpsilon <- function(tSNEData, minNeighbours=5,
                                          epsilon=1.2){
