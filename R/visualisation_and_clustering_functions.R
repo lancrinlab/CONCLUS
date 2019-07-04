@@ -77,16 +77,6 @@ checkTSNEPicture <- function(tSNEResults, sceObject){
 }
 
 
-plotDistanceGraphWithEpsilon <- function(tSNEData, minNeighbours=5,
-                                         epsilon=1.2){
-  # similar function as plotDistanceGraph,
-  # but with already known epsilon value
-  #
-
-  dbscan::kNNdistplot(tSNEData, k=minNeighbours)
-  abline(h=epsilon, lty=2)
-
-}
 
 plotTestClustering <- function(tSNEData, minNeighbours=5,
                                epsilon=1.2){
