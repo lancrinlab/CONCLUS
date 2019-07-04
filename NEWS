@@ -32,3 +32,11 @@
 - move plotGeneExpression to plot.R
 - merge .plotGeneExpression and plotGeneExpression
 - move plotClustersSimilarity to plot.R
+- delete chooseStatePalette because not used
+- move generateTSNECoordinates to tSNE.R
+- remove checkTSNEPicture because not used
+- move mkDbscan and runDBSCAN to dbScan.R
+- hide mkDbscan
+- move the testClustering.R content to clustering.R
+- move excludeOutliers, mkOutlierScoreDf and runClustering to clustering.R
+- hide mkOutlierScoreDf and excludeOutliers
