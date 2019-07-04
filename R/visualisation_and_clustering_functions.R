@@ -24,49 +24,6 @@
 
 
 
-### This function calculates how many time a cell were not assigned to
-### any clusters by dbscan. ###
-### it returns a data frame ###
-
-
-mkSimMat <- function(mat, cores=14){
-
-    myCluster <- parallel::makeCluster(cores, # number of cores to use
-                             type = "PSOCK") # type of cluster
-    doParallel::registerDoParallel(myCluster)
-
-    simMats <- foreach::foreach(i=1:nrow(mat)) %dopar% {
-        simMat <- matrix(0, ncol=ncol(mat), nrow=ncol(mat))
-        colnames(simMat) <- colnames(mat)
-        rownames(simMat) <- colnames(mat)
-
-        vec <- unique(mat[i,])
-        for(j in vec[vec!=0]){
-            selCol <- colnames(mat)[mat[i,] == j]
-            simMat[rownames(simMat) %in% selCol,
-                    colnames(simMat) %in% selCol] <-
-                simMat[rownames(simMat) %in% selCol,
-                        colnames(simMat) %in% selCol] + 1
-        }
-        rm(cl, selCol, i, j)
-        return(simMat)
-    }
-    parallel::stopCluster(myCluster)
-
-    simMat <- matrix(0, ncol=ncol(mat), nrow=ncol(mat))
-    colnames(simMat) <- colnames(mat)
-    rownames(simMat) <- colnames(mat)
-
-    for(i in 1:nrow(mat)){
-        simMat <- simMat + simMats[[i]]
-    }
-
-    rm(simMats)
-    simMat <- simMat / nrow(mat)
-    stopifnot(isSymmetric(simMat))
-
-    return(simMat)
-}
 
 #' Cluster cells and get similarity matrix of cells.
 #' 
