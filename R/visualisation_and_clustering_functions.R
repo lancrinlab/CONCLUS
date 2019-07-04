@@ -1,15 +1,3 @@
-#' Choose palette for a plot.
-#'
-#' It is an internal function usually applied for choosing the palette for clusters.
-
-chooseStatePalette <- function(statesNumber){
-
-  colorPalette <- c("#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3",
-                      "#FDB462", "#B3DE69", "#FCCDE5", "#D9D9D9", "#BC80BD",
-                      "#CCEBC5", "#FFED6F")
-  return(rep(colorPalette,
-             round(statesNumber/length(colorPalette)) + 1)[1:statesNumber])
-}
 
 
 
