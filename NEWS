@@ -40,3 +40,9 @@
 - move the testClustering.R content to clustering.R
 - move excludeOutliers, mkOutlierScoreDf and runClustering to clustering.R
 - hide mkOutlierScoreDf and excludeOutliers
+- move mkSimMat to clustering.R
+- move clusterCellsInternal to clustering.R
+- hide mkSimMat
+- move mkSimMed and calculateClustersSimilarity to clustering.R
+- hide mkSimMed
+
