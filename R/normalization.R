@@ -299,7 +299,7 @@
 	return(coldata)
 }
 
-filterGenes <- function(countMatrix, rowData){
+.filterGenes <- function(countMatrix, rowData){
 	
 	# internal function, filters genes which are more than in 10 cells and less than (all-10) cells
 	
@@ -356,7 +356,7 @@ normaliseCountMatrix <- function(countMatrix,
 			colData <- filterCellsResult[[2]]
 			rm(filterCellsResult)
 		}
-		filterGenesResult <- filterGenes(countMatrix, rowData)
+		filterGenesResult <- .filterGenes(countMatrix, rowData)
 		countMatrix <- filterGenesResult[[1]]
 		rowData <- filterGenesResult[[2]]
 		rm(filterGenesResult)
