@@ -78,16 +78,6 @@ checkTSNEPicture <- function(tSNEResults, sceObject){
 
 
 
-plotTestClustering <- function(tSNEData, minNeighbours=5,
-                               epsilon=1.2){
-  # plots test DBSCAN on one of the pictures
-  # for being ensured that clustering will
-  # probably work successful
-
-  dbscanResults <- fpc::dbscan(tSNEData, eps=epsilon, MinPts=minNeighbours)
-  factoextra::fviz_cluster(dbscanResults, tSNEData, ellipse=TRUE, geom="point",
-               legend="bottom")
-}
 
 ### This function calculates dbscan for all t-SNE from TSNEtables with all
 ### combinations of paramenters from epsilon and minPoints
