@@ -13,31 +13,6 @@ chooseStatePalette <- function(statesNumber){
 
 
 
-#' Create all needed directories for CONCLUS output.
-#'
-#' @param dataDirectory output directory for a given CONCLUS run (supposed to be the same for one experiment during the workflow).
-#' @export
-initialisePath <- function(dataDirectory){
-  # creates directories for further writing of results.
-  # names of directories are hardcoded.
-  # no idea if it is good or bad.
-
-  graphsDirectory <- "pictures"
-  markerGenesDirectory <- "marker_genes"
-  tSNEDirectory <- "tsnes"
-  outputDataDirectory <- "output_tables"
-  tSNEPicturesDirectory <- "tSNE_pictures"
-
-
-  dir.create(dataDirectory, showWarnings=F)
-  dir.create(file.path(dataDirectory, graphsDirectory), showWarnings=F)
-  dir.create(file.path(dataDirectory, graphsDirectory, tSNEPicturesDirectory),
-             showWarnings=F)
-  dir.create(file.path(dataDirectory, markerGenesDirectory), showWarnings=F)
-  dir.create(file.path(dataDirectory, tSNEDirectory), showWarnings=F)
-  dir.create(file.path(dataDirectory, outputDataDirectory), showWarnings=F)
-
-}
 
 #' Generate and save t-SNE coordinates with selected parameters.
 #'
