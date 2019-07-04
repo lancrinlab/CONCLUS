@@ -10,6 +10,16 @@
 }
 
 
+.plotTestClustering <- function(tSNEData, minNeighbours=5,
+		epsilon=1.2){
+	# plots test DBSCAN on one of the pictures
+	# for being ensured that clustering will
+	# probably work successful
+	
+	dbscanResults <- fpc::dbscan(tSNEData, eps=epsilon, MinPts=minNeighbours)
+	factoextra::fviz_cluster(dbscanResults, tSNEData, ellipse=TRUE, geom="point",
+			legend="bottom")
+}
 
 #' To check one iteration of clustering before running full workflow CONCLUS.
 #' 
@@ -66,7 +76,7 @@ testClustering <- function(sceObject, dataDirectory, experimentName,
 	
 	pdf(file.path(dataDirectory, "test_clustering", "test_clustering.pdf"),
 			width=width, height=height, onefile=onefile, ...)
-	print(plotTestClustering(tSNE$data, epsilon=dbscanEpsilon,
+	print(.plotTestClustering(tSNE$data, epsilon=dbscanEpsilon,
 					minNeighbours = minPts))
 	dev.off()
 	
@@ -74,7 +84,7 @@ testClustering <- function(sceObject, dataDirectory, experimentName,
 	return(list(tSNE,
 					.plotDistanceGraphWithEpsilon(tSNE$data, epsilon=dbscanEpsilon,
 							minNeighbours = minPts),
-					plotTestClustering(tSNE$data, epsilon=dbscanEpsilon,
+					.plotTestClustering(tSNE$data, epsilon=dbscanEpsilon,
 							minNeighbours = minPts)))
 	
 }
