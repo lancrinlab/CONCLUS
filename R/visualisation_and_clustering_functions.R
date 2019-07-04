@@ -35,21 +35,6 @@
 
 
 
-generateAnnotationColors <- function(colData, colorPaletteParameter,
-                                     statePalette){
-
-  clusters <- levels(colData$clusters)
-  states <- unique(colData$state)
-  clusterNumber <- length(unique(colData$clusters))
-
-  colorAnnotationClusters <- .choosePalette(colorPaletteParameter, clusterNumber)
-  #colorAnnotationState <- chooseStatePalette(length(states))
-  colorAnnotationState <- .choosePalette(statePalette, length(states))
-  names(colorAnnotationState) <- states
-  names(colorAnnotationClusters) <- clusters
-
-  return(list(state=colorAnnotationState, clusters=colorAnnotationClusters))
-}
 
 
 
