@@ -164,7 +164,7 @@
 
 
 
-filterCells <- function(countMatrix, colData, genesSumThr = 100,
+.filterCells <- function(countMatrix, colData, genesSumThr = 100,
 		MoreBetter = c("genesNum", "sumCodPer", "genesSum"),
 		MoreWorse = c("sumMtPer")){
 	message("Running filterCells.")
@@ -276,7 +276,7 @@ normaliseCountMatrix <- function(countMatrix,
 		colData <- addCellsInfo(countMatrix, rowData = rowData,
 				colData = colData)
 		if(!alreadyCellFiltered){
-			filterCellsResult <- filterCells(countMatrix, colData)
+			filterCellsResult <- .filterCells(countMatrix, colData)
 			countMatrix <- filterCellsResult[[1]]
 			colData <- filterCellsResult[[2]]
 			rm(filterCellsResult)
