@@ -2,24 +2,6 @@
 
 
 
-
-checkTSNEPicture <- function(tSNEResults, sceObject){
-  # gives the unclustered picture of tSNE
-  # to be sure that normalization step was
-  # successful
-
-  tSNECoords <- tSNEResults[[1]]
-  tSNECoords <- tSNECoords[rownames(tSNECoords) %in%
-                               SummarizedExperiment::colData(sceObject)$cellName, ]
-
-  ggplot2::ggplot(tSNECoords, aes_string(x=names(tSNECoords)[1],
-                                y=names(tSNECoords)[2])) +
-    geom_point(size=I(1))
-}
-
-
-
-
 ### This function calculates dbscan for all t-SNE from TSNEtables with all
 ### combinations of paramenters from epsilon and minPoints
 ### it does not set random seed. It allows to vary this parameter automatically
