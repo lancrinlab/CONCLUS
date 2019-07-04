@@ -45,4 +45,15 @@
 - hide mkSimMat
 - move mkSimMed and calculateClustersSimilarity to clustering.R
 - hide mkSimMed
+- move rankGenes and rankGenesInternal to markers.R
+- merge rankGenes and rankGenesInternal
+- move getMarkerGenes to markers.R
+- move orderCellsInCluster to plot.R
+- hide orderCellsInCluster in plot.R
+- move orderGenesInCluster to plot.R
+- hide orderGenesInCluster in plot.R
+- move generateAnnotationColors to plot.R
+- hide generateAnnotationColors in plot.R
+- move addClusteringManually to clustering.R
+
 
