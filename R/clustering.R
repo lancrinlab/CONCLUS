@@ -224,3 +224,90 @@ runClustering <- function(tSNEResults, # for deleteOutliers = FALSE
 	return(list(sceObjectFiltered, cellsSimilarityMatrix))
 }
 
+
+
+### This function calculates how many time a cell were not assigned to
+### any clusters by dbscan. ###
+### it returns a data frame ###
+
+
+.mkSimMat <- function(mat, cores=14){
+	
+	myCluster <- parallel::makeCluster(cores, # number of cores to use
+			type = "PSOCK") # type of cluster
+	doParallel::registerDoParallel(myCluster)
+	
+	simMats <- foreach::foreach(i=1:nrow(mat)) %dopar% {
+		simMat <- matrix(0, ncol=ncol(mat), nrow=ncol(mat))
+		colnames(simMat) <- colnames(mat)
+		rownames(simMat) <- colnames(mat)
+		
+		vec <- unique(mat[i,])
+		for(j in vec[vec!=0]){
+			selCol <- colnames(mat)[mat[i,] == j]
+			simMat[rownames(simMat) %in% selCol,
+					colnames(simMat) %in% selCol] <-
+					simMat[rownames(simMat) %in% selCol,
+							colnames(simMat) %in% selCol] + 1
+		}
+		rm(cl, selCol, i, j)
+		return(simMat)
+	}
+	parallel::stopCluster(myCluster)
+	
+	simMat <- matrix(0, ncol=ncol(mat), nrow=ncol(mat))
+	colnames(simMat) <- colnames(mat)
+	rownames(simMat) <- colnames(mat)
+	
+	for(i in 1:nrow(mat)){
+		simMat <- simMat + simMats[[i]]
+	}
+	
+	rm(simMats)
+	simMat <- simMat / nrow(mat)
+	stopifnot(isSymmetric(simMat))
+	
+	return(simMat)
+}
+
+
+
+#' Cluster cells and get similarity matrix of cells.
+#' 
+#' The function returns consensus clusters by using hierarchical clustering on the similarity matrix of cells.
+#' It provides two options: to specify an exact number of clusters (with clusterNumber parameter)
+#' or to select the depth of splitting (deepSplit parameter).
+#' 
+#' @param dbscanMatrix an output matrix of conclus::runDBSCAN() function.
+#' @param sceObject a SingleCellExperiment object with your experiment.
+#' @param clusterNumber a parameter, specifying the exact number of cluster.
+#' @param deepSplit a parameter, specifying how deep we will split the clustering tree. It takes integers from 1 to 4.
+#' @param cores maximum number of jobs that CONCLUS can run in parallel.
+#' @param clusteringMethod a clustering methods passed to hclust() function.
+#'
+#' @return A SingleCellExperiment object with modified/created "clusters" column in the colData, and cells similarity matrix.
+#' @export
+clusterCellsInternal <- function(dbscanMatrix, sceObject, clusterNumber=0,
+		deepSplit, cores=14,
+		clusteringMethod = "ward.D2") {
+	# 
+	
+	cellsSimilarityMatrix <- .mkSimMat(dbscanMatrix, cores=cores)
+	
+	distanceMatrix <- as.dist(sqrt((1-cellsSimilarityMatrix)/2))
+	clusteringTree <- hclust(distanceMatrix, method=clusteringMethod)
+	
+	if(clusterNumber == 0){
+		message(paste0("Assigning cells to clusters. DeepSplit = ", deepSplit))
+		clusters <- unname(cutreeDynamic(clusteringTree,
+						distM=as.matrix(distanceMatrix),
+						verbose=0, deepSplit = deepSplit))
+	} else {
+		message(paste0("Assigning cells to ", clusterNumber, " clusters."))
+		clusters <- cutree(clusteringTree, k=clusterNumber)
+	}
+	
+	SummarizedExperiment::colData(sceObject)$clusters <- factor(clusters)
+	
+	return(list(sceObject, cellsSimilarityMatrix))
+}
