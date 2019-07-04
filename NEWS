@@ -26,3 +26,9 @@
 - move plotTestClustering to testClustering.R
 - hide plotTestClustering
 - move plotCellSimilarity to plot.R
+- move plotClusteredTSNE to plot.R
+- merge .plotClusteredTSNE and plotClusteredTSNE
+- move plotCellHeatmap to plot.R
+- move plotGeneExpression to plot.R
+- merge .plotGeneExpression and plotGeneExpression
+- move plotClustersSimilarity to plot.R
