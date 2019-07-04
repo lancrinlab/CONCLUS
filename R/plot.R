@@ -204,3 +204,109 @@ plotCellSimilarity <- function(sceObject, cellsSimilarityMatrix, dataDirectory,
 			returnPlot = returnPlot,
 			width=width, height=height, ...)
 }
+	
+
+#' Plot t-SNE. Addtionally, it can highlight clusters or states.
+#'
+#' @param sceObject a SingleCellExperiment object with your experiment.
+#' @param dataDirectory output directory for CONCLUS (supposed to be the same for one experiment during the workflow).
+#' @param experimentName name of the experiment which will appear in filenames (supposed to be the same for one experiment during the workflow).
+#' @param tSNEresExp if t-SNE coordinates were generated in a different CONCLUS run, you can use them without renaming the files.
+#' Please copy tsnes folder from the source run to the current one and write that experimentName in the tSNEresExp argument.
+#' @param colorPalette "default" or a vector of colors for the column "clusters" in the colData, for example c("yellow", "#CC79A7").
+#' @param PCs vector of PCs (will be specified in filenames).
+#' @param perplexities vector of perplexities (will be specified in filenames).
+#' @param columnName name of the column to plot on t-SNE dimensions.
+#' @param returnPlot boolean, return plot or not.
+#' @param width plot width.
+#' @param height plot height.
+#' @param ... other arguments of the pdf() function.
+#'
+#' @return A ggplot object or nothing (depends on the returnPlot parameter).
+#' @export
+
+plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
+		tSNEresExp = "",
+		colorPalette = "default",
+		PCs=c(4, 6, 8, 10, 20, 40, 50),
+		perplexities=c(30, 40),
+		columnName="clusters",
+		returnPlot = FALSE,
+		width=6, height=5, onefile=FALSE, ...){
+	# plots picture based on t-SNE coordinates from
+	# generateTSNECoordinates() and clustering results
+	# from clusterCellsInternal() or runClustering()
+	
+	tSNEDirectory <- "tsnes"
+	graphsDirectory <- "pictures"
+	graphsTSNEDirectory <- "tSNE_pictures"
+	
+	if(tSNEresExp == ""){
+		tSNEresExp <- experimentName
+	}
+	
+	### Plot all precalculated pSNEs to show your clusters ###
+	
+	if(columnName == "noColor"){
+		numberElements <- NULL
+	}else{
+		numberElements <- length(unique(SummarizedExperiment::colData(sceObject)[,columnName]))
+		colorPalette <- .choosePalette(colorPalette, numberElements)
+	}
+	
+	outputDir <- file.path(dataDirectory, graphsDirectory, graphsTSNEDirectory,
+			paste("tSNE", numberElements, columnName, sep="_"))
+	dir.create(outputDir, showWarnings = F)
+	
+	filesList <- list.files(outputDir, pattern = "_tsne_coordinates_")
+	deletedFiles <- sapply(filesList, function(fileName) 
+				file.remove(file.path(outputDir, fileName)))
+	
+	PCA <- rep(PCs, length(perplexities))
+	perp <- rep(perplexities, each=length(PCs))
+	
+	tSNEplots <- rep(list(NA),(length(PCs)*length(perplexities)))
+	
+	for(i in 1:(length(PCs)*length(perplexities))){
+		
+		coordinatesName <- paste0(tSNEresExp, '_tsne_coordinates_', i, "_",
+				PCA[i], "PCs_", perp[i], "perp")
+		
+		#fns <- list.files(file.path(dataDirectory, tSNEDirectory), full.names = TRUE)
+		
+		TSNEres <- read.delim(file.path(dataDirectory, tSNEDirectory,
+						paste0(coordinatesName, ".tsv")),
+				stringsAsFactors = FALSE)
+		#TSNEres <- read.delim(fns[grepl(paste0(PCA[i], "PCs_", perp[i], "perp.tsv"), fns)],
+		#                            stringsAsFactors = FALSE)
+		
+		TSNEres <- TSNEres[rownames(TSNEres) %in% SummarizedExperiment::colData(sceObject)$cellName, ]
+		
+		if(columnName != "noColor"){
+			TSNEres[columnName] <- factor(SummarizedExperiment::colData(sceObject)[,columnName])
+		}
+		
+		pdf(file.path(dataDirectory, graphsDirectory, graphsTSNEDirectory,
+						paste("tSNE", numberElements, columnName, sep="_"),
+						paste0(coordinatesName, ".pdf")),
+				width=width, height=height, onefile=onefile, ...)
+		if(columnName == "noColor"){
+			tmp <- ggplot2::ggplot(TSNEres, aes_string(x=names(TSNEres)[1],
+									y=names(TSNEres)[2])) +
+					geom_point(size=I(1)) + theme_bw()
+		}else{
+			tmp <- ggplot2::ggplot(TSNEres, aes_string(x=names(TSNEres)[1],
+									y=names(TSNEres)[2],
+									color=columnName)) +
+					geom_point(size=I(1)) +
+					scale_color_manual(values=colorPalette) + theme_bw()
+		}
+		print(tmp)
+		dev.off()
+		tSNEplots[[i]] <- tmp
+	}
+	if(returnPlot){
+		return(tSNEplots)
+	}
+	rm(PCA, perp)
+}
