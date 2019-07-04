@@ -574,3 +574,101 @@ plotCellHeatmap <- function(markersClusters, sceObject, dataDirectory,
 			saveHeatmapTable = saveHeatmapTable,
 			width=width, height=height, ...)
 }
+
+
+
+
+#' plotGeneExpression
+#'
+#' The function saves a t-SNE plot colored by expression of a given gene. 
+#' Warning: filename with t-SNE results is hardcoded, so please don't rename the output file.
+#'
+#' @param geneName name of the gene you want to plot.
+#' @param dataDirectory output directory for CONCLUS (supposed to be the same for one experiment during the workflow).
+#' @param experimentName name of the experiment which appears in filenames (supposed to be the same for one experiment during the workflow).
+#' @param graphsDirectory name of the subdirectory where to put graphs. Default is "dataDirectory/pictures".
+#' @param sceObject a SingleCellExperiment object with your experiment.
+#' @param tSNEpicture number of the picture you want to use for plotting. 
+#' Please check "dataDirectory/tsnes" or "dataDirectory/pictures/tSNE_pictures/clusters" to get the number, it is usually from 1 to 14.
+#' @param commentName comment you want to specify in the filename.
+#' @param palette color palette for the legend.
+#' @param returnPlot boolean, should the function return a ggplot object or not.
+#' @param savePlot boolean, should the function export the plot to pdf or not.
+#' @param alpha opacity of the points of the plot.
+#' @param limits range of the gene expression shown in the legend.
+#' This option allows generating t-SNE plots with equal color
+#' scale to compare the expression of different genes. By default, limits are the range
+#' of expression of a selected gene.
+#' @param pointSize size of the point.
+#' @param width plot width.
+#' @param height plot height.
+#' @param ... other parameters of the pdf() function.
+#'
+#' @return A ggplot object of the plot if needed.
+#' @export
+
+plotGeneExpression <- function(geneName, experimentName, dataDirectory,
+		graphsDirectory = "pictures",
+		sceObject, tSNEpicture=1,
+		commentName = "", palette = c("grey","red",
+				"#7a0f09",
+				"black"),
+		returnPlot = FALSE,
+		savePlot = TRUE,
+		alpha = 1, limits = NA,
+		pointSize = 1,
+		width=6, height=5, ...){
+	
+	experimentName <- experimentName
+	dataDirectory <- dataDirectory
+	tSNEDirectory <- "tsnes"
+	
+	### Plot all precalculated t-SNEs to show your clusters ###
+	
+	clustersNumber <- length(unique(SummarizedExperiment::colData(sceObject)$clusters))
+	
+	coordsName <- list.files(file.path(dataDirectory, tSNEDirectory),
+			pattern = paste0(experimentName,'_tsne_coordinates_',
+					tSNEpicture, "_"))
+	
+	tSNECoords <- read.delim(file.path(dataDirectory, tSNEDirectory, coordsName),
+			stringsAsFactors=FALSE)
+	
+	tSNECoords <- tSNECoords[SummarizedExperiment::colData(sceObject)$cellName, ]
+	
+	if(!geneName %in% rownames(Biobase::exprs(sceObject))){
+		print("Gene is not found in expression matrix")
+	}
+	
+	stopifnot(all(rownames(tSNECoords) == colnames(sceObject)))
+	tSNECoords$expression <- Biobase::exprs(sceObject)[geneName, ]
+	
+	if(length(limits) == 1){
+		limits <- c(min(tSNECoords$expression),
+				max(tSNECoords$expression))
+	}
+	
+	if(savePlot){
+		pdf(file.path(dataDirectory, graphsDirectory, paste0(paste(experimentName,
+										"tSNE", clustersNumber, "clusters" , geneName, commentName,
+										"tSNEpicture", tSNEpicture, "_alpha", alpha,
+										sep="_"), ".pdf")),
+				width=width, height=height, ...)
+	}
+	tmp <- ggplot2::ggplot(tSNECoords, aes(x=tSNECoords[,1],
+							y=tSNECoords[,2], color=expression)) +
+			geom_point(size=I(pointSize), alpha = alpha) + theme_bw() +
+			scale_colour_gradientn(colours=alpha(colorRampPalette(palette)(100), 0.8),
+					limits = limits) +
+			ggtitle(geneName)
+	#brewer.pal(9, "OrRd")[0:9]
+	print(tmp)
+	
+	if(savePlot){
+		dev.off()
+	}
+	
+	if(returnPlot){
+		return(tmp)
+	}
+}
