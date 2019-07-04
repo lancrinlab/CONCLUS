@@ -55,5 +55,13 @@
 - move generateAnnotationColors to plot.R
 - hide generateAnnotationColors in plot.R
 - move addClusteringManually to clustering.R
-
-
+- move.normaliseCountMatrix, normaliseCountMatrix, and duplicate to normalization.R
+- merge the three normalization function in normalization.R by setting databaseDir = TRUE and modifying annotateGene accordingly
+- move annotateGenes to normalization.R
+- hide annotateGenes in normalization.R
+- move filterCells to normalization.R
+- Hide filterCells in normalization.R
+- move addCellsInfo to normalization.R
+- hide addCellsInfo in normalization.R
+- move filterGenes to normalization.R
+- hide filterGenes in normalization.R
