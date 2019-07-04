@@ -327,6 +327,22 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 	
 }
 
+orderGenesInCluster <- function(cluster, markersClusters, mtx,
+		clusteringMethod="ward.D2"){
+	# Order cells according to clustering results
+	# Uses for ordering matrix to further plot it with pheatmap()
+	
+	genes <- markersClusters[markersClusters$clusters == cluster, ]$geneName
+	if(length(genes) > 2){
+		tree <- hclust(dist(mtx[genes, ]), method=clusteringMethod)
+		return(genes[tree$order])
+	}else{
+		return(genes)
+	}
+	
+	
+}
+
 .plotCellHeatmap <- function(markersClusters, sceObject, dataDirectory,
 		experimentName,
 		fileName, meanCentered=TRUE, colorPalette="default",
