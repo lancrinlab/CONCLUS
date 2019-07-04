@@ -1,3 +1,16 @@
+.plotDistanceGraphWithEpsilon <- function(tSNEData, minNeighbours=5,
+		epsilon=1.2){
+	# similar function as plotDistanceGraph,
+	# but with already known epsilon value
+	#
+	
+	dbscan::kNNdistplot(tSNEData, k=minNeighbours)
+	abline(h=epsilon, lty=2)
+	
+}
+
+
+
 #' To check one iteration of clustering before running full workflow CONCLUS.
 #' 
 #' This function generates a single clustering iteration of CONCLUS to check whether
@@ -47,7 +60,7 @@ testClustering <- function(sceObject, dataDirectory, experimentName,
 	# choosing for the best epsilon
 	pdf(file.path(dataDirectory, "test_clustering", "distance_graph.pdf"),
 			width=width, height=height, onefile=onefile, ...)
-	plotDistanceGraphWithEpsilon(tSNE$data, epsilon=dbscanEpsilon,
+	.plotDistanceGraphWithEpsilon(tSNE$data, epsilon=dbscanEpsilon,
 			minNeighbours = minPts)
 	dev.off()
 	
@@ -59,7 +72,7 @@ testClustering <- function(sceObject, dataDirectory, experimentName,
 	
 	message("Pictures of test clustering were exported.")
 	return(list(tSNE,
-					plotDistanceGraphWithEpsilon(tSNE$data, epsilon=dbscanEpsilon,
+					.plotDistanceGraphWithEpsilon(tSNE$data, epsilon=dbscanEpsilon,
 							minNeighbours = minPts),
 					plotTestClustering(tSNE$data, epsilon=dbscanEpsilon,
 							minNeighbours = minPts)))
