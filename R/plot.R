@@ -327,7 +327,7 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 	
 }
 
-orderGenesInCluster <- function(cluster, markersClusters, mtx,
+.orderGenesInCluster <- function(cluster, markersClusters, mtx,
 		clusteringMethod="ward.D2"){
 	# Order cells according to clustering results
 	# Uses for ordering matrix to further plot it with pheatmap()
@@ -432,7 +432,7 @@ orderGenesInCluster <- function(cluster, markersClusters, mtx,
 		if(orderGenes){
 			newOrder <- unname(unlist(sapply(levels(colData$clusters),
 									function(cluster)
-										orderGenesInCluster(cluster,
+										.orderGenesInCluster(cluster,
 												markersClusters,
 												expressionMatrix,
 												clusteringMethod=clusteringMethod))))
@@ -464,7 +464,7 @@ orderGenesInCluster <- function(cluster, markersClusters, mtx,
 		if(orderGenes){
 			newOrder <- unname(unlist(sapply(clustersSimOrdered,
 									function(cluster)
-										orderGenesInCluster(cluster,
+										.orderGenesInCluster(cluster,
 												markersClusters,
 												expressionMatrix,
 												clusteringMethod=clusteringMethod))))
