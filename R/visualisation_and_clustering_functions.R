@@ -32,54 +32,6 @@
 
 
 
-#' Get top N marker genes from each cluster. 
-#' 
-#' This function reads results of conclus::rankGenes() from "dataDirectory/marker_genes" and selects top N markers for each cluster.
-#' 
-#' @param dataDirectory output directory for a run of CONCLUS (supposed to be the same for one experiment during the workflow).
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param genesNumber top N number of genes to get from one cluster.
-#' @param experimentName name of the experiment which appears in filenames (supposed to be the same for one experiment during the workflow).
-#' @param removeDuplicates boolean, if duplicated genes must be deleted or not.
-#'
-#' @return A data frame where the first columns are marker genes ("geneName") and 
-#' the second column is the groups ("clusters").
-#' @export
-getMarkerGenes <- function(dataDirectory, sceObject, genesNumber=14,
-                           experimentName, removeDuplicates = TRUE){
-
-    markerGenesDirectory <- "marker_genes"
-    numberOfClusters <- length(unique(SummarizedExperiment::colData(sceObject)$clusters))
-    dir = file.path(dataDirectory, markerGenesDirectory)
-    nTop = genesNumber
-    clusters = unique(SummarizedExperiment::colData(sceObject)$clusters)
-
-    markersClusters <- as.data.frame(matrix(ncol = 2,
-                                            nrow = nTop*numberOfClusters))
-    colnames(markersClusters) = c("geneName", "clusters")
-
-    (fns <- list.files(dir, pattern = "_genes.tsv", full.names = FALSE))
-    if(length(fns) != numberOfClusters){
-        message(paste("Something wrong with number of files.
-It is supposed to be equal to number of clusters:", numberOfClusters))
-        message(paste("Returning the marker genes from
-first", clusters, "clusters."))
-        runUntil = numberOfClusters
-    }else{
-        runUntil = length(fns)
-    }
-    for(i in 1:runUntil){
-        tmpAll <- read.delim(file.path(dir, paste(experimentName,
-                                                  "cluster", clusters[i], "genes.tsv", sep="_")),
-                             stringsAsFactors = FALSE)
-        markersClusters$clusters[(nTop*(i-1)+1):(nTop*i)] <- as.character(clusters[i])
-        markersClusters$geneName[(nTop*(i-1)+1):(nTop*i)] <- tmpAll$Gene[1:nTop]
-    }
-    if(removeDuplicates){
-        markersClusters <- markersClusters[!duplicated(markersClusters$geneName),]
-    }
-    return(markersClusters)
-}
 
 orderCellsInCluster <- function(cluster, colData, mtx,
                                 clusteringMethod="ward.D2"){
