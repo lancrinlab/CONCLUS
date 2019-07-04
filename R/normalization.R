@@ -299,6 +299,17 @@
 	return(coldata)
 }
 
+filterGenes <- function(countMatrix, rowData){
+	
+	# internal function, filters genes which are more than in 10 cells and less than (all-10) cells
+	
+	selRows <- ((rowSums(countMatrix[,] >= 1)) > 10)
+	countMatrix <- countMatrix[selRows,]
+	rowData <- rowData[rowData$nameInCountMatrix %in% rownames(countMatrix),]
+	
+	return(list(countMatrix, rowData))
+}
+
 #' normaliseCountMatrix
 #'
 #' Create a SingleCellExperiment object and perform normalization. The same as conclus::normalizeCountMatrix.
