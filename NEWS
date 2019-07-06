@@ -67,3 +67,4 @@
 - hide filterGenes in normalization.R
 - move getGenesInfo to markers.R
 - move saveGenesInfo to markers.R
+- move saveMarkersLists to markers.R
