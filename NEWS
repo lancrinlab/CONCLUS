@@ -71,3 +71,4 @@
 - set one core by default in runCONCLUS.R
 - modify and complete runCONCLUS.Rd
 - delete manual from code in runCONCLUS.R
+- modify .choosePalette in sharedInternal.R to avoid repetition of colors
