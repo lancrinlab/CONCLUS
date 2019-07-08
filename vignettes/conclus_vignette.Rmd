@@ -89,18 +89,18 @@ exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName,
                         "clusters_table.tsv")
 ```
 
-Five folders will appear in your outputDirectory: 
+Five folders will appear in your "outputDirectory": 
 
   + *output_tables*:
   
     - _cellsSimilarityMatrix.csv: Similarity matrix used to define the consensus clusters using every cells.
-    - _clustersSimilarityMatrix.csv: Simplified similarity matrix with cell averaged values per cluster.
+    - _clustersSimilarityMatrix.csv: Simplified similarity matrix with averaged cell values per cluster.
     - _clusters_table.tsv: Cell-cluster corresponding table for defined consensus clusters.
     - _dbscan_results.tsv: Cell-cluster corresponding table for each db-scan parameter.
     - _tSNEResults.rds: Saved RDS object containing a matrix of all t-SNE results (for different PCs and perplexities, see below).  
   
-  + *pictures*: This folder contains two similarity matrices clustering. One using all cells and the other averaged by cluster.
-                It also contains a subfolder "tSNE_pictures" containing all tSNEs generated with different PCs and perplexities
+  + *pictures*: This folder contains two similarity matrices clustering heatmaps. One using all cells and the other averaged by cluster.
+                It also contains a subfolder "tSNE_pictures" containing all tSNEs generated with different PCs and perplexity parameters,
                 and colored by condition, by cluster found by dbscan or uncolored (see below for details).
   + *marker_genes*: This folder contains a list of marker genes, ordered by decreasing score, for each consensus cluster.
   + *tsnes*: Folder containing, for each PCs/complexity values, the tSNE coordinates of each cell.
