@@ -2,14 +2,14 @@
 % Please edit documentation in R/visualisation_and_clustering_functions.R
 \name{runCONCLUS}
 \alias{runCONCLUS}
-\title{Run CONCLUS in one click}
+\title{Run all CONCLUS steps at once}
 \usage{
-runCONCLUS(sceObject, dataDirectory, experimentName,
+runCONCLUS(dataDirectory, experimentName,
   colorPalette = "default", statePalette = "default",
   clusteringMethod = "ward.D2", epsilon = c(1.3, 1.4, 1.5),
   minPoints = c(3, 4), k = 0, PCs = c(4, 6, 8, 10, 20, 40, 50),
   perplexities = c(30, 40), randomSeed = 42, deepSplit = 4,
-  preClustered = F, orderClusters = FALSE, cores = 14,
+  preClustered = F, orderClusters = FALSE, cores = 1,
   plotPDFcellSim = TRUE, deleteOutliers = TRUE,
   tSNEalreadyGenerated = FALSE, tSNEresExp = "")
 }
