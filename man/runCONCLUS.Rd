@@ -3,6 +3,9 @@
 \name{runCONCLUS}
 \alias{runCONCLUS}
 \title{Run all CONCLUS steps at once}
+\description{
+This function performs the core CONCLUS workflow. 
+}
 \usage{
 runCONCLUS(dataDirectory, experimentName,
   colorPalette = "default", statePalette = "default",
@@ -19,7 +22,7 @@ runCONCLUS(dataDirectory, experimentName,
 
 \item{experimentName}{Prefix used for output files.}
 
-\item{colorPalette}{a vector of colors for clusters.}
+\item{colorPalette}{A vector of colors for clusters. Default = "default", see details.}
 
 \item{statePalette}{a vector of colors for states.}
 
@@ -66,11 +69,15 @@ This argument allows copying and pasting t-SNE coordinates between different CON
 \value{
 A SingleCellExperiment object.
 }
-\description{
-This function performs core CONCLUS workflow. It generates PCA and t-SNE coordinates, 
-runs DBSCAN, calculates similarity matrices of cells and clusters, assigns cells to clusters,
-searches for positive markers for each cluster. The function saves plots and tables into dataDirectory.
+\details{
+  This function performs the following steps: 1) It generates PCA and t-SNE coordinates, 2) runs DBSCAN 
+3) Calculates similarity matrices of cells and clusters, 4) Assigns cells to clusters, 5) Searches for positive markers 
+for each cluster, 6) Saves plots and tables into dataDirectory.
+
+  colorPalette --  
+  
 }
+
 \keyword{CONCLUS}
 \seealso{
     \code{\link{initialisePath}}
