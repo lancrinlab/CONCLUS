@@ -14,13 +14,10 @@ runCONCLUS(dataDirectory, experimentName,
   tSNEalreadyGenerated = FALSE, tSNEresExp = "")
 }
 \arguments{
-\item{sceObject}{a SingleCellExperiment object with your data.}
 
 \item{dataDirectory}{CONCLUS will create this directory if it doesn't exist and store there all output files.}
 
-\item{experimentName}{most of output file names of CONCLUS are hardcoded.
-experimentName will stay at the beginning of each output file name to
-distinguish different runs easily.}
+\item{experimentName}{Prefix used for output files.}
 
 \item{colorPalette}{a vector of colors for clusters.}
 
@@ -75,3 +72,17 @@ runs DBSCAN, calculates similarity matrices of cells and clusters, assigns cells
 searches for positive markers for each cluster. The function saves plots and tables into dataDirectory.
 }
 \keyword{CONCLUS}
+\seealso{
+    \code{\link{initialisePath}}
+ 	\code{\link{normaliseCountMatrix}}
+ 	\code{\link{generateTSNECoordinates}}
+ 	\code{\link{runDBSCAN}}
+ 	\code{\link{clusterCellsInternal}}
+ 	\code{\link{runClustering}}
+ 	\code{\link{plotCellSimilarity}}
+ 	\code{\link{plotClusteredTSNE}}
+ 	\code{\link{calculateClustersSimilarity}}
+ 	\code{\link{exportMatrix}}
+ 	\code{\link{plotClustersSimilarity}}
+ 	\code{\link{rankGenes}}
+ 	
