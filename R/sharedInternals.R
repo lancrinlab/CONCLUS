@@ -52,27 +52,27 @@
 			"blue")
 	
 	pickDefaultPalette <- function(clustersNumber, colorPalette26){
-		if(clustersNumber < 13) return(c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C",
+		if(clustersNumber < 13){
+			return(c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C",
 							"#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00",
 							"#CAB2D6", "#6A3D9A", "#FFFF99",
 							"#B15928")[1:clustersNumber])
-		return(rep(colorPalette26,
-						round(clustersNumber/length(colorPalette26))+1)[1:clustersNumber])
+		}else{
+			return(colorPalette26[seq_len(length(clustersNumber))])
+		} 
 	}
 	
-	if(length(colorPalette) == 1){
-		if(colorPalette == "default"){
-			return(pickDefaultPalette(clustersNumber, colorPalette26))
-		}
+	if(colorPalette == "default" && clustersNumber > 26)
+			stop("The default option is limited to 26 colors, please provide your own color vector.")
+	
+	if(colorPalette != "default" && clustersNumber > length(colorPalette)){
+		stop("The number of clusters is greater than the number of given colors.")
 	}
 	
-	if(clustersNumber > length(colorPalette)){
-		message("The number of clusters is greater than the number of colors.
-						Using default CONCLUS palette instead.")
-		return(pickDefaultPalette(clustersNumber, colorPalette26))
-	}
+	if(colorPalette == "default")
+			return(pickDefaultPalette(clustersNumber))
 	
-	return(colorPalette[1:clustersNumber])
+	return(colorPalette)
 }
 
 
