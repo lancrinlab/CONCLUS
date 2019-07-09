@@ -86,5 +86,8 @@ If an error message is thrown, re-run the function with your own color vector.
  	\code{\link{calculateClustersSimilarity}}
  	\code{\link{exportMatrix}}
  	\code{\link{plotClustersSimilarity}}
- 	\code{\link{rankGenes}}
+ 	\code{\link{rankGenes}
+}
+
+
  	
