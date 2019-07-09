@@ -167,6 +167,7 @@
 .filterCells <- function(countMatrix, colData, genesSumThr = 100,
 		MoreBetter = c("genesNum", "sumCodPer", "genesSum"),
 		MoreWorse = c("sumMtPer")){
+	
 	message("Running filterCells.")
 	countMatrix <- countMatrix[,colSums(countMatrix) > genesSumThr]
 	colData <- colData[colnames(countMatrix),]
@@ -317,13 +318,12 @@ normaliseCountMatrix <- function(countMatrix, species, sizes=c(20,40,60,80,100),
 		runQuickCluster = TRUE, databaseDir = TRUE){
 	
 	
-	if(is.null(rowData))
-		rowData <- .annotateGenes(countMatrix, species = species,
-				rowData = rowData, databaseDir = databaseDir)
+	rowData <- .annotateGenes(countMatrix, species = species,
+			rowData = rowData, databaseDir = databaseDir)
 	
-	if(is.null(colData))
-		colData <- .addCellsInfo(countMatrix, rowData = rowData, 
-				colData = colData)
+	
+	colData <- .addCellsInfo(countMatrix, rowData = rowData, 
+			colData = colData)
 	
 	if(!alreadyCellFiltered){
 		filterCellsResult <- .filterCells(countMatrix, colData)
