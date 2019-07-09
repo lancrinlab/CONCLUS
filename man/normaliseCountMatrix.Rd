@@ -4,7 +4,7 @@
 \alias{normaliseCountMatrix}
 \title{normaliseCountMatrix}
 \usage{
-normaliseCountMatrix(countMatrix, species, method = "default",
+normaliseCountMatrix(countMatrix, species,
   sizes = c(20, 40, 60, 80, 100), rowData = NULL, colData = NULL,
   alreadyCellFiltered = FALSE, runQuickCluster = TRUE,
   databaseDir = system.file("extdata", package = "conclus"))
@@ -13,8 +13,6 @@ normaliseCountMatrix(countMatrix, species, method = "default",
 \item{countMatrix}{a matrix with non-normalised gene expression.}
 
 \item{species}{either 'mmu' or 'human'.}
-
-\item{method}{a method of clustering: available option is "default" using scran and scater.}
 
 \item{sizes}{a vector of size factors from scran::computeSumFactors() function.}
 

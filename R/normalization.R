@@ -335,72 +335,57 @@
 
 normaliseCountMatrix <- function(countMatrix,
 		species,
-		method="default",
 		sizes=c(20,40,60,80,100),
 		rowData=NULL,
 		colData=NULL,
 		alreadyCellFiltered = FALSE,
 		runQuickCluster = TRUE,
 		databaseDir = TRUE){
-	# Does normalisation of count matrix with.
-	# There are 2 possible methods: "default" or "census"
-	# The function returns SCE object with normalised count matrix
-	if(method == "default"){
-		rowData <- .annotateGenes(countMatrix, species = species,
-				rowData = rowData, databaseDir = databaseDir)
-		colData <- .addCellsInfo(countMatrix, rowData = rowData,
-				colData = colData)
-		if(!alreadyCellFiltered){
-			filterCellsResult <- .filterCells(countMatrix, colData)
-			countMatrix <- filterCellsResult[[1]]
-			colData <- filterCellsResult[[2]]
-			rm(filterCellsResult)
-		}
-		filterGenesResult <- .filterGenes(countMatrix, rowData)
-		countMatrix <- filterGenesResult[[1]]
-		rowData <- filterGenesResult[[2]]
-		rm(filterGenesResult)
-		
-		stopifnot(all(rownames(countMatrix) == rownames(rowData)))
-		stopifnot(all(colnames(countMatrix) == rownames(colData)))
-		
-		sce <-
-				SingleCellExperiment::SingleCellExperiment(assays = list(counts = as.matrix(countMatrix)),
-						colData=colData, rowData=rowData)
-		
-		# normalization
-		message("Running normalization. It can take a while, depends on the
-						number of cells.")
-		if(runQuickCluster){
-			cl <- tryCatch(scran::quickCluster(sce), error=function(e) NULL)
-		}else{
-			cl <- NULL
-		}
-		
-		# compute sizeFactors which will be used for normalization
-		sceNorm <- scran::computeSumFactors(sce, sizes = sizes, clusters = cl)
-		
-		message("summary(sizeFactors(sceObject)):")
-		print(summary(SingleCellExperiment::sizeFactors(sceNorm)))
-		if(length(SingleCellExperiment::sizeFactors(sceNorm)[SingleCellExperiment::sizeFactors(sceNorm) <= 0]) > 0){
-			message("Cells with negative sizeFactors will be deleted before the
-							downstream analysis.")
-		}
-		sceNorm <- sceNorm[, SingleCellExperiment::sizeFactors(sceNorm) > 0]
-		sceNorm <- scater::normalize(sceNorm)
-		rm(sce)
-		
-		return(sceNorm)
-		
-	}else if(method == "census"){
-		message("Method 'census' is currently unavailable. Please select 'default'.")
-		message("Unmodified count matrix returned.")
-		return(countMatrix)
-		#    sceObject <- normalize_dataset(as.matrix(countMatrix))
-		#    SummarizedExperiment::colData(sceObject)$cellName = rownames(SummarizedExperiment::colData(sceObject))
-		#    return(sceObject)
-	}else{
-		message("Wrong method. Unmodified count matrix returned.")
-		return(countMatrix)
+	
+	
+	rowData <- .annotateGenes(countMatrix, species = species,
+			rowData = rowData, databaseDir = databaseDir)
+	colData <- .addCellsInfo(countMatrix, rowData = rowData,
+			colData = colData)
+	if(!alreadyCellFiltered){
+		filterCellsResult <- .filterCells(countMatrix, colData)
+		countMatrix <- filterCellsResult[[1]]
+		colData <- filterCellsResult[[2]]
+		rm(filterCellsResult)
 	}
+	filterGenesResult <- .filterGenes(countMatrix, rowData)
+	countMatrix <- filterGenesResult[[1]]
+	rowData <- filterGenesResult[[2]]
+	rm(filterGenesResult)
+	
+	stopifnot(all(rownames(countMatrix) == rownames(rowData)))
+	stopifnot(all(colnames(countMatrix) == rownames(colData)))
+	
+	sce <-
+			SingleCellExperiment::SingleCellExperiment(assays = list(counts = as.matrix(countMatrix)),
+					colData=colData, rowData=rowData)
+	
+	# normalization
+	message("Running normalization. It can take a while, depends on the
+					number of cells.")
+	if(runQuickCluster){
+		cl <- tryCatch(scran::quickCluster(sce), error=function(e) NULL)
+	}else{
+		cl <- NULL
+	}
+	
+	# compute sizeFactors which will be used for normalization
+	sceNorm <- scran::computeSumFactors(sce, sizes = sizes, clusters = cl)
+	
+	message("summary(sizeFactors(sceObject)):")
+	print(summary(SingleCellExperiment::sizeFactors(sceNorm)))
+	if(length(SingleCellExperiment::sizeFactors(sceNorm)[SingleCellExperiment::sizeFactors(sceNorm) <= 0]) > 0){
+		message("Cells with negative sizeFactors will be deleted before the
+						downstream analysis.")
+	}
+	sceNorm <- sceNorm[, SingleCellExperiment::sizeFactors(sceNorm) > 0]
+	sceNorm <- scater::normalize(sceNorm)
+	rm(sce)
+	
+	return(sceNorm)	
 }
