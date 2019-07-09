@@ -87,7 +87,7 @@
 	colData <- SummarizedExperiment::colData(sceObject)
 	clustersNumber <- length(unique(colData$clusters))
 	
-	if(orderClusters == "name"){
+	if(orderClusters){
 		# Ordering expressionMatrixrix
 		newOrder <- unname(unlist(sapply(levels(colData$clusters),
 								function(cluster)
@@ -99,14 +99,7 @@
 		cellsSimilarityMatrix <- cellsSimilarityMatrix[newOrder, newOrder]
 		cluster_cols <- FALSE
 		cluster_rows <- FALSE
-	}else if(orderClusters == FALSE){
-		distanceMatrix <- as.dist(sqrt((1-cellsSimilarityMatrix)/2))
-		clusteringTree <- hclust(distanceMatrix, method=clusteringMethod)
-		cluster_cols <- clusteringTree
-		cluster_rows <- clusteringTree
 	}else{
-		message("Unknown option of orderClusters. Options are 'FALSE' or 'name'.
-						Using the default version 'FALSE'.")
 		distanceMatrix <- as.dist(sqrt((1-cellsSimilarityMatrix)/2))
 		clusteringTree <- hclust(distanceMatrix, method=clusteringMethod)
 		cluster_cols <- clusteringTree
