@@ -76,4 +76,5 @@
 - remove the method parameter from normaliseCountMatrix in normalization.R
 - Change ordercluster in plotCellSimilarity (in plot.R) to take the values TRUE/FALSE instead of name/FALSE.
 - Change ordercluster in plotCellHeatmap (in plot.R) to take the values TRUE/FALSE instead of name/FALSE. Add an additional "similarity" parameter.
+- remove normaliseCountMatrix documentation from code
  
