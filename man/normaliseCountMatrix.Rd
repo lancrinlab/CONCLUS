@@ -11,11 +11,11 @@ normaliseCountMatrix(countMatrix, species,
   databaseDir = system.file("extdata", package = "conclus"))
 }
 \arguments{
-\item{countMatrix}{a matrix with non-normalised gene expression.}
+\item{countMatrix}{Matrix with non-normalised gene expression.}
 
-\item{species}{either 'mmu' or 'human'.}
+\item{species}{Currently limited to human and mouse. Possible values are either 'mmu' or 'human'.}
 
-\item{sizes}{a vector of size factors from scran::computeSumFactors() function.}
+\item{sizes}{A numeric vector of pool sizes, i.e., number of cells per pool. See ?scran::computeSumFactors() for more details.}
 
 \item{rowData}{a data frame with information about genes}
 
