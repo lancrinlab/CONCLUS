@@ -358,7 +358,8 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 		experimentName,
 		fileName, meanCentered=TRUE, colorPalette="default",
 		statePalette="default", clusteringMethod="ward.D2",
-		orderClusters = FALSE, #FALSE, TRUE, name, similarity
+		orderClusters = FALSE, #FALSE, TRUE
+		similarity = FALSE,
 		orderGenes = FALSE, # FALSE, TRUE (will be ordered the same as clusters)
 		returnPlot = FALSE,
 		saveHeatmapTable = FALSE,
@@ -424,12 +425,12 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 		expressionMatrix <- expressionMatrix - meanRows
 	}
 	
-	if(orderClusters == FALSE & orderGenes == TRUE){
+	if(!orderClusters & orderGenes){
 		message("Genes cannot be ordered without clusters.
-						Returning heatmap with orderCluster = similarity")
-		orderClusters <- "similarity"
+						Returning heatmap with similarity = TRUE")
+		similarity <- TRUE
 	}
-	if(orderClusters == "name"){
+	if(orderClusters){
 		# Ordering expressionMatrixrix
 		newOrder <- unname(unlist(sapply(levels(colData$clusters),
 								function(cluster)
@@ -450,7 +451,7 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 			expressionMatrix <- expressionMatrix[newOrder, ]
 			cluster_rows <- FALSE
 		}
-	}else if((orderClusters == TRUE) | (orderClusters == "similarity")){
+	}else if(similarity){
 		cellsSimilarityMatrix <- read.delim(file.path(dataDirectory,
 						"output_tables",
 						paste0(experimentName,
@@ -482,12 +483,7 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 			expressionMatrix <- expressionMatrix[newOrder, ]
 			cluster_rows <- FALSE
 		}
-	}else if(orderClusters == FALSE){
-		distanceMatrix <- dist(t(expressionMatrix))
-		cluster_cols <- hclust(distanceMatrix, method="ward.D2")
-	}else{
-		message("Unknown option of orderClusters. Options are 'TRUE' ('similarity'),
-						'FALSE', 'name'. Using the default version 'FALSE'.")
+	}else if(!orderClusters){
 		distanceMatrix <- dist(t(expressionMatrix))
 		cluster_cols <- hclust(distanceMatrix, method="ward.D2")
 	}
@@ -600,7 +596,8 @@ plotCellHeatmap <- function(markersClusters, sceObject, dataDirectory,
 		experimentName,
 		fileName, meanCentered=TRUE, colorPalette="default",
 		statePalette="default", clusteringMethod="ward.D2",
-		orderClusters = FALSE, #FALSE, TRUE, name, similarity
+		orderClusters = FALSE, #FALSE, TRUE
+		similarity = FALSE,
 		orderGenes = FALSE, # FALSE, TRUE (will be ordered the same as clusters)
 		returnPlot = FALSE,
 		saveHeatmapTable = FALSE,
@@ -610,7 +607,8 @@ plotCellHeatmap <- function(markersClusters, sceObject, dataDirectory,
 			experimentName,
 			fileName, meanCentered=meanCentered, colorPalette=colorPalette,
 			statePalette=statePalette, clusteringMethod=clusteringMethod,
-			orderClusters = orderClusters, #FALSE, TRUE, name, similarity
+			orderClusters = orderClusters, #FALSE, TRUE
+			similarity = FALSE,
 			orderGenes = orderGenes, # FALSE, TRUE (will be ordered the same as clusters)
 			returnPlot = returnPlot,
 			saveHeatmapTable = saveHeatmapTable,
