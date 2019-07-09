@@ -24,47 +24,41 @@ runCONCLUS(dataDirectory, experimentName,
 
 \item{colorPalette}{A vector of colors for clusters. Default = "default", see details.}
 
-\item{statePalette}{a vector of colors for states.}
+\item{statePalette}{a vector of colors for states or conditions.See details.}
 
-\item{clusteringMethod}{a clustering methods passed to hclust() function.}
+\item{clusteringMethod}{Clustering method passed to hclust() function. See ?hclust for a list of method. Default = "ward.D2"}
 
-\item{epsilon}{a parameter of fpc::dbscan() function.}
+\item{epsilon}{Reachability distance parameter of fpc::dbscan() function. See Ester et al. (1996) for more details.}
 
-\item{minPoints}{a parameter of fpc::dbscan() function.}
+\item{minPoints}{Reachability minimum no. of points parameter of fpc::dbscan() function. See Ester et al. (1996) for more details.}
 
-\item{k}{preferred number of clusters. Alternative to deepSplit. A parameter of cutree() function.}
+\item{k}{Preferred number of clusters. Alternative to deepSplit. A parameter of cutree() function.}
 
 \item{PCs}{a vector of first principal components.
 For example, to take ranges 1:5 and 1:10 write c(5, 10).}
 
-\item{perplexities}{a vector of perplexity for t-SNE.}
+\item{perplexities}{Numeric scalar defining the perplexity parameter, see ‘?Rtsne’ for more details.}
 
-\item{randomSeed}{random seed for reproducibility.}
+\item{randomSeed}{Random seed for reproducibility.}
 
 \item{deepSplit}{intuitive level of clustering depth. Options are 1, 2, 3, 4.}
 
-\item{preClustered}{if TRUE, it will not change the column clusters after the run.
-However, it will anyway run DBSCAN to calculate similarity matrices.}
+\item{preClustered}{Boolean precising if DBSCAN is run to calculate similarity matrices. If TRUE, it will not change the column 
+clusters after the run. Default="FALSE"}
 
-\item{orderClusters}{can be either FALSE (default) of "name".
-If "name", clusters in the similarity matrix of cells will be ordered by name.}
+\item{orderClusters}{If True, clusters in the similarity matrix of cells will be ordered by name. Default = FALSE}
 
-\item{cores}{maximum number of jobs that CONCLUS can run in parallel.}
+\item{cores}{maximum number of jobs that CONCLUS can run in parallel. Default = 1}
 
-\item{plotPDFcellSim}{if FALSE, the similarity matrix of cells will be saved in png format.
-FALSE is recommended for count matrices with more than 2500 cells due to large pdf file size.}
+\item{plotPDFcellSim}{if TRUE, the similarity matrix of cells will be saved in pdf format; png if FALSE.
+FALSE is recommended for count matrices with more than 2500 cells due to large pdf file size. Default = TRUE}
 
-\item{deleteOutliers}{whether cells which were often defined as outliers by dbscan must be deleted.
-It will require recalculating of the similarity matrix of cells. Default is FALSE.
-Usually those cells form a separate "outlier" cluster and can be easier distinguished and deleted later
-if necessary.}
+\item{deleteOutliers}{ Boolean indicating if whether cells which were often defined as outliers by dbscan must be deleted.
+It will require recalculating of the similarity matrix of cells. Default = FALSE.}
 
-\item{tSNEalreadyGenerated}{if you already ran CONCLUS ones and have t-SNE coordinated saved
-You can set TRUE to run the function faster since it will skip the generation of t-SNE coordinates and use the stored ones. 
-Option TRUE requires t-SNE coordinates to be located in your 'dataDirectory/tsnes' directory.}
+\item{tSNEalreadyGenerated}{TRUE if you already ran CONCLUS ones and have t-SNE coordinated saved. Default = FALSE}
 
-\item{tSNEresExp}{experimentName of t-SNE coordinates which you want to use.
-This argument allows copying and pasting t-SNE coordinates between different CONCLUS runs without renaming the files.}
+\item{tSNEresExp}{experimentName of t-SNE coordinates which you want to use. This argument allows copying and pasting t-SNE coordinates between different CONCLUS runs without renaming the files. Default = ""}
 }
 \value{
 A SingleCellExperiment object.
@@ -74,8 +68,9 @@ A SingleCellExperiment object.
 3) Calculates similarity matrices of cells and clusters, 4) Assigns cells to clusters, 5) Searches for positive markers 
 for each cluster, 6) Saves plots and tables into dataDirectory.
 
-  colorPalette --  
-  
+  colorPalette/statePalette -- A vector of colors for clusters/states or 'default' value. If 'default' is selected, the number of clusters is limited to 16. 
+If an error message is thrown, re-run the function with your own color vector.
+
 }
 
 \keyword{CONCLUS}
