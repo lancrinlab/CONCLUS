@@ -16,7 +16,15 @@ library(SingleCellExperiment)
 library(Cairo)
 library(curl)
 
-source("/home/descostes/git/CONCLUS/R/visualisation_and_clustering_functions.R")
+source("/home/descostes/git/CONCLUS/R/clustering.R")
+source("/home/descostes/git/CONCLUS/R/dbScan.R")
+source("/home/descostes/git/CONCLUS/R/export.R")
+source("/home/descostes/git/CONCLUS/R/markers.R")
+source("/home/descostes/git/CONCLUS/R/normalization.R")
+source("/home/descostes/git/CONCLUS/R/plot.R")
+source("/home/descostes/git/CONCLUS/R/runCONCLUS.R")
+source("/home/descostes/git/CONCLUS/R/sharedInternals.R")
+source("/home/descostes/git/CONCLUS/R/tSNE.R")
 
 
 dataDirectory <- "/home/descostes/Documents/analysis/lancrin/conclus/testing/"
