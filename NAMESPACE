@@ -2,7 +2,7 @@
 
 export(addClusteringManually, calculateClustersSimilarity, clusterCellsInternal,
 exportClusteringResults, exportMatrix, generateTSNECoordinates, getGenesInfo,
-getMarkerGenes, initialisePath, normalizeCountMatrix, plotCellHeatmap, 
+getMarkerGenes, initialisePath, normaliseCountMatrix, plotCellHeatmap, 
 plotCellSimilarity, plotClusteredTSNE, plotClustersSimilarity, 
 plotGeneExpression, rankGenes, runCONCLUS, runClustering, runDBSCAN, 
 saveGenesInfo, saveMarkersLists, testClustering)
