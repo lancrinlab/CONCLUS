@@ -312,20 +312,19 @@
 
 
 
-normaliseCountMatrix <- function(countMatrix,
-		species,
-		sizes=c(20,40,60,80,100),
-		rowData=NULL,
-		colData=NULL,
-		alreadyCellFiltered = FALSE,
-		runQuickCluster = TRUE,
-		databaseDir = TRUE){
+normaliseCountMatrix <- function(countMatrix, species, sizes=c(20,40,60,80,100),
+		rowData=NULL, colData=NULL, alreadyCellFiltered = FALSE, 
+		runQuickCluster = TRUE, databaseDir = TRUE){
 	
 	
-	rowData <- .annotateGenes(countMatrix, species = species,
-			rowData = rowData, databaseDir = databaseDir)
-	colData <- .addCellsInfo(countMatrix, rowData = rowData,
-			colData = colData)
+	if(is.null(rowData))
+		rowData <- .annotateGenes(countMatrix, species = species,
+				rowData = rowData, databaseDir = databaseDir)
+	
+	if(is.null(colData))
+		colData <- .addCellsInfo(countMatrix, rowData = rowData, 
+				colData = colData)
+	
 	if(!alreadyCellFiltered){
 		filterCellsResult <- .filterCells(countMatrix, colData)
 		countMatrix <- filterCellsResult[[1]]
