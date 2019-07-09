@@ -7,7 +7,7 @@
 plotCellHeatmap(markersClusters, sceObject, dataDirectory, experimentName,
   fileName, meanCentered = TRUE, colorPalette = "default",
   statePalette = "default", clusteringMethod = "ward.D2",
-  orderClusters = FALSE, orderGenes = FALSE, returnPlot = FALSE,
+  orderClusters = FALSE, similarity = FALSE, orderGenes = FALSE, returnPlot = FALSE,
   saveHeatmapTable = FALSE, width = 10, height = 8.5, ...)
 }
 \arguments{
@@ -32,6 +32,8 @@ The data frame can be obtained from conclus::getMarkerGenes() function or create
 \item{clusteringMethod}{a clustering methods passed to hclust() function.}
 
 \item{orderClusters}{boolean, should the heatmap be structured by clusters.}
+
+\item{similarity}{boolean, should the heatmap be structured by similarities.}
 
 \item{orderGenes}{boolean, should the heatmap be structured by genes.}
 
