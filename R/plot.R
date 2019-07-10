@@ -529,32 +529,6 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 	}
 }
 
-#' Save markers heatmap.
-#' 
-#' This function plots heatmap with marker genes on rows and clustered cells on columns. 
-#'
-#' @param markersClusters a data frame where the first column is "geneName" containing genes names from sceObject, 
-#' and the second column is corresponding "clusters". All names from that column must come from the column "clusters" in the colData(sceObject).
-#' The data frame can be obtained from conclus::getMarkerGenes() function or created manually.
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param dataDirectory output directory of a given CONCLUS run (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which appears in filenames (supposed to be the same for one experiment during the workflow).
-#' @param fileName name of the ouput file
-#' @param meanCentered boolean, should mean centering be applied to the expression data or not.
-#' @param colorPalette "default" or a vector of colors for the column "clusters" in the colData, for example c("yellow", "#CC79A7").
-#' @param statePalette "default" or a vector of colors for the column "state" in the colData, for example c("yellow", "#CC79A7").
-#' @param clusteringMethod a clustering methods passed to hclust() function.
-#' @param orderClusters boolean, should the heatmap be structured by clusters.
-#' @param orderGenes boolean, should the heatmap be structured by genes.
-#' @param returnPlot boolean, whether to return a ggplot object with the plot or not.
-#' @param saveHeatmapTable boolean, whether to save the expression matrix used for heatmap into a .csv file or not.
-#' The file will be saved into 'dataDirectory/output_tables' with the same name as the .pdf plot.
-#' @param width plot width.
-#' @param height plot height.
-#' @param ... other parameters from pdf() and pheatmap() functions.
-#'
-#' @return A ggplot object of the plot if needed. The function saves pdf in "dataDirectiry/pictures" folder.
-#' @export
 plotCellHeatmap <- function(markersClusters, sceObject, dataDirectory,
 		experimentName,
 		fileName, meanCentered=TRUE, colorPalette="default",
