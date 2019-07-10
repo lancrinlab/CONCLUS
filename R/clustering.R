@@ -346,14 +346,6 @@ clusterCellsInternal <- function(dbscanMatrix, sceObject, clusterNumber=0,
 	return(simMed)
 }
 
-#' Having cells similarity, calculate clusters similarity.
-#'
-#' @param cellsSimilarityMatrix a similarity matrix, one of the results of conclus::clusterCellsInternal() function.
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param clusteringMethod a clustering methods passed to hclust() function.
-#'
-#' @return A list contating the cluster similarity matrix and cluster names (order).
-#' @export
 calculateClustersSimilarity <- function(cellsSimilarityMatrix, sceObject,
 		clusteringMethod){
 	
