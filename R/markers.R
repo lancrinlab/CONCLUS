@@ -1,15 +1,3 @@
-#' Rank marker genes by statistical significance.
-#'
-#' This function searches marker genes for each cluster. It saves tables in the "dataDirectory/marker_genes" directory,
-#' one table per cluster.
-#' 
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param clustersSimilarityMatrix matrix, result of conclus::calculateClustersSimilarity() function.
-#' @param dataDirectory output directory for CONCLUS (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which will appear in filenames (supposed to be the same for one experiment during the workflow).
-#' @export
-#' @param column name of the column with a clustering result.
-
 rankGenes <- function(sceObject, clustersSimilarityMatrix, dataDirectory,
 		experimentName, column="clusters"){
 	
