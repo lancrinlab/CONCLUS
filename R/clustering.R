@@ -347,7 +347,7 @@ clusterCellsInternal <- function(dbscanMatrix, sceObject, clusterNumber=0,
 }
 
 calculateClustersSimilarity <- function(cellsSimilarityMatrix, sceObject,
-		clusteringMethod){
+		clusteringMethod = "ward.D2"){
 	
 	# Calculating cluster similarity for plotting picture
 	# and ranking genes result is the square matrix with
