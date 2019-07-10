@@ -24,7 +24,7 @@ runCONCLUS(dataDirectory, experimentName,
 
 \item{colorPalette}{A vector of colors for clusters. Default = "default", see details.}
 
-\item{statePalette}{a vector of colors for states or conditions.See details.}
+\item{statePalette}{A vector of colors for states or conditions. Default = "default", See details.}
 
 \item{clusteringMethod}{Clustering method passed to hclust() function. See ?hclust for a list of method. Default = "ward.D2"}
 
