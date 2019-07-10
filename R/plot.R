@@ -177,28 +177,6 @@
 	}
 }
 
-#' Save a cells similarity matrix.
-#' 
-#' This function plots similarity matrix as a heatmap, so one can see similarity between parts of different clusters.
-#'
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param dataDirectory output directory for CONCLUS (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which will appear in filenames (supposed to be the same for one experiment during the workflow).
-#' @param cellsSimilarityMatrix an output matrix from the conclus::clusterCellsInternal() function.
-#' @param colorPalette "default" or a vector of colors for the column "clusters" in the colData, for example c("yellow", "#CC79A7"). 
-#' @param statePalette "default" or a vector of colors for the column "state" in the colData, for example c("yellow", "#CC79A7"). 
-#' @param clusteringMethod a clustering methods passed to hclust() function.
-#' @param orderClusters boolean, order clusters or not.
-#' @param plotPDF if TRUE export to pdf, if FALSE export to png. 
-#' FALSE is recommended for datasets with more than 2500 cells due to large pdf file size.
-#' @param returnPlot boolean, return plot or not. Default if FALSE.
-#' @param width plot width.
-#' @param height plot height.
-#' @param ... other parameters of pdf(), pheatmap() and png() functions.
-#'
-#' @return A ggplot object or nothing (depends on the returnPlot parameter).
-#' It saves the pdf in "dataDirectory/pictures" folder.
-#' @export
 plotCellSimilarity <- function(sceObject, cellsSimilarityMatrix, dataDirectory,
 		experimentName, colorPalette="default",
 		statePalette="default", clusteringMethod="ward.D2",
