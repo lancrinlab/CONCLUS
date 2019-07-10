@@ -163,8 +163,8 @@ p[[3]]
 
 The wrapper function runCONCLUS is organized into X steps:
 
-  + Normalization of the counts matrix.
-  + Generation of t-SNE coordinates.
+  + Normalization of the counts matrix
+  + Generation of t-SNE coordinates
   + Clustering with DB-SCAN
   + Cell and cluster similarity matrix calculation
   + Plotting
@@ -216,13 +216,13 @@ head(rowdataSCE)
 ```
 
 
-## Generate t-SNE coordinates
+## Generation of t-SNE coordinates
 
 **runCONCLUS** creates needed output folders (if you did not run *testClustering* beforehand). Then it generates an object of fourteen (by default) tables with tSNE coordinates. Fourteen because it will vary seven values of 
 principal components *PCs=c(4, 6, 8, 10, 20, 40, 50)* and two values of perplexity *perplexities=c(30, 40)* in all possible combinations. 
 
 The chosen values of PCs and perplexities can be changed if necessary. We found that this combination works well for sc-RNA-seq datasets with 400-2000 cells. If you have 4000-9000 cells and expect more than 15 clusters, 
-we recommend you to take more first PCs and higher perplexity, for example, *PCs=c(8, 10, 20, 40, 50, 80, 100)* and *perplexities=c(200, 240)*.
+we recommend you to take more first PCs and higher perplexity, for example, *PCs=c(8, 10, 20, 40, 50, 80, 100)* and *perplexities=c(200, 240)*. For details about perplexities parameter see ‘?Rtsne’.
 
 ```{r}
 initialisePath(outputDirectory)
@@ -245,15 +245,12 @@ ncol(tSNEResults)
 head(tSNEResults[1,3][[1]])
 ```
 
-## Option 1: upload your clustering solution to CONCLUS
-*RunCONCLUS* can run built-in clustering or skip this step if you want to integrate your favorite clustering method. In this case, we assume that you already have a clustering solution which you can add as a column "clusters" to the *colData* of the *sceObject* like in this toy example:
 
-```{r}
-SummarizedExperiment::colData(sceObject)$clusters = factor(c(rep(1, 100), rep(2, 200), rep(3, (ncol(sceObject)-300) ) ))
-table(SummarizedExperiment::colData(sceObject)$clusters)
-```
+## Clustering with DB-SCAN
 
-Regardless of setting the option *preClustered = TRUE or FALSE*, next function will be runDBSCAN. *MinPoints* and *epsilon* are options of the *fpc::dbscan* function where *minPoints* is the minimum cluster size which you assume to be meaningful for your experiment and *epsilon* is the radius around the cell where the algorithm will try to find *minPoints* dots. *Cores* correspond to the number of jobs, which will be run in parallel; by default, it is 14, which is equal to the number of t-SNEs. Optimal *epsilon* must lay one the knee of the k-NN function as shown in the "test_clustering/distance_graph.pdf" (Section 4.3).
+Following the calculation of t-SNE coordinates, DBSCAN is run with a range of epsilon and MinPoints values which will yield a total of 84 clustering solutions (PCs x perplexities x MinPoints x epsilon). *minPoints* is the minimum 
+cluster size which you assume to be meaningful for your experiment and *epsilon* is the radius around the cell where the algorithm will try to find *minPoints* dots. Optimal *epsilon* must lay one the knee of the k-NN function as 
+shown in the "test_clustering/distance_graph.pdf" (See Test clustering section above). 
 
 ```{r}
 epsilon=c(1.3, 1.4, 1.5)
@@ -266,17 +263,19 @@ dbscanResults <- conclus::runDBSCAN(tSNEResults, sceObject, outputDirectory,
                            cores=cores)
 ```
 
-```{r}
-dim(dbscanResults)
-dbscanResults[1:7, 1:10]
-```
 
-## Get cells similarity matrix
-*RunDBSCAN* function returns a matrix where columns are cells and rows are 84 clustering solutions (which is equal to number of PCs x perplexities x MinPoints x epsilon, 7 x 2 x 2 x 3 = 84 by default). Since the range of cluster varies from the result to result, there is no exact match between numbers in different rows. Cells having the same number within a row are guaranteed to be in one cluster. We can calculate how many times out of 84 clustering solutions, every two cells were in one cluster and that is how we come to the similarity matrix of cells. We want to underline, that zero in the *dbscanResults* means that a cell was not assigned to any cluster, so two cells with zeros were not necessarily similar, that is why we count clusters starting from one. *clusterCellsInternal* is a general function which returns a *sceObject* with new clusters and calculated *cellsSimilarityMatrix*. In this case, we are already happy with our three clusters, so we take only the second output slot and leave the *sceObject* without any changes of cell filtering after dbscan. 
+## Cell and cluster similarity matrix calculation
+
+The above calculated results are combined together in a matrix called “cell similarity matrix”. *RunDBSCAN* function returns a matrix where columns are cells and rows are 84 clustering solutions (which is equal to number of 
+PCs x perplexities x MinPoints x epsilon). Since the range of cluster varies from the result to result, there is no exact match between numbers in different rows of the returned matrix. Cells having the same number within a row are 
+guaranteed to be in one cluster. We can calculate how many times out of 84 clustering solutions, every two cells were in one cluster and that is how we come to the similarity matrix of cells. We want to underline, that zero in the 
+*dbscanResults* means that a cell was not assigned to any cluster, so two cells with zeros were not necessarily similar, that is why we count clusters starting from one. *clusterCellsInternal* is a general function which returns a 
+*sceObject* with new clusters and calculated *cellsSimilarityMatrix*. 
 
 ```{r}
 clusteringMethod="ward.D2"
 k=10 # parameter for cutree
+deepSplit = 0 # 0 to avoid cutreeDynamic, 1 to 4 to use it
 message("Calculating cells similarity matrix.")
 cellsSimilarityMatrix <- conclus::clusterCellsInternal(dbscanResults, sceObject, clusterNumber=k, 
                                   deepSplit=deepSplit, cores=cores,
@@ -286,7 +285,25 @@ sceObjectFiltered <- sceObject
 print(table(SummarizedExperiment::colData(sceObjectFiltered)$clusters, 
               dnn=list("Cells distribuion by clusters")))
 ```
-Now we can check if our toy clustering solution reflects the data.
+
+After looking at the similarity between elements on the single-cell level, which is useful if we want to understand if there is any substructure which we did not highlight with our clustering, a "bulk" level where we pool all cells 
+from a cluster into a representative "pseudo cell" can also be generated. This gives a *clusterSimilarityMatrix*:
+
+```{r}
+clustersSimilarityMatrix <- 
+      conclus::calculateClustersSimilarity(cellsSimilarityMatrix, 
+          sceObject = sceObjectFiltered,
+          clusteringMethod = "ward.D2")[[1]]
+```
+
+
+
+## Plotting
+
+### Cell similarity heatmap
+
+The *cellsSimilarityMatrix* is then used to generate a heatmap summarizing the results of the clustering and to show how stable the cell clusters are accross the 84 solutions.
+
 
 ```{r fig.height=6, fig.width=7}
 colorPalette="default"
@@ -307,6 +324,29 @@ conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDire
 ```
 
 *CellsSimilarityMatrix* is symmetrical and its size proportional of to the number of cells x number of cells. Each vertical or horizontal tiny strip is a cell. Intersection shows the proportion of clustering iterations in which a pair of cells were in one cluster, one if always (red), zero if never (blue). In this picture, we can see mainly two "families" of clusters: i8TFs_plus and others. Inside the first family, there are three clear groups, inside the second family we can see seven (one is tiny) squares, two of which form their "subfamily." We can see that our clustering solution reflected more states than clusters. 
+We will call this combination consensus clusters and use it everywhere later. We can appreciate that cellsSimilarityMatrix is the first evidence showing that CONCLUS managed not only to distinguish i8TFs_plus cells from the three other groups (as in the original publication) but also find subpopulations within these groups which were impossible using PCA alone.
+
+
+
+
+```{r fig.height=5.3, fig.width=6.5}  
+conclus::plotClustersSimilarity(clustersSimilarityMatrix, 
+                       sceObjectFiltered,
+                       dataDirectory = outputDirectory, 
+                       experimentName = experimentName, 
+                       colorPalette = colorPalette,
+                       statePalette = statePalette,
+                       clusteringMethod = clusteringMethod,
+                       returnPlot = TRUE)
+```
+
+In the *clusterSimilarityMatrix*, we can still see two major families of clusters. Red color on the diagonal means that the group is homogenous, and usually, it is what we want to get. The yellow on the diagonal could say that either that group consists of two or more equal sized subgroups. Bluish color points to a cluster of dbscan "outliers" that usually surrounds dense clouds of cells in t-SNE plots. 
+
+Outliers can be removed by an option *deleteOutliers = TRUE* in *runClustering* and *runCONCLUS*. By default, it is *FALSE* because, firstly, calculations take less time and, secondly, sometimes a little part of those outliers could be a "rare" or transient cell type and we would see it in t-SNE plots and the heatmap with markers.
+
+
+
+
 
 ## Option 2: receive CONCLUS clustering based on dbscan
 In Section, we will use the built-in clustering method. When we set *preClustered = FALSE* in *runCONCLUS*, Sections 4.4.2 and 4.4.3 will be replaced with one function called *runClustering*:
@@ -378,27 +418,6 @@ tSNEnoColor[[5]]
 tSNEstate[[5]]
 ```
 
-## Calculate cluster similarity matrix
-
-In the previous sections, we looked at the similarity between elements on the single-cell level. That approach is useful if we want to understand if there is any substructure which we did not highlight with our clustering. However, this can also be done at a "bulk" level where we pool all cells from a cluster into a representative "pseudo cell." It gives us a *clusterSimilarityMatrix*.
-```{r fig.height=5.3, fig.width=6.5}
-clustersSimilarityMatrix <- 
-      conclus::calculateClustersSimilarity(cellsSimilarityMatrix, 
-          sceObject = sceObjectFiltered,
-          clusteringMethod = "ward.D2")[[1]]
-  
-conclus::plotClustersSimilarity(clustersSimilarityMatrix, 
-                       sceObjectFiltered,
-                       dataDirectory = outputDirectory, 
-                       experimentName = experimentName, 
-                       colorPalette = colorPalette,
-                       statePalette = statePalette,
-                       clusteringMethod = clusteringMethod,
-                       returnPlot = TRUE)
-```
-In the *clusterSimilarityMatrix*, we can still see two major families of clusters. Red color on the diagonal means that the group is homogenous, and usually, it is what we want to get. The yellow on the diagonal could say that either that group consists of two or more equal sized subgroups. Bluish color points to a cluster of dbscan "outliers" that usually surrounds dense clouds of cells in t-SNE plots. 
-
-Outliers can be removed by an option *deleteOutliers = TRUE* in *runClustering* and *runCONCLUS*. By default, it is *FALSE* because, firstly, calculations take less time and, secondly, sometimes a little part of those outliers could be a "rare" or transient cell type and we would see it in t-SNE plots and the heatmap with markers.
 
 ## Identify marker genes for each cell cluster
 For understanding the nature of the groups identified by CONCLUS, it is essential to identify genes which could be classified as marker genes for each cluster. The function *rankGenes* takes all genes from the *sceObjectFiltered* and rank them (in our case number of cells is the same as in the *sceObject* because we chose *deleteOutliers = FALSE*). It saves one file for a cluster in the folder *marker_genes*. Inside the record, there is a table where the first column is a gene name in the same annotation as it was in the *sceObjectFiltered*. Then there are *numberOfClusters - 1* columns of adjusted p-values (FDR) of one-tailed T-test between cluster in the name of the file and group in the title of the column. For example, we read the data for the cluster 5 "Bergiers_cluster_5_genes.tsv", the FDR of the hypothesis if a gene was **upregulated** in the cluster 5 versus cluster 1 and is stored in the column "vs_1".
@@ -649,6 +668,28 @@ We recommend you to save the sceObject after running the workflow to be able to 
 saveRDS(sceObjectCONCLUS, file.path(outputDirectory, paste0("output_tables/", 
                                 experimentName, "_sceObjectAfterCONCLUS.rds")))
 ```
+
+
+
+
+
+
+
+!!!!!!! TO PUT IN A SPECIAL SECTION
+## Option 1: upload your clustering solution to CONCLUS
+*RunCONCLUS* can run built-in clustering or skip this step if you want to integrate your favorite clustering method. In this case, we assume that you already have a clustering solution which you can add as a column "clusters" to the *colData* of the *sceObject* like in this toy example:
+
+```{r}
+SummarizedExperiment::colData(sceObject)$clusters = factor(c(rep(1, 100), rep(2, 200), rep(3, (ncol(sceObject)-300) ) ))
+table(SummarizedExperiment::colData(sceObject)$clusters)
+```
+
+!!!!!!!!!!!!!!!!!
+
+
+
+
+
 
 # Conclusion
 Here we demonstrated how to use sc-RNA-seq CONCLUS workflow details. The tool allowed us to gain more information on the dataset of *Bergiers et al.*. In the initial analysis using PCA, two significant clusters were found (one composed of i8TFs_plus cells and another comprising E_minus, E_plus, i8TFs_minus cells). Using CONCLUS, we confirmed a big difference between the i8TFs_plus experimental group and the other three. Interestingly, CONCLUS was able to unveil heterogeneity within the i8TFs group while the previous analysis performed by *Bergiers et al.* was not able to reveal it. This analysis offers additional information on the function of these eight transcription factors. 
