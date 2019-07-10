@@ -828,12 +828,9 @@ plotGeneExpression <- function(geneName, experimentName, dataDirectory,
 }
 
 plotClustersSimilarity <- function(clustersSimilarityMatrix, sceObject,
-		dataDirectory,
-		experimentName, colorPalette,
-		statePalette,
-		clusteringMethod,
-		returnPlot = FALSE,
-		width=7, height=5.5, ...) {
+		dataDirectory, experimentName, colorPalette = "default",
+		statePalette = "default", clusteringMethod = "ward.D2",
+		returnPlot = FALSE,	width=7, height=5.5, ...) {
 	
 	.plotClustersSimilarity(clustersSimilarityMatrix, sceObject,
 			dataDirectory, 
