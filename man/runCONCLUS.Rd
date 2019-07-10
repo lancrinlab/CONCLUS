@@ -72,7 +72,28 @@ for each cluster, 6) Saves plots and tables into dataDirectory.
 If an error message is thrown, re-run the function with your own color vector.
 
 }
+\examples{
 
+  outputDirectory <- "./YourOutputDirectory" ## Replace by the path to the directory in which results should be written
+  experimentName <- "Bergiers"
+
+  countMatrix <- read.delim(file.path(system.file("extdata", package = "conclus"),
+                                    "Bergiers_counts_matrix_filtered.tsv"), 
+                          stringsAsFactors = FALSE)
+  columnsMetaData <- read.delim(file.path(system.file("extdata", package = "conclus"), 
+                                "Bergiers_colData_filtered.tsv"))
+
+  sceObjectCONCLUS <- runCONCLUS(outputDirectory, 
+                               experimentName,
+                               columnsMetaData,
+		                       species = "mmu", 
+                               plotPDFcellSim = TRUE, # FALSE for > 2500 cells
+                               k = 10, cores = 1,
+                               statePalette = c("bisque", "cadetblue2", 
+                                                "coral1", "cornflowerblue"),
+                               deleteOutliers = FALSE)
+  
+}
 \keyword{CONCLUS}
 \seealso{
     \code{\link{initialisePath}}
