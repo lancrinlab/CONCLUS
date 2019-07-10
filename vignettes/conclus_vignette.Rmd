@@ -382,9 +382,29 @@ solutions. Only cluster 10 has a quite low similarity value. Red color on the di
 that group consists of two or more equal sized subgroups. Bluish color points to a cluster of dbscan "outliers" that usually surrounds dense clouds of cells in t-SNE plots. 
 
 
+## Results export
+
+  *runCONCLUS* is saving *cellsSimilarityMatrix* and *clustersSimilarityMatrix* to the subfolder *output_tables*.
+
+```{r}
+conclus::exportMatrix(cellsSimilarityMatrix, outputDirectory, experimentName, 
+           "cellsSimilarityMatrix")
+conclus::exportMatrix(clustersSimilarityMatrix, outputDirectory, experimentName, 
+           "clustersSimilarityMatrix")
+```
+  The exportData function enables to save the normalized expression matrix, columns and row data as the full workspace to the *output_tables* subfolder.
+  
+```{r}
+conclus::exportData(sceObjectFiltered, outputDirectory, experimentName)
+```
+
+Finally, as seen in the runCONCLUS section, the conclus::exportClusteringResults() function enables to export all results.
 
 
-## Identify marker genes for each cell cluster
+
+## Marker genes identification
+
+
 For understanding the nature of the groups identified by CONCLUS, it is essential to identify genes which could be classified as marker genes for each cluster. The function *rankGenes* takes all genes from the *sceObjectFiltered* and rank them (in our case number of cells is the same as in the *sceObject* because we chose *deleteOutliers = FALSE*). It saves one file for a cluster in the folder *marker_genes*. Inside the record, there is a table where the first column is a gene name in the same annotation as it was in the *sceObjectFiltered*. Then there are *numberOfClusters - 1* columns of adjusted p-values (FDR) of one-tailed T-test between cluster in the name of the file and group in the title of the column. For example, we read the data for the cluster 5 "Bergiers_cluster_5_genes.tsv", the FDR of the hypothesis if a gene was **upregulated** in the cluster 5 versus cluster 1 and is stored in the column "vs_1".
 
 **Top genes** with significant FDR in most of the comparisons can be assumed as **positive markers** of a cluster. The column *mean_log10_fdr* is the mean power of FDR in all comparisons; *n_05* is the number of comparisons in which the gene was significantly upregulated. The *score* for marker genes is the average power of FDR among all comparisons for a cluster multiplied to weights taken from the *clustersSimilarityMatrix + 0.05*. Taking account of both FDRs of all comparisons and *clustersSimilarityMatrix* allows keeping the balance between highlighting markers for individual clusters and their "families" which makes the final heatmap as informative as possible. Adding a little number *0.05* to the *clustersSimilarityMatrix* in calculating the score helps to avoid the following problem: in case you have a cluster very different from all others, it will have one on the diagonal and 0 similarities to all others groups in the *clustersSimilarityMatrix*. So all weights for that cluster will be zeros meaning the score would also be zero and genes will be ordered in alphabetical order in the corresponding marker genes list file.
@@ -417,17 +437,6 @@ rankedGenesClus5 <- read.delim(file.path(outputDirectory, "marker_genes",
                                stringsAsFactors = FALSE)
 head(rankedGenesClus5, n = 10)
 ```
-## Export key matrices
-
-!! integrate exportData to the vignette
- 
-The last part of the *runCONCLUS* function is saving *cellsSimilarityMatrix* and *clustersSimilarityMatrix* in the folder *output_tables* and  returning *sceObjectFiltered*.
-```{r}
-conclus::exportMatrix(cellsSimilarityMatrix, outputDirectory, experimentName, 
-           "cellsSimilarityMatrix")
-conclus::exportMatrix(clustersSimilarityMatrix, outputDirectory, experimentName, 
-           "clustersSimilarityMatrix")
-```
 
 # runCONCLUS in one function
 In the previous section, we went into the details of the CONCLUS workflow. It was important for understanding the tool and getting the maximum from it. However, in everyday practice, we rarely need to run each function from Section 4 individually. That is why we combined them into a wrapper *runCONCLUS*. The following code will work even if you skip Section 4 and continue after *normaliseCountMatrix* or *testClustering* function.
@@ -450,6 +459,8 @@ sceObjectCONCLUS <- conclus::runCONCLUS(sceObject, outputDirectory, experimentNa
 conclus::exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName, 
                         "clusters_table.tsv")
 ```
+
+
 
 # Plot a heatmap with positive marker genes
 
