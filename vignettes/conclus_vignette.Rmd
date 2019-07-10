@@ -2,11 +2,12 @@
 title: "ScRNA-seq workflow CONCLUS: from CONsensus CLUSters to a meaningful CONCLUSion"
 header-includes: \usepackage{graphicx}
 author: | 
-  | Polina Pavlovich$^1$$^2$$^3$ and Christophe Lancrin$^1$
+  | Polina Pavlovich$^1$$^2$$^3$, Nicolas Descostes$^1$*, and Christophe Lancrin$^1$
   |
   | $^1$European Molecular Biology Laboratory, EMBL, Rome, Italy
   | $^2$Moscow Institute of Physics and Technology, MIPT,  Moscow, Russia
   | $^3$Current address: Max Planck Institute of Immunobiology and Epigenetics, MPI-IE, Freiburg, Germany
+  | * Current maintainer.
 output:
   prettydoc::html_pretty:
     toc: true # table of content true
@@ -40,6 +41,12 @@ CONCLUS is organized into the following steps:
     accross the previously defined clustering solutions.
   + Identify marker genes for each concensus cluster.
   
+
+# How to get help
+
+Issues can be submitted directly on github: -- complete with address---. To contact us directly write to christophe.lancrin@embl.it. This package was developed by Polina Pavlovich who is now doing
+her Ph.D at the Max Planck Institute of Immunobiology and Epigenetics.
+
 
 # Standard workflow
 
@@ -300,6 +307,36 @@ clustersSimilarityMatrix <-
 
 ## Plotting
 
+
+### t-SNE colored by clusters or conditions
+
+CONCLUS generated 14 tSNE combining different values of PCs and perplexities. Each tSNE can be visualized either using coloring reflecting the results of DBScan clustering, the conditions or without colors. Here *plotClusteredTSNE*
+is used to generate all these possibilities of visualization. 
+
+
+```{r}
+tSNEclusters <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
+                    PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
+                    columnName = "clusters", returnPlot = TRUE)
+tSNEnoColor <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
+                PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
+                columnName = "noColor", returnPlot = TRUE)
+                
+if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered)) %in% "state")){
+  tSNEstate <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
+                    PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
+                    columnName = "state", returnPlot = TRUE)
+}
+```
+
+For visualizing the 5th (on 14) tSNE cluster:
+
+```{r}
+tSNEclusters[[5]]
+tSNEnoColor[[5]]
+tSNEstate[[5]]
+```
+
 ### Cell similarity heatmap
 
 The *cellsSimilarityMatrix* is then used to generate a heatmap summarizing the results of the clustering and to show how stable the cell clusters are accross the 84 solutions.
@@ -323,11 +360,11 @@ conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDire
                  returnPlot = TRUE)
 ```
 
-*CellsSimilarityMatrix* is symmetrical and its size proportional of to the number of cells x number of cells. Each vertical or horizontal tiny strip is a cell. Intersection shows the proportion of clustering iterations in which a pair of cells were in one cluster, one if always (red), zero if never (blue). In this picture, we can see mainly two "families" of clusters: i8TFs_plus and others. Inside the first family, there are three clear groups, inside the second family we can see seven (one is tiny) squares, two of which form their "subfamily." We can see that our clustering solution reflected more states than clusters. 
-We will call this combination consensus clusters and use it everywhere later. We can appreciate that cellsSimilarityMatrix is the first evidence showing that CONCLUS managed not only to distinguish i8TFs_plus cells from the three other groups (as in the original publication) but also find subpopulations within these groups which were impossible using PCA alone.
+*CellsSimilarityMatrix* is symmetrical and its size proportional of to the "number of cells x number of cells". Each vertical or horizontal tiny strip is a cell. Intersection shows the proportion of clustering iterations in which a 
+pair of cells were in one cluster (score between 0 and 1, between blue and red). We will call this combination "consensus clusters" and use them everywhere later. We can appreciate that cellsSimilarityMatrix is the first evidence 
+showing that CONCLUS managed not only to distinguish i8TFs_plus cells from the three other groups (as in the original publication) but also find subpopulations within these groups which were impossible using PCA alone.
 
-
-
+### Cluster similarity heatmap
 
 ```{r fig.height=5.3, fig.width=6.5}  
 conclus::plotClustersSimilarity(clustersSimilarityMatrix, 
@@ -340,83 +377,11 @@ conclus::plotClustersSimilarity(clustersSimilarityMatrix,
                        returnPlot = TRUE)
 ```
 
-In the *clusterSimilarityMatrix*, we can still see two major families of clusters. Red color on the diagonal means that the group is homogenous, and usually, it is what we want to get. The yellow on the diagonal could say that either that group consists of two or more equal sized subgroups. Bluish color points to a cluster of dbscan "outliers" that usually surrounds dense clouds of cells in t-SNE plots. 
-
-Outliers can be removed by an option *deleteOutliers = TRUE* in *runClustering* and *runCONCLUS*. By default, it is *FALSE* because, firstly, calculations take less time and, secondly, sometimes a little part of those outliers could be a "rare" or transient cell type and we would see it in t-SNE plots and the heatmap with markers.
-
-
+In the *clusterSimilarityMatrix*, we can still see two major families of clusters: clusters with 2, 3 and 4 on one side and 1, 5, 7, 8, 9 and 10 on the other. Almost all clusters have a high value of similarity across all clustering 
+solutions. Only cluster 10 has a quite low similarity value. Red color on the diagonal means that the group is homogenous, and usually, it is what we want to get. The yellow on the diagonal indicates that either 
+that group consists of two or more equal sized subgroups. Bluish color points to a cluster of dbscan "outliers" that usually surrounds dense clouds of cells in t-SNE plots. 
 
 
-
-## Option 2: receive CONCLUS clustering based on dbscan
-In Section, we will use the built-in clustering method. When we set *preClustered = FALSE* in *runCONCLUS*, Sections 4.4.2 and 4.4.3 will be replaced with one function called *runClustering*:
-
-```{r}
-deepSplit = 0 # 0 to avoid cutreeDynamic, 1 to 4 to use it
-deleteOutliers = FALSE
-epsilon=c(1.3, 1.4, 1.5)
-minPoints=c(3, 4)
-cores=14
-clusteringMethod="ward.D2"
-k=10 # split the dendrogram with cutree function into 10 groups
-clusteringResults <- conclus::runClustering(tSNEResults, sceObject, outputDirectory, 
-                                       experimentName,
-                                       epsilon=epsilon, minPoints=minPoints, 
-                                       k=k, deepSplit=deepSplit,
-                                       cores=cores,
-                                       clusteringMethod=clusteringMethod,
-                                       deleteOutliers = deleteOutliers,
-                                       PCs=PCs,
-                                       perplexities=perplexities, 
-                                       randomSeed = randomSeed)
-sceObjectFiltered <- clusteringResults[[1]]
-cellsSimilarityMatrix <- clusteringResults[[2]]
-
-print(table(SummarizedExperiment::colData(sceObjectFiltered)$clusters, 
-              dnn=list("Cells distribuion by clusters")))
-```
-
-```{r fig.height=6, fig.width=7}
-colorPalette="default"
-statePalette="default"
-plotPDFcellSim = TRUE
-orderClusters = FALSE
-clustersNumber <- length(unique(SummarizedExperiment::colData(sceObjectFiltered)$clusters))
-colorPalette <- conclus::choosePalette(colorPalette, clustersNumber)
-
-# Plotting cluster stablility
-conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDirectory,
-                 experimentName, colorPalette, 
-                 orderClusters = orderClusters, 
-                 statePalette = statePalette, 
-                 clusteringMethod = clusteringMethod,
-                 plotPDF = plotPDFcellSim,
-                 returnPlot = TRUE)
-```
-
-We will call this combination *consensus clusters* and use it everywhere later. We can appreciate that *cellsSimilarityMatrix* is the first evidence showing that CONCLUS managed not only to distinguish treated cells from controls but also find subpopulations within these groups which were impossible using PCA alone. Next step would be to see the topology of the clusters in our t-SNE plots with tuned parameters. After that, we can have a look at how many genes drive this cluster separation using a heatmap with top markers.
-
-## Plot t-SNE colored by clusters or conditions
-
-```{r}
-tSNEclusters <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
-                    PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
-                    columnName = "clusters", returnPlot = TRUE)
-tSNEnoColor <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
-                PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
-                columnName = "noColor", returnPlot = TRUE)
-if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered)) %in% "state")){
-  tSNEstate <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
-                    PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
-                    columnName = "state", returnPlot = TRUE)
-}
-```
-
-```{r}
-tSNEclusters[[5]]
-tSNEnoColor[[5]]
-tSNEstate[[5]]
-```
 
 
 ## Identify marker genes for each cell cluster
@@ -688,6 +653,56 @@ table(SummarizedExperiment::colData(sceObject)$clusters)
 
 
 
+!!!!!!!!!!! TO PUT IN A SEPARATED SECTION
+## Option 2: receive CONCLUS clustering based on dbscan
+In Section, we will use the built-in clustering method. When we set *preClustered = FALSE* in *runCONCLUS*, Sections 4.4.2 and 4.4.3 will be replaced with one function called *runClustering*:
+
+```{r}
+deepSplit = 0 # 0 to avoid cutreeDynamic, 1 to 4 to use it
+deleteOutliers = FALSE
+epsilon=c(1.3, 1.4, 1.5)
+minPoints=c(3, 4)
+cores=14
+clusteringMethod="ward.D2"
+k=10 # split the dendrogram with cutree function into 10 groups
+clusteringResults <- conclus::runClustering(tSNEResults, sceObject, outputDirectory, 
+                                       experimentName,
+                                       epsilon=epsilon, minPoints=minPoints, 
+                                       k=k, deepSplit=deepSplit,
+                                       cores=cores,
+                                       clusteringMethod=clusteringMethod,
+                                       deleteOutliers = deleteOutliers,
+                                       PCs=PCs,
+                                       perplexities=perplexities, 
+                                       randomSeed = randomSeed)
+sceObjectFiltered <- clusteringResults[[1]]
+cellsSimilarityMatrix <- clusteringResults[[2]]
+
+print(table(SummarizedExperiment::colData(sceObjectFiltered)$clusters, 
+              dnn=list("Cells distribuion by clusters")))
+```
+
+```{r fig.height=6, fig.width=7}
+colorPalette="default"
+statePalette="default"
+plotPDFcellSim = TRUE
+orderClusters = FALSE
+clustersNumber <- length(unique(SummarizedExperiment::colData(sceObjectFiltered)$clusters))
+colorPalette <- conclus::choosePalette(colorPalette, clustersNumber)
+
+# Plotting cluster stablility
+conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDirectory,
+                 experimentName, colorPalette, 
+                 orderClusters = orderClusters, 
+                 statePalette = statePalette, 
+                 clusteringMethod = clusteringMethod,
+                 plotPDF = plotPDFcellSim,
+                 returnPlot = TRUE)
+```
+
+We will call this combination *consensus clusters* and use it everywhere later. We can appreciate that *cellsSimilarityMatrix* is the first evidence showing that CONCLUS managed not only to distinguish treated cells from controls but also find subpopulations within these groups which were impossible using PCA alone. Next step would be to see the topology of the clusters in our t-SNE plots with tuned parameters. After that, we can have a look at how many genes drive this cluster separation using a heatmap with top markers.
+
+!!!!!!!!!!!!!!!!!!
 
 
 
