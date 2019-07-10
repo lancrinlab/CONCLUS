@@ -42,7 +42,7 @@ CONCLUS is organized into the following steps:
   + Identify marker genes for each concensus cluster.
   
 
-# How to get help
+# Getting help
 
 Issues can be submitted directly on github: -- complete with address---. To contact us directly write to christophe.lancrin@embl.it. This package was developed by Polina Pavlovich who is now doing
 her Ph.D at the Max Planck Institute of Immunobiology and Epigenetics.
@@ -404,30 +404,12 @@ Finally, as seen in the runCONCLUS section, the conclus::exportClusteringResults
 
 ## Marker genes identification
 
+To understand the nature of the consensus clusters identified by CONCLUS, it is essential to identify genes which could be classified as marker genes for each cluster. To this aim, each gene should be "associated" to a particular 
+cluster. This association is performed by looking at upregulated genes in a particular cluster compared to the others (multiple comparisons). The function *rankGenes* performs multiple comparisons of all genes from the 
+sceObjectFiltered and rank them according to a score reflecting a FDR power. It saves one file per cluster in the folder *marker_genes*.
 
-For understanding the nature of the groups identified by CONCLUS, it is essential to identify genes which could be classified as marker genes for each cluster. The function *rankGenes* takes all genes from the *sceObjectFiltered* and rank them (in our case number of cells is the same as in the *sceObject* because we chose *deleteOutliers = FALSE*). It saves one file for a cluster in the folder *marker_genes*. Inside the record, there is a table where the first column is a gene name in the same annotation as it was in the *sceObjectFiltered*. Then there are *numberOfClusters - 1* columns of adjusted p-values (FDR) of one-tailed T-test between cluster in the name of the file and group in the title of the column. For example, we read the data for the cluster 5 "Bergiers_cluster_5_genes.tsv", the FDR of the hypothesis if a gene was **upregulated** in the cluster 5 versus cluster 1 and is stored in the column "vs_1".
+In summary, the function *conclus::rankGenes()* gives a list of marker genes for each cluster, ordered by their significance. See ?conclus::rankGenes for more details.   
 
-**Top genes** with significant FDR in most of the comparisons can be assumed as **positive markers** of a cluster. The column *mean_log10_fdr* is the mean power of FDR in all comparisons; *n_05* is the number of comparisons in which the gene was significantly upregulated. The *score* for marker genes is the average power of FDR among all comparisons for a cluster multiplied to weights taken from the *clustersSimilarityMatrix + 0.05*. Taking account of both FDRs of all comparisons and *clustersSimilarityMatrix* allows keeping the balance between highlighting markers for individual clusters and their "families" which makes the final heatmap as informative as possible. Adding a little number *0.05* to the *clustersSimilarityMatrix* in calculating the score helps to avoid the following problem: in case you have a cluster very different from all others, it will have one on the diagonal and 0 similarities to all others groups in the *clustersSimilarityMatrix*. So all weights for that cluster will be zeros meaning the score would also be zero and genes will be ordered in alphabetical order in the corresponding marker genes list file.
-
-For a cluster $k$ and a gene $G$,  a $score_G$ was defined in the following way:
-
-$$
-score_G = \frac{\sum_{i}(-log_{10}(fdr_{k,i} + \epsilon) * weight_{k,i})}{nClusters - 1},
-$$
-
-where
-
-1. $fdr_{k,i}$ is an adjusted p-value obtained by comparing the expression of $G$ in cluster $k$ versus expression of $G$ in group i; 
-
-2. $weight_{k,i}$ is a similarity between these two groups taken from the $<k, i>$ element in the *clustersSimilarityMatrix*; 
-
-3. $nClusters$ is a number of consensus clusters given to the *rankGenes()*;
-
-4. $\epsilon=10^{-300}$ is a small number which does not influence the ranking and added to avoid an error when fdr is equal to zero;
-
-5. $k = [1, ..., nClusters]$; 
-
-6. $i=([1,...,nClusters] \: except \: for \: [k])$
 
 ```{r}
 conclus::rankGenes(sceObjectFiltered, clustersSimilarityMatrix, outputDirectory, 
@@ -438,45 +420,29 @@ rankedGenesClus5 <- read.delim(file.path(outputDirectory, "marker_genes",
 head(rankedGenesClus5, n = 10)
 ```
 
-# runCONCLUS in one function
-In the previous section, we went into the details of the CONCLUS workflow. It was important for understanding the tool and getting the maximum from it. However, in everyday practice, we rarely need to run each function from Section 4 individually. That is why we combined them into a wrapper *runCONCLUS*. The following code will work even if you skip Section 4 and continue after *normaliseCountMatrix* or *testClustering* function.
-
-For your information, *runCONCLUS* saves *cellsSimilarityMatrix* and *clustersSimilarityMatrix* and runs *rankGenes* even if in the current vignette no messages for these steps are displayed. 
-```{r}
-# Reminder where we stopped.
-# 2. Test step (optional)
-#testClustering(sceObject, outputDirectory, experimentName)
-
-# 3. Running the analysis and saving the consensus clustering solution
-sceObjectCONCLUS <- conclus::runCONCLUS(sceObject, outputDirectory, experimentName, 
-                               plotPDFcellSim = TRUE, # FALSE for > 2500 cells
-                               k = 10,
-                               cores = 14, # 14 for servers, 1 for PC
-                               statePalette = c("bisque", "cadetblue2", 
-                                                "coral1", "cornflowerblue"),
-                               deleteOutliers = FALSE  # TRUE takes more time
-                               )
-conclus::exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName, 
-                        "clusters_table.tsv")
-```
-
-
-
 # Plot a heatmap with positive marker genes
 
-In this section, we selected ten marker genes per cluster which should generate a heatmap with 100 genes (10 marker genes x 10 groups) which is convenient for visualization. In practice, the number of genes in this heatmap will be less than 100 because some genes have been classified as markers for more than one cluster. It can happen when several groups correspond to similar cellular types.
+To understand the nature of the consensus clusters identified by CONCLUS, it is essential to identify genes, which could be classified as marker genes for each cluster. Following the execution of the runCONCLUS function, a folder 
+called “marker_genes” is automatically generated in your dataDirectory. It contains one Tab Separated Values (tsv) file for each cluster. Each tsv file contains a list of genes ranked according to how high these genes are expressed 
+in a given cluster in comparison to all the other clusters.
 
-We ask the function *plotCellHeatmap* to order clusters and genes by similarity (the same order as in the *clusterSimilarityMatrix*) and show mean-centered normalized data. Mean-centering allows seeing the relative expression of a gene compared to the mean.
+CONCLUS offers the option to visualize the marker genes on a heatmap. Below we chose to select 10 marker genes per cluster which should generate a heatmap with 100 genes (10 marker genes x 10 clusters) which is convenient for 
+visualization. In practice, the number of genes in this heatmap will be less than 100 because some genes have been classified as markers for more than one cluster. This can happen when several clusters correspond to similar cellular 
+types. In this particular example, we have a list of 88 genes.
+
+We ask the function *plotCellHeatmap* to order clusters and genes by similarity (the same order as in the *clusterSimilarityMatrix*) and show mean-centered normalized data. Mean-centering allows seeing the relative expression of a 
+gene compared to the mean.
 
 ```{r}
-# 4. Plotting heatmaps
 genesNumber <- 10
 markersClusters <- conclus::getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
                                   experimentName = experimentName,
                                   genesNumber = genesNumber)
+                                  
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- T  # F to show normalized counts
+
 conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
@@ -500,7 +466,9 @@ conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory,
                 width = 7.5, height = 6.5)
 ```
 
-The second heatmap shows also shows the order of genes and clusters by similarity but for normalized expression data. As you can see, genes expressed at a level of seven and nine look very similar. It is hard to highlight all the differences in expression of both lowly and highly detected genes in one heatmap using normalized data. For this reason, mean-centering helps to solve this issue.
+The second heatmap below also shows the order of genes and clusters by similarity but for normalized expression data. As you can see, genes expressed at a level of seven and nine look very similar. It is hard to highlight all the 
+differences in expression of both lowly and highly detected genes in one heatmap using normalized data. For this reason, mean-centering helps to solve this issue.
+
 ```{r}
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
@@ -528,6 +496,69 @@ conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory,
 ```
 
 Alternative order of clusters is by name or by hierarchical clustering as in the default pheatmap function.
+
+
+# Plot t-SNE colored by expression of a selected gene
+
+
+*PlotGeneExpression* allows visualizing the normalized expression of one gene in a t-SNE plot. It can be useful to inspect the specificity of top markers.
+
+```{r}
+# Plot gene expression in a selected tSNE plot
+# Cd34, marker gene for clusters 2, 3 and 4
+plotGeneExpression("Cd34", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10)
+```
+
+```{r}
+# Ctsc, marker gene for cluster 5
+plotGeneExpression("Ctsc", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10)
+```
+
+```{r}
+# H19, marker gene for cluster 8
+plotGeneExpression("H19", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10)
+```
+
+```{r}
+# Postn, marker gene for cluster 6
+plotGeneExpression("Postn", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10)
+```
+
+!! STOP HERE
+
+# Collect publicly available info about marker genes
+*GetGenesInfo* is a function for gene information retrieval from open-source databases and websites of NCBI, MGI, and UniProt by web-scraping. It requires *markersClusters* data frame where the first column "geneName" is mandatory and the second column "clusters" is optional. It can have more than two columns; they will be kept in the output file. *GetGenesInfo* can recognize Gene Symbols and Ensembl IDs, genes from both annotations can be present simultaneously. One can use them for significant DE genes between conditions in bulk RNA-seq data, for example after DESeq2 results.
+
+Warning: if the function finished working because "Timeout was reached", please restart it from the file where it failed. It can happen when the Internet connection is slow or interrupted.
+To ensure that the vignette runs successfully from the first attempt, in the current example, we run *getGenesInfo* without summary from UniProt. However, we recommend you to try firstly default version *getUniprot = TRUE*.
+```{r}
+# 7. getGenesInfo example
+result <- getGenesInfo(markersClusters, groupBy = "clusters",
+                       getUniprot = FALSE) # please change to getUniprot = TRUE
+
+# 7.1 save the result
+outputDir <- file.path(outputDirectory, "/marker_genes/getGenesInfo")
+dir.create(outputDir, showWarnings=F)
+write.table(result, file = file.path(outputDir, 
+                                     "Bergiers_markersClusters_top10_clusters9_genesInfo.csv"),
+            quote = FALSE, sep = ";", row.names = FALSE)
+```
+
+# Save info about top 100 markers for each cluster
+*MarkersClusters* usually contains 10-20 top marker genes per groups when it is more reliable to use 100 genes for cell state annotation. The function *saveMarkersLists* will create data frames with top 100 (by default) top marker genes for each cluster. The second column will be the name of the group. It will create "marker_genes/markers_lists" folder and save them there. The *saveGenesInfo* function will save results of *getGenesInfo* into outputDir which we specify. It goes file by file sequentially. If you see an error that the connection the website took to much time and dropped, restart the *saveGenesInfo* from the table where it failed using the *startFromFile* option. We will specify "startFromFile = 9" to calculate the output only for the last cluster. Hence, we reduce the computational time and the number of output messages. For your analysis, we recommend selecting "startFromFile = 1".
+
+```{r}
+# 8. saveGenesInfo example
+saveMarkersLists(experimentName, outputDirectory)
+```
+
+The result will be saved into the "outputDirectory/marker_genes/saveGenesInfo" directory. 
+```{r}
+saveGenesInfo(outputDirectory, sep = ";", header = TRUE, 
+              startFromFile = 9, getUniprot = FALSE) # please change to getUniprot = TRUE
+```
+
+
 
 # Give names to the clusters
 Imaging you looked through all these 93 genes and decided the cell types of each of clusters. For your publication, you would probably like rename your groups from "1", "2", "3" to "myeloid," "erythroid," "endothelial" cells. You can easily redo all pictures with new cluster names using the *addClusteringManually* function. Since clusters "9" and "10" do not have many evident DE genes, we can merge them and look if the marker selection improves when we consider them as one group.
@@ -591,51 +622,6 @@ conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory,
                                            "#a31008", "#921912"))(100),
                 returnPlot = TRUE,
                 width = 7, height = 5.5)
-```
-# Plot t-SNE colored by expression of a selected gene
-
-*PlotGeneExpression* allows visualizing the normalized expression of one gene in a t-SNE plot. It can be useful to check to inspect specificity of top markers.
-```{r}
-# 6. Plot gene expression in a selected tSNE plot
-conclus::plotGeneExpression("Ccl3", experimentName, outputDirectory, 
-                   sceObject = sceObjectCONCLUS,
-                   tSNEpicture = 10, returnPlot = TRUE)
-conclus::plotGeneExpression("Lama1", experimentName, outputDirectory, 
-                   sceObject = sceObjectCONCLUS,
-                   tSNEpicture = 10, returnPlot = TRUE)
-tSNEstate[[10]]
-```
-
-# Collect publicly available info about marker genes
-*GetGenesInfo* is a function for gene information retrieval from open-source databases and websites of NCBI, MGI, and UniProt by web-scraping. It requires *markersClusters* data frame where the first column "geneName" is mandatory and the second column "clusters" is optional. It can have more than two columns; they will be kept in the output file. *GetGenesInfo* can recognize Gene Symbols and Ensembl IDs, genes from both annotations can be present simultaneously. One can use them for significant DE genes between conditions in bulk RNA-seq data, for example after DESeq2 results.
-
-Warning: if the function finished working because "Timeout was reached", please restart it from the file where it failed. It can happen when the Internet connection is slow or interrupted.
-To ensure that the vignette runs successfully from the first attempt, in the current example, we run *getGenesInfo* without summary from UniProt. However, we recommend you to try firstly default version *getUniprot = TRUE*.
-```{r}
-# 7. getGenesInfo example
-result <- getGenesInfo(markersClusters, groupBy = "clusters",
-                       getUniprot = FALSE) # please change to getUniprot = TRUE
-
-# 7.1 save the result
-outputDir <- file.path(outputDirectory, "/marker_genes/getGenesInfo")
-dir.create(outputDir, showWarnings=F)
-write.table(result, file = file.path(outputDir, 
-                                     "Bergiers_markersClusters_top10_clusters9_genesInfo.csv"),
-            quote = FALSE, sep = ";", row.names = FALSE)
-```
-
-# Save info about top 100 markers for each cluster
-*MarkersClusters* usually contains 10-20 top marker genes per groups when it is more reliable to use 100 genes for cell state annotation. The function *saveMarkersLists* will create data frames with top 100 (by default) top marker genes for each cluster. The second column will be the name of the group. It will create "marker_genes/markers_lists" folder and save them there. The *saveGenesInfo* function will save results of *getGenesInfo* into outputDir which we specify. It goes file by file sequentially. If you see an error that the connection the website took to much time and dropped, restart the *saveGenesInfo* from the table where it failed using the *startFromFile* option. We will specify "startFromFile = 9" to calculate the output only for the last cluster. Hence, we reduce the computational time and the number of output messages. For your analysis, we recommend selecting "startFromFile = 1".
-
-```{r}
-# 8. saveGenesInfo example
-saveMarkersLists(experimentName, outputDirectory)
-```
-
-The result will be saved into the "outputDirectory/marker_genes/saveGenesInfo" directory. 
-```{r}
-saveGenesInfo(outputDirectory, sep = ";", header = TRUE, 
-              startFromFile = 9, getUniprot = FALSE) # please change to getUniprot = TRUE
 ```
 
 # Save the SingleCellExperiment object
