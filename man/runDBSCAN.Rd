@@ -5,27 +5,32 @@
 \title{Run clustering iterations with selected parameters using DBSCAN.}
 \usage{
 runDBSCAN(tSNEResults, sceObject, dataDirectory, experimentName,
-  cores = 14, epsilon = c(1.3, 1.4, 1.5), minPoints = c(3, 4))
+  cores = 1, epsilon = c(1.3, 1.4, 1.5), minPoints = c(3, 4))
+}
+\description{
+This function returns a matrix of clustering iterations of DBSCAN.
 }
 \arguments{
-\item{tSNEResults}{results of conclus::generateTSNECoordinates() function.}
+\item{tSNEResults}{Results of conclus::generateTSNECoordinates() function.}
 
-\item{sceObject}{a SingleCellExperiment object with your experiment.}
+\item{sceObject}{A SingleCellExperiment object with your experiment.}
 
-\item{dataDirectory}{output directory for CONCLUS (supposed to be the same for one experiment during the workflow).}
+\item{dataDirectory}{Output directory for CONCLUS results.}
 
-\item{experimentName}{name of the experiment which will appear in filenames 
-(supposed to be the same for one experiment during the workflow).}
+\item{experimentName}{Prefix used for output files.}
 
-\item{cores}{maximum number of jobs that CONCLUS can run in parallel.}
+\item{cores}{Maximum number of jobs that CONCLUS can run in parallel. Default = 1}
 
-\item{epsilon}{a fpc::dbscan() parameter.}
+\item{epsilon}{Reachability distance parameter of fpc::dbscan() function. See Ester et al. (1996) for more details. Default = c(1.3, 1.4, 1.5)}
 
-\item{minPoints}{a fpc::dbscan() parameter.}
+\item{minPoints}{Reachability minimum no. of points parameter of fpc::dbscan() function. See Ester et al. (1996) for more details. Default = c(3, 4)}
 }
 \value{
 A matrix of DBSCAN results.
 }
-\description{
-This function returns a matrix of clustering iterations of DBSCAN.
+\details{
+
+  Following the calculation of t-SNE coordinates, DBSCAN is run with a range of epsilon and MinPoints values which will yield a total of 84 clustering solutions (PCs x perplexities x MinPoints x epsilon). *minPoints* is the minimum 
+cluster size which you assume to be meaningful for your experiment and *epsilon* is the radius around the cell where the algorithm will try to find *minPoints* dots. Optimal *epsilon* must lay one the knee of the k-NN function as 
+shown in the "test_clustering/distance_graph.pdf"
 }
