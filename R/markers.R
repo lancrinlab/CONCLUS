@@ -62,8 +62,8 @@ rankGenes <- function(sceObject, clustersSimilarityMatrix, dataDirectory,
 }
 
 
-getMarkerGenes <- function(dataDirectory, sceObject, genesNumber=14,
-		experimentName, removeDuplicates = TRUE){
+getMarkerGenes <- function(dataDirectory, sceObject, experimentName, 
+		genesNumber=10, removeDuplicates = TRUE){
 	
 	markerGenesDirectory <- "marker_genes"
 	numberOfClusters <- length(unique(SummarizedExperiment::colData(sceObject)$clusters))
