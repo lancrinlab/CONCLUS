@@ -26,7 +26,7 @@
 }
 
 runDBSCAN <- function(tSNEResults, sceObject, dataDirectory, experimentName,
-		cores=14, epsilon=c(1.3, 1.4, 1.5), minPoints=c(3, 4)){
+		cores=1, epsilon=c(1.3, 1.4, 1.5), minPoints=c(3, 4)){
 	
 	outputDataDirectory <- "output_tables"
 	# taking only cells from the sceObject
