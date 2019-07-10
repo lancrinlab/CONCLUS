@@ -25,21 +25,6 @@
 	return(dbscanResults)
 }
 
-#' Run clustering iterations with selected parameters using DBSCAN.
-#'
-#' This function returns a matrix of clustering iterations of DBSCAN.
-#'
-#' @param tSNEResults results of conclus::generateTSNECoordinates() function.
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param dataDirectory output directory for CONCLUS (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which will appear in filenames 
-#' (supposed to be the same for one experiment during the workflow).
-#' @param cores maximum number of jobs that CONCLUS can run in parallel.
-#' @param epsilon a fpc::dbscan() parameter.
-#' @param minPoints a fpc::dbscan() parameter.
-#'
-#' @return A matrix of DBSCAN results.
-#' @export
 runDBSCAN <- function(tSNEResults, sceObject, dataDirectory, experimentName,
 		cores=14, epsilon=c(1.3, 1.4, 1.5), minPoints=c(3, 4)){
 	
