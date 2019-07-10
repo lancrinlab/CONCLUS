@@ -827,22 +827,6 @@ plotGeneExpression <- function(geneName, experimentName, dataDirectory,
 	}
 }
 
-#' Save a similarity cluster matrix.
-#'
-#' @param clustersSimilarityMatrix a matrix, result of conclus::calculateClustersSimilarity() function.
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param dataDirectory output directory for CONCLUS (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which will appear in filenames (supposed to be the same for one experiment during the workflow).
-#' @param colorPalette "default" or a vector of colors for the column "clusters" in the colData, for example c("yellow", "#CC79A7").
-#' @param statePalette "default" or a vector of colors for the column "state" in the colData, for example c("yellow", "#CC79A7").
-#' @param clusteringMethod a clustering methods passed to hclust() function.
-#' @param returnPlot boolean, return plot or not.
-#' @param width plot width.
-#' @param height plot height.
-#' @param ... other parameters of pdf() and pheatmap() functions.
-#'
-#' @return A ggplot object or nothing (depends on returnPlot parameter). It saves the pdf in "dataDirectory/pictures" folder.
-#' @export
 plotClustersSimilarity <- function(clustersSimilarityMatrix, sceObject,
 		dataDirectory,
 		experimentName, colorPalette,
