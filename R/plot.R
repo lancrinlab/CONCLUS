@@ -207,6 +207,10 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 	# generateTSNECoordinates() and clustering results
 	# from clusterCellsInternal() or runClustering()
 	
+	if(columnName != "clusters" && columnName != "noColor" && 
+			columnName != "state")
+		stop("columnName should be: clusters, noColor, or state.")
+	
 	tSNEDirectory <- "tsnes"
 	graphsDirectory <- "pictures"
 	graphsTSNEDirectory <- "tSNE_pictures"
