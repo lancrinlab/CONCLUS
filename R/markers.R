@@ -62,21 +62,6 @@ rankGenes <- function(sceObject, clustersSimilarityMatrix, dataDirectory,
 }
 
 
-
-
-#' Get top N marker genes from each cluster. 
-#' 
-#' This function reads results of conclus::rankGenes() from "dataDirectory/marker_genes" and selects top N markers for each cluster.
-#' 
-#' @param dataDirectory output directory for a run of CONCLUS (supposed to be the same for one experiment during the workflow).
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param genesNumber top N number of genes to get from one cluster.
-#' @param experimentName name of the experiment which appears in filenames (supposed to be the same for one experiment during the workflow).
-#' @param removeDuplicates boolean, if duplicated genes must be deleted or not.
-#'
-#' @return A data frame where the first columns are marker genes ("geneName") and 
-#' the second column is the groups ("clusters").
-#' @export
 getMarkerGenes <- function(dataDirectory, sceObject, genesNumber=14,
 		experimentName, removeDuplicates = TRUE){
 	
