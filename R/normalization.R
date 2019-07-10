@@ -240,14 +240,18 @@
 # This function creates colData or add columns mtGenes, genesNum,
 # codGenes, genesSum, codSum, mtPer, codPer, sumMtPer, sumCodPer to the
 # existing colData.
+
 .addCellsInfo <- function(countMatrix, rowData, colData = NULL){
+	
 	message("Adding cell info for cells filtering.")
+	
 	coldata <- data.frame(cellName = colnames(countMatrix),
 			stringsAsFactors = FALSE)
 	
 	### add info about all genes in a cell ###
 	coldata <- dplyr::mutate(coldata, genesNum = NA, genesSum = NA, oneUMI = NA)
 	coldata$genesSum <- colSums(countMatrix)
+	
 	for(i in 1:ncol(countMatrix)){
 		vec <- countMatrix[,i]
 		coldata$genesNum[coldata$cellName == colnames(countMatrix)[i]] <-
@@ -256,6 +260,7 @@
 				length(vec[vec == 1])
 	}
 	rm(vec)
+	
 	coldata <- dplyr::mutate(coldata,
 			oneUMIper = 100 * coldata$oneUMI / coldata$genesNum)
 	
