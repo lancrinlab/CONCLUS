@@ -28,20 +28,20 @@ runCONCLUS(dataDirectory, experimentName,
 
 \item{clusteringMethod}{Clustering method passed to hclust() function. See ?hclust for a list of method. Default = "ward.D2"}
 
-\item{epsilon}{Reachability distance parameter of fpc::dbscan() function. See Ester et al. (1996) for more details.}
+\item{epsilon}{Reachability distance parameter of fpc::dbscan() function. See Ester et al. (1996) for more details. Default = c(1.3, 1.4, 1.5)}
 
-\item{minPoints}{Reachability minimum no. of points parameter of fpc::dbscan() function. See Ester et al. (1996) for more details.}
+\item{minPoints}{Reachability minimum no. of points parameter of fpc::dbscan() function. See Ester et al. (1996) for more details. Default = c(3, 4)}
 
-\item{k}{Preferred number of clusters. Alternative to deepSplit. A parameter of cutree() function.}
+\item{k}{Preferred number of clusters. Alternative to deepSplit. A parameter of cutree() function. Default = 0}
 
 \item{PCs}{a vector of first principal components.
-For example, to take ranges 1:5 and 1:10 write c(5, 10).}
+For example, to take ranges 1:5 and 1:10 write c(5, 10). Default = c(4, 6, 8, 10, 20, 40, 50)}
 
-\item{perplexities}{Numeric scalar defining the perplexity parameter, see ‘?Rtsne’ for more details.}
+\item{perplexities}{Numeric scalar defining the perplexity parameter, see ‘?Rtsne’ for more details. Default = c(30, 40)}
 
-\item{randomSeed}{Random seed for reproducibility.}
+\item{randomSeed}{Random seed for reproducibility. Default = 42}
 
-\item{deepSplit}{intuitive level of clustering depth. Options are 1, 2, 3, 4.}
+\item{deepSplit}{intuitive level of clustering depth. Options are 1, 2, 3, 4. Default = 4}
 
 \item{preClustered}{Boolean precising if DBSCAN is run to calculate similarity matrices. If TRUE, it will not change the column 
 clusters after the run. Default="FALSE"}
