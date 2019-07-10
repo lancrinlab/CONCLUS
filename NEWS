@@ -90,5 +90,13 @@
 - change default values of clusterCellsInternal in clustering.R
 - Complete and update clusterCellsInternal.Rd
 - remove remove clusterCellsInternal doc from code
+- remove plotCellSimilarity doc from plot.R
+- update and complete plotCellSimilarity.Rd
+- remove doc for plotClustersSimilarity in plot.R
+- add plotClustersSimilarity default values in plot.R
+- update and complete plotClustersSimilarity.R
+- remove doc for plotClusteredTSNE from plot.R
+- add param value checking for columnName param in plotClusteredTSNE in plot.R
+- complete and update plotClusteredTSNE.Rd
 
  
