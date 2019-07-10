@@ -555,17 +555,11 @@ plotCellHeatmap <- function(markersClusters, sceObject, dataDirectory,
 
 
 
-plotGeneExpression <- function(geneName, experimentName, dataDirectory,
-		graphsDirectory = "pictures",
-		sceObject, tSNEpicture=1,
-		commentName = "", palette = c("grey","red",
-				"#7a0f09",
-				"black"),
-		returnPlot = FALSE,
-		savePlot = TRUE,
-		alpha = 1, limits = NA,
-		pointSize = 1,
-		width=6, height=5, ...){
+plotGeneExpression <- function(geneName, experimentName, dataDirectory, 
+		sceObject, graphsDirectory = "pictures", tSNEpicture=1,
+		commentName = "", palette = c("grey","red", "#7a0f09", "black"),
+		returnPlot = FALSE, savePlot = TRUE, alpha = 1, limits = NA,
+		pointSize = 1, width=6, height=5, ...){
 	
 	experimentName <- experimentName
 	dataDirectory <- dataDirectory
