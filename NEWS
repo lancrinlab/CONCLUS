@@ -101,5 +101,15 @@
 - update exportMatrix.Rd
 - create exportData.Rd
 - update exportClusteringResults.Rd
+- move detailed explanation of rankGenes in the vignette to the "details" section of rankGenes.Rd
+- remove rankGenes doc from code in markers.R
+- remove doc for getMarkerGenes in markers.R
+- reorganize parameters for getMarkerGenes and set default gene number to 10 in markers.R
+- update and complete getMarkerGenes.Rd
+- remove remove plotCellHeatmap doc from plot.R
+- update and complete plotCellHeatmap.Rd
+- delete doc of plotGeneExpression in plot.R
+- reorganize parameters of plotGeneExpression in plot.R
+- update and complete plotGeneExpression.Rd
 
  
