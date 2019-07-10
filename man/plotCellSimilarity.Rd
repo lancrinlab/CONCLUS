@@ -32,9 +32,9 @@ plotCellSimilarity(sceObject, cellsSimilarityMatrix, dataDirectory,
 
 \item{returnPlot}{Boolean indicating if the pHeatmap object should  be returned by the function. Default = FALSE.}
 
-\item{width}{Width of the plot.}
+\item{width}{Width of the plot. Default = 7.}
 
-\item{height}{Height of the plot.}
+\item{height}{Height of the plot. Default = 6.}
 
 \item{...}{Additional parameters to pass to pdf() or png(), and pheatmap() functions.}
 }
