@@ -98,5 +98,8 @@
 - remove doc for plotClusteredTSNE from plot.R
 - add param value checking for columnName param in plotClusteredTSNE in plot.R
 - complete and update plotClusteredTSNE.Rd
+- update exportMatrix.Rd
+- create exportData.Rd
+- update exportClusteringResults.Rd
 
  
