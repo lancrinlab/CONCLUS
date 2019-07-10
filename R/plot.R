@@ -195,25 +195,6 @@ plotCellSimilarity <- function(sceObject, cellsSimilarityMatrix, dataDirectory,
 }
 	
 
-#' Plot t-SNE. Addtionally, it can highlight clusters or states.
-#'
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param dataDirectory output directory for CONCLUS (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which will appear in filenames (supposed to be the same for one experiment during the workflow).
-#' @param tSNEresExp if t-SNE coordinates were generated in a different CONCLUS run, you can use them without renaming the files.
-#' Please copy tsnes folder from the source run to the current one and write that experimentName in the tSNEresExp argument.
-#' @param colorPalette "default" or a vector of colors for the column "clusters" in the colData, for example c("yellow", "#CC79A7").
-#' @param PCs vector of PCs (will be specified in filenames).
-#' @param perplexities vector of perplexities (will be specified in filenames).
-#' @param columnName name of the column to plot on t-SNE dimensions.
-#' @param returnPlot boolean, return plot or not.
-#' @param width plot width.
-#' @param height plot height.
-#' @param ... other arguments of the pdf() function.
-#'
-#' @return A ggplot object or nothing (depends on the returnPlot parameter).
-#' @export
-
 plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 		tSNEresExp = "",
 		colorPalette = "default",
