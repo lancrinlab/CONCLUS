@@ -77,6 +77,18 @@
 - Change ordercluster in plotCellSimilarity (in plot.R) to take the values TRUE/FALSE instead of name/FALSE.
 - Change ordercluster in plotCellHeatmap (in plot.R) to take the values TRUE/FALSE instead of name/FALSE. Add an additional "similarity" parameter.
 - remove normaliseCountMatrix documentation from code
-
+- complete and modify normaliseCountMatrix.Rd
+- Remove doc from the code in tSNE.R
+- change nb of default cores to 1 in tSNE.R
+- complete and modify generateTSNECoordinates.Rd
+- remove runDBSCAN doc from dbScan.R
+- change default cores to 1 in dbScan.R
+- complete and modify runDBSCAN.Rd
+- remove doc of calculateClustersSimilarity from clustering.R
+- add default value for clusteringMethod param of calculateClustersSimilarity in clustering.R
+- complete and modify calculateClustersSimilarity.Rd
+- change default values of clusterCellsInternal in clustering.R
+- Complete and update clusterCellsInternal.Rd
+- remove remove clusterCellsInternal doc from code
 
  
