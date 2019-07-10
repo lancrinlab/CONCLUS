@@ -1,5 +1,5 @@
 generateTSNECoordinates <- function(sceObject, dataDirectory, experimentName,
-		randomSeed=42, cores=14,
+		randomSeed=42, cores=1,
 		PCs=c(4, 6, 8, 10, 20, 40, 50),
 		perplexities=c(30,40)){
 	
