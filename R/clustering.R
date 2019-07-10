@@ -288,7 +288,7 @@ runClustering <- function(tSNEResults, # for deleteOutliers = FALSE
 #' @return A SingleCellExperiment object with modified/created "clusters" column in the colData, and cells similarity matrix.
 #' @export
 clusterCellsInternal <- function(dbscanMatrix, sceObject, clusterNumber=0,
-		deepSplit, cores=14,
+		deepSplit = 4, cores=1,
 		clusteringMethod = "ward.D2") {
 	# 
 	
