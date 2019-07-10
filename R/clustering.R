@@ -272,21 +272,6 @@ runClustering <- function(tSNEResults, # for deleteOutliers = FALSE
 
 
 
-#' Cluster cells and get similarity matrix of cells.
-#' 
-#' The function returns consensus clusters by using hierarchical clustering on the similarity matrix of cells.
-#' It provides two options: to specify an exact number of clusters (with clusterNumber parameter)
-#' or to select the depth of splitting (deepSplit parameter).
-#' 
-#' @param dbscanMatrix an output matrix of conclus::runDBSCAN() function.
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param clusterNumber a parameter, specifying the exact number of cluster.
-#' @param deepSplit a parameter, specifying how deep we will split the clustering tree. It takes integers from 1 to 4.
-#' @param cores maximum number of jobs that CONCLUS can run in parallel.
-#' @param clusteringMethod a clustering methods passed to hclust() function.
-#'
-#' @return A SingleCellExperiment object with modified/created "clusters" column in the colData, and cells similarity matrix.
-#' @export
 clusterCellsInternal <- function(dbscanMatrix, sceObject, clusterNumber=0,
 		deepSplit = 4, cores=1,
 		clusteringMethod = "ward.D2") {
