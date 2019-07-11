@@ -3,28 +3,39 @@
 - Modification of the getTSNEresults to include updates on scater package
 - Include missing packages into NAMESPACE file
 - Re-structuration and modifications of the vignette
-- add normalization step to runCONCLUS function
-- add cores parameter to calls of generateTSNECoordinates
-- hide choosePalette function
-- remove deleteFile function
+- Add normalization step to runCONCLUS function
+- Add cores parameter to calls of generateTSNECoordinates
+- Hide getTSNEresults, plotDistanceGraphWithEpsilon, plotTestClustering, mkDbscan, 
+mkOutlierScoreDf, excludeOutliers, mkSimMat, mkSimMed, orderCellsInCluster, 
+orderGenesInCluster, generateAnnotationColors, annotateGenes, filterCells, 
+addCellsInfo, runClustering and filterGenes functions
+- Remove deleteFile, checkTSNEPicture, getKEGGGenes function
 - Reorganize import and exports in NameSpace
-- suppress packages loading from R code and put them in NAMESPACE
-- hide getTSNEresults function
-- move .getTSNEresults to sharedInternals.R
+- Suppress packages loading from R code and put them in NAMESPACE
+- delete runClustering.Rd
+- Modification of clusterCellsInternal.Rd, runCONCLUS.Rd, normaliseCountMatrix.Rd, 
+generateTSNECoordinates.Rd, runDBSCAN.Rd, calculateClustersSimilarity.Rd, 
+plotCellSimilarity.Rd, plotClusteredTSNE.Rd, exportMatrix.Rd, exportData.Rd,
+exportClusteringResults.Rd, rankGenes.Rd, getMarkerGenes.Rd, plotCellHeatmap.Rd,
+plotGeneExpression.Rd, markers.Rd, getGenesInfo.Rd, saveMarkersLists.Rd,   
+saveGenesInfo.Rd, addClusteringManually.Rd, choosePalette.Rd, and initialisePath.Rd
+- Remove roxygen documentation from the code
+- Move .getTSNEresults, choosePalette, initialisePath to sharedInternals.R
+
 - simplify testClustering for pdf parameters
 - remove first call of testClustering and keep internal function code only
 - move testClustering to testClustering.R
-- move .choosePalette to sharedInternals.R
+
 - move runCONCLUS function to runCONCLUS.R
 - move exportMatrix to export.R
 - move exportData to export.R
-- move initialisePath to sharedInternals.R
+
 - move exportClusteringResults to export.R
 - delete plotDistanceGraph because not used
 - move plotDistanceGraphWithEpsilon to testClustering.R
-- hide plotDistanceGraphWithEpsilon
+
 - move plotTestClustering to testClustering.R
-- hide plotTestClustering
+
 - move plotCellSimilarity to plot.R
 - move plotClusteredTSNE to plot.R
 - merge .plotClusteredTSNE and plotClusteredTSNE
@@ -34,93 +45,72 @@
 - move plotClustersSimilarity to plot.R
 - delete chooseStatePalette because not used
 - move generateTSNECoordinates to tSNE.R
-- remove checkTSNEPicture because not used
+
 - move mkDbscan and runDBSCAN to dbScan.R
-- hide mkDbscan
+
 - move the testClustering.R content to clustering.R
 - move excludeOutliers, mkOutlierScoreDf and runClustering to clustering.R
-- hide mkOutlierScoreDf and excludeOutliers
+
 - move mkSimMat to clustering.R
 - move clusterCellsInternal to clustering.R
-- hide mkSimMat
+
 - move mkSimMed and calculateClustersSimilarity to clustering.R
-- hide mkSimMed
+
 - move rankGenes and rankGenesInternal to markers.R
 - merge rankGenes and rankGenesInternal
 - move getMarkerGenes to markers.R
 - move orderCellsInCluster to plot.R
-- hide orderCellsInCluster in plot.R
+
 - move orderGenesInCluster to plot.R
-- hide orderGenesInCluster in plot.R
+
 - move generateAnnotationColors to plot.R
-- hide generateAnnotationColors in plot.R
+
 - move addClusteringManually to clustering.R
 - move.normaliseCountMatrix, normaliseCountMatrix, and duplicate to normalization.R
 - merge the three normalization function in normalization.R by setting databaseDir = TRUE and modifying annotateGene accordingly
 - move annotateGenes to normalization.R
-- hide annotateGenes in normalization.R
+
 - move filterCells to normalization.R
-- Hide filterCells in normalization.R
+
 - move addCellsInfo to normalization.R
-- hide addCellsInfo in normalization.R
+
 - move filterGenes to normalization.R
-- hide filterGenes in normalization.R
+
 - move getGenesInfo to markers.R
 - move saveGenesInfo to markers.R
 - move saveMarkersLists to markers.R
 - set one core by default in runCONCLUS.R
-- modify and complete runCONCLUS.Rd
 - delete manual from code in runCONCLUS.R
 - modify .choosePalette in sharedInternal.R to avoid repetition of colors
-- remove getKEGGGenes function and delete visualisation_and_clustering_functions.R file
+
 - remove the method parameter from normaliseCountMatrix in normalization.R
 - Change ordercluster in plotCellSimilarity (in plot.R) to take the values TRUE/FALSE instead of name/FALSE.
 - Change ordercluster in plotCellHeatmap (in plot.R) to take the values TRUE/FALSE instead of name/FALSE. Add an additional "similarity" parameter.
 - remove normaliseCountMatrix documentation from code
-- complete and modify normaliseCountMatrix.Rd
 - Remove doc from the code in tSNE.R
 - change nb of default cores to 1 in tSNE.R
-- complete and modify generateTSNECoordinates.Rd
 - remove runDBSCAN doc from dbScan.R
 - change default cores to 1 in dbScan.R
-- complete and modify runDBSCAN.Rd
 - remove doc of calculateClustersSimilarity from clustering.R
 - add default value for clusteringMethod param of calculateClustersSimilarity in clustering.R
-- complete and modify calculateClustersSimilarity.Rd
 - change default values of clusterCellsInternal in clustering.R
-- Complete and update clusterCellsInternal.Rd
 - remove remove clusterCellsInternal doc from code
 - remove plotCellSimilarity doc from plot.R
-- update and complete plotCellSimilarity.Rd
 - remove doc for plotClustersSimilarity in plot.R
 - add plotClustersSimilarity default values in plot.R
 - update and complete plotClustersSimilarity.R
 - remove doc for plotClusteredTSNE from plot.R
 - add param value checking for columnName param in plotClusteredTSNE in plot.R
-- complete and update plotClusteredTSNE.Rd
-- update exportMatrix.Rd
-- create exportData.Rd
-- update exportClusteringResults.Rd
 - move detailed explanation of rankGenes in the vignette to the "details" section of rankGenes.Rd
 - remove rankGenes doc from code in markers.R
 - remove doc for getMarkerGenes in markers.R
 - reorganize parameters for getMarkerGenes and set default gene number to 10 in markers.R
-- update and complete getMarkerGenes.Rd
 - remove remove plotCellHeatmap doc from plot.R
-- update and complete plotCellHeatmap.Rd
 - delete doc of plotGeneExpression in plot.R
 - reorganize parameters of plotGeneExpression in plot.R
-- update and complete plotGeneExpression.Rd
 - add DataCombine to namespace
 - remove getGenesInfo doc from markers.R
-- Add condition on orderGenes in getGenesInfo in markers.Rd
 - Replace coresGene parameter by cores and set default to 1 in markers.R
-- update getGenesInfo.Rd
 - remove saveMarkersLists doc from markers.R
-- update saveMarkersLists.Rd
 - remove saveGenesInfo doc from markers.R
-- update saveGenesInfo.Rd
 - remove addClusteringManually doc from clustering.R
-- update addClusteringManually.Rd
-
- 
