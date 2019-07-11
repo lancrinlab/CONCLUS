@@ -1,6 +1,7 @@
 
-runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData,
-		species,
+runCONCLUS <- function(dataDirectory, experimentName, 
+		columnsMetaData = NA,
+		species = NA,
 		colorPalette="default",
 		statePalette="default",
 		clusteringMethod="ward.D2",
