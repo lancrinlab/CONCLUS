@@ -632,12 +632,9 @@ sceObjectCONCLUS <- addClusteringManually(fileName = "clusters_table_manual.tsv"
     columnName = "clusters")
 
 # Redo the analysis with manual clustering
-sceObjectCONCLUS <- runCONCLUS(sceObjectCONCLUS, dataDirectory, experimentName, 
-                        preClustered = TRUE, epsilon=c(1.3, 1.4, 1.5), minPoints=c(3, 4),
-                        PCs=c(4, 6, 8, 10, 20, 40, 50), perplexities=c(30,40),
-                        randomSeed = 42, cores = 1, 
-                        statePalette = c("bisque", "cadetblue2", 
-                                         "coral1", "cornflowerblue"))    
+sceObjectCONCLUS <- runCONCLUS(dataDirectory, experimentName, 
+           statePalette= c("bisque", "cadetblue2", "coral1", "cornflowerblue"),
+		   preClustered = TRUE, manualClusteringObject = sceObjectCONCLUS)  
 ```
 
 As previously, we can now make heatmaps of marker gene expression. 
