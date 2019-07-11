@@ -111,5 +111,14 @@
 - delete doc of plotGeneExpression in plot.R
 - reorganize parameters of plotGeneExpression in plot.R
 - update and complete plotGeneExpression.Rd
+- add DataCombine to namespace
+- remove getGenesInfo doc from markers.R
+- Add condition on orderGenes in getGenesInfo in markers.Rd
+- Replace coresGene parameter by cores and set default to 1 in markers.R
+- update getGenesInfo.Rd
+- remove saveMarkersLists doc from markers.R
+- update saveMarkersLists.Rd
+- remove saveGenesInfo doc from markers.R
+- update saveGenesInfo.Rd
 
  
