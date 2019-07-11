@@ -407,22 +407,6 @@ saveGenesInfo <- function(dataDirectory = "",
 }
 
 
-#' Save top N marker genes for each cluster into a format suitable for conclus::saveGenesInfo() function.
-#' 
-#' The function takes the output files of conclus::rankGenes(), extracts top N markers and saves
-#' them into the first "geneName" column of the output table. The second column "clusters" contains the 
-#' name of the corresponding cluster.
-#'
-#' @param experimentName name of the experiment which appears at the beginning of the file name 
-#' (supposed to be the same for one experiment during the workflow).
-#' @param dataDirectory experiment directory (supposed to be the same for one experiment during the workflow).
-#' @param inputDir input directory, usually "marker_genes" created automatically after conclus::runCONCLUS().
-#' @param outputDir output directory.
-#' @param pattern a pattern of the input file names to take.
-#' @param Ntop number of top markers to take from each cluster.
-#'
-#' @return It saves files into the outputDir. The number of files is equal to the number of clusters.
-#' @export
 saveMarkersLists <- function(experimentName, dataDirectory,
 		inputDir = file.path(dataDirectory, "marker_genes"),
 		outputDir = file.path(dataDirectory,
