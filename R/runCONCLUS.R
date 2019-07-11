@@ -49,7 +49,7 @@ runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData,
 		sceObjectFiltered <- sceObject
 	} else {
 		# Running clustering
-		clusteringResults <- runClustering(tSNEResults, sceObject, dataDirectory,
+		clusteringResults <- .runClustering(tSNEResults, sceObject, dataDirectory,
 				experimentName,
 				epsilon=epsilon, minPoints=minPoints,
 				k=k, deepSplit=deepSplit,
@@ -67,7 +67,7 @@ runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData,
 					dnn=list("Cells distribution by clusters")))
 	
 	clustersNumber <- length(unique(SummarizedExperiment::colData(sceObjectFiltered)$clusters))
-	colorPalette <- .choosePalette(colorPalette, clustersNumber)
+	colorPalette <- choosePalette(colorPalette, clustersNumber)
 	
 	# Plotting cluster stablility and 2D visualisations
 	plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, dataDirectory,
