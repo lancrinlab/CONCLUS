@@ -14,7 +14,7 @@ runCONCLUS(dataDirectory, experimentName,
   perplexities = c(30, 40), randomSeed = 42, deepSplit = 4,
   preClustered = F, orderClusters = FALSE, cores = 1,
   plotPDFcellSim = TRUE, deleteOutliers = TRUE,
-  tSNEalreadyGenerated = FALSE, tSNEresExp = "")
+  tSNEalreadyGenerated = FALSE, tSNEresExp = "", manualClusteringObject = NA)
 }
 \arguments{
 
@@ -59,6 +59,8 @@ It will require recalculating of the similarity matrix of cells. Default = FALSE
 \item{tSNEalreadyGenerated}{TRUE if you already ran CONCLUS ones and have t-SNE coordinated saved. Default = FALSE}
 
 \item{tSNEresExp}{experimentName of t-SNE coordinates which you want to use. This argument allows copying and pasting t-SNE coordinates between different CONCLUS runs without renaming the files. Default = ""}
+
+\item{manualClusteringObject}{Result of the function addClusteringManually. Default = NA. See details}
 }
 \value{
 A SingleCellExperiment object.
@@ -70,6 +72,9 @@ for each cluster, 6) Saves plots and tables into dataDirectory.
 
   colorPalette/statePalette -- A vector of colors for clusters/states or 'default' value. If 'default' is selected, the number of clusters is limited to 16. 
 If an error message is thrown, re-run the function with your own color vector.
+
+  manualClusteringObject -- After running once runCONCLUS, one could which to modify the obtained clusters manually. This is achieved with the function 'addClusteringManually'. The result of 'addClusteringManually' should be passed
+  to the manualClusteringObject parameter to re-run CONCLUS on the new defined clusters.
 
 }
 \examples{
