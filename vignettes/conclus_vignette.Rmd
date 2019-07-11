@@ -673,13 +673,6 @@ plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory,
 
 ```{r}
 # Plotting heatmap displaying mean-centered values
-genesNumber <- 10
-markersClusters <- getMarkerGenes(dataDirectory, sceObjectCONCLUS, 
-                                  experimentName = experimentName,
-                                  genesNumber = genesNumber)
-                                  
-orderClusters <- T # F will apply hierarchical clustering to all cells
-orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- T  # F to show normalized counts, 
 plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory, 
                 experimentName, 
