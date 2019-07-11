@@ -7,20 +7,23 @@
 This function performs the core CONCLUS workflow. 
 }
 \usage{
-runCONCLUS(dataDirectory, experimentName,
-  colorPalette = "default", statePalette = "default",
-  clusteringMethod = "ward.D2", epsilon = c(1.3, 1.4, 1.5),
-  minPoints = c(3, 4), k = 0, PCs = c(4, 6, 8, 10, 20, 40, 50),
-  perplexities = c(30, 40), randomSeed = 42, deepSplit = 4,
-  preClustered = F, orderClusters = FALSE, cores = 1,
-  plotPDFcellSim = TRUE, deleteOutliers = TRUE,
-  tSNEalreadyGenerated = FALSE, tSNEresExp = "", manualClusteringObject = NA)
+runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData = NA,
+		species = NA, colorPalette="default", statePalette="default",
+		clusteringMethod="ward.D2", epsilon=c(1.3, 1.4, 1.5), minPoints=c(3, 4),
+		k=0, PCs=c(4, 6, 8, 10, 20, 40, 50), perplexities=c(30,40), randomSeed = 42,
+		deepSplit=4, preClustered = F, orderClusters = FALSE, cores=1,
+		plotPDFcellSim = TRUE, deleteOutliers = TRUE, tSNEalreadyGenerated = FALSE,
+		tSNEresExp = "", manualClusteringObject = NA)
 }
 \arguments{
 
 \item{dataDirectory}{CONCLUS will create this directory if it doesn't exist and store there all output files.}
 
 \item{experimentName}{Prefix used for output files.}
+
+\item{columnsMetaData}{A data frame with information about cells. Not used if manualClusteringObject is defined. See details. Default = NA.}
+
+\item{species}{Currently limited to human and mouse. Possible values are either 'mmu' or 'human'. Not used if manualClusteringObject is defined. Default = NA.}
 
 \item{colorPalette}{A vector of colors for clusters. Default = "default", see details.}
 
@@ -43,8 +46,7 @@ For example, to take ranges 1:5 and 1:10 write c(5, 10). Default = c(4, 6, 8, 10
 
 \item{deepSplit}{intuitive level of clustering depth. Options are 1, 2, 3, 4. Default = 4}
 
-\item{preClustered}{Boolean precising if DBSCAN is run to calculate similarity matrices. If TRUE, it will not change the column 
-clusters after the run. Default="FALSE"}
+\item{preClustered}{Boolean precising if DBSCAN is run to calculate similarity matrices. Should be TRUE if manualClusteringObject is defined. Default="FALSE"}
 
 \item{orderClusters}{If True, clusters in the similarity matrix of cells will be ordered by name. Default = FALSE}
 
@@ -70,8 +72,10 @@ A SingleCellExperiment object.
 3) Calculates similarity matrices of cells and clusters, 4) Assigns cells to clusters, 5) Searches for positive markers 
 for each cluster, 6) Saves plots and tables into dataDirectory.
 
+  columnsMetaData -- Dataframe containing three columns: cellName, state, and cellBarcode. Not used if manualClusteringObject is defined.
+  
   colorPalette/statePalette -- A vector of colors for clusters/states or 'default' value. If 'default' is selected, the number of clusters is limited to 16. 
-If an error message is thrown, re-run the function with your own color vector.
+If an error message is thrown, re-run the function with your own color vector.  
 
   manualClusteringObject -- After running once runCONCLUS, one could which to modify the obtained clusters manually. This is achieved with the function 'addClusteringManually'. The result of 'addClusteringManually' should be passed
   to the manualClusteringObject parameter to re-run CONCLUS on the new defined clusters.
