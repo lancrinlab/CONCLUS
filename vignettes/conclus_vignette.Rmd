@@ -524,19 +524,18 @@ plotGeneExpression("H19", experimentName, dataDirectory, sceObjectCONCLUS, tSNEp
 plotGeneExpression("Postn", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10)
 ```
 
-!! STOP HERE
-
 # Collect publicly available info about marker genes
-*GetGenesInfo* is a function for gene information retrieval from open-source databases and websites of NCBI, MGI, and UniProt by web-scraping. It requires *markersClusters* data frame where the first column "geneName" is mandatory and the second column "clusters" is optional. It can have more than two columns; they will be kept in the output file. *GetGenesInfo* can recognize Gene Symbols and Ensembl IDs, genes from both annotations can be present simultaneously. One can use them for significant DE genes between conditions in bulk RNA-seq data, for example after DESeq2 results.
 
-Warning: if the function finished working because "Timeout was reached", please restart it from the file where it failed. It can happen when the Internet connection is slow or interrupted.
+*GetGenesInfo* is a function for gene information retrieval from open-source databases and websites of NCBI, MGI, and UniProt by web-scraping. It requires markersClusters data frame where the first column “geneName” is mandatory 
+and the second column “clusters” is optional. It can have more than two columns; they will be kept in the output file. *GetGenesInfo* can recognize Gene Symbols and Ensembl IDs, genes from both annotations can be present simultaneously.
+The second argument is “databaseDir” which is a path to the “Mmus_gene_database_secretedMol.tsv” database contained in the package. Databases for other organisms than mouse will be provided in the future or on request.
+
 To ensure that the vignette runs successfully from the first attempt, in the current example, we run *getGenesInfo* without summary from UniProt. However, we recommend you to try firstly default version *getUniprot = TRUE*.
+
 ```{r}
-# 7. getGenesInfo example
 result <- getGenesInfo(markersClusters, groupBy = "clusters",
                        getUniprot = FALSE) # please change to getUniprot = TRUE
 
-# 7.1 save the result
 outputDir <- file.path(outputDirectory, "/marker_genes/getGenesInfo")
 dir.create(outputDir, showWarnings=F)
 write.table(result, file = file.path(outputDir, 
@@ -544,163 +543,63 @@ write.table(result, file = file.path(outputDir,
             quote = FALSE, sep = ";", row.names = FALSE)
 ```
 
+The *saveGenesInfo* function will save results of getGenesInfo into "outputDirectory/marker_genes/saveGenesInfo". It goes file by file sequentially. If you see an error message that the connection the website takes too much time, 
+restart the saveGenesInfo from the table where it failed using the startFromFile option. As an example, we will specify “startFromFile = 10” to calculate the output only for the last cluster. Hence, we reduce the computational time 
+and the number of output messages. For your analysis, please select “startFromFile = 1”.
+ 
+```{r}
+saveGenesInfo(outputDirectory, sep = ";", header = TRUE, 
+              startFromFile = 10, getUniprot = FALSE) # please change to getUniprot = TRUE
+```
+
+
 # Save info about top 100 markers for each cluster
-*MarkersClusters* usually contains 10-20 top marker genes per groups when it is more reliable to use 100 genes for cell state annotation. The function *saveMarkersLists* will create data frames with top 100 (by default) top marker genes for each cluster. The second column will be the name of the group. It will create "marker_genes/markers_lists" folder and save them there. The *saveGenesInfo* function will save results of *getGenesInfo* into outputDir which we specify. It goes file by file sequentially. If you see an error that the connection the website took to much time and dropped, restart the *saveGenesInfo* from the table where it failed using the *startFromFile* option. We will specify "startFromFile = 9" to calculate the output only for the last cluster. Hence, we reduce the computational time and the number of output messages. For your analysis, we recommend selecting "startFromFile = 1".
+
+*MarkersClusters* usually contains 10-20 top marker genes per clusters. However, it is more reliable to use at least 100 genes for cell state annotation. 
+
+The function saveMarkersLists will create data frames with top 100 (by default) top marker genes for each cluster. The second column will be the name of the group. It will create “marker_genes/markers_lists” folder and save them there. 
 
 ```{r}
-# 8. saveGenesInfo example
 saveMarkersLists(experimentName, outputDirectory)
 ```
 
-The result will be saved into the "outputDirectory/marker_genes/saveGenesInfo" directory. 
+
+# Supervised clustering 
+
+Until now, we have been using CONCLUS in an unsupervised fashion. This is a good way to start the analysis of a sc-RNA-seq dataset. However, the knowledge of the biologist remains a crucial asset to get the maximum of the data. 
+This is why we have included in CONCLUS, additional options to do supervised analysis (or “manual” clustering) to allow the researcher to use her/his biological knowledge in the CONCLUS workflow. Going back to the example of the 
+Bergiers et al. dataset above (cluster similarity heatmap), one can see that some clusters clearly belong to the same family of cells after examining the clusters_similarity matrix generated by CONCLUS.
+
+It is mostly obvious for clusters 2,3 and 4 and also for clusters 5 and 9. In order to figure out what marker genes are defining these families of clusters, one can use manual clustering in CONCLUS to fuse clusters of similar 
+nature: i.e. combine clusters 2,3 and 4 together or combine clusters 5 and 9.
+
 ```{r}
-saveGenesInfo(outputDirectory, sep = ";", header = TRUE, 
-              startFromFile = 9, getUniprot = FALSE) # please change to getUniprot = TRUE
+exportClusteringResults(sceObjectCONCLUS, dataDirectory, experimentName, "clusters_table.tsv")
+clustersTable <- read.delim(file.path(dataDirectory, "output_tables", paste0(experimentName, "_clusters_table.tsv")), stringsAsFactors = FALSE) 
+
+#replace “3” by “2” in the clusters_table
+clustersTable$clusters[clustersTable$clusters == "3"] = "2"
+
+#replace “4” by “2” in the clusters_table 
+clustersTable$clusters[clustersTable$clusters == "4"] = "2"
+
+#replace “9” by “5” in the clusters_table 
+clustersTable$clusters[clustersTable$clusters == "9"] = "5"
+
+write.table(clustersTable, file.path(dataDirectory, "output_tables", paste0(experimentName, "_clusters_table_manual.tsv")), quote = FALSE, sep = "\t")
 ```
 
-
-
-# Give names to the clusters
-Imaging you looked through all these 93 genes and decided the cell types of each of clusters. For your publication, you would probably like rename your groups from "1", "2", "3" to "myeloid," "erythroid," "endothelial" cells. You can easily redo all pictures with new cluster names using the *addClusteringManually* function. Since clusters "9" and "10" do not have many evident DE genes, we can merge them and look if the marker selection improves when we consider them as one group.
-
-To merge and rename groups, we export the “Bergiers_clusters_table.tsv” file, rename the groups “9” and “10” as "newCluster", and overwrite the file.
+Now we can use runCONCLUS again and overwrite old marker genes and save new heatmaps. If you want to keep an old folder with marker genes, please rename it, so runCONCLUS will create a new marker_genes folder.
 
 ```{r}
-clustersTable <- read.delim(file.path(outputDirectory, "output_tables",                                                    paste0(experimentName, "_clusters_table.tsv")), 
-                            stringsAsFactors = FALSE)
-clustersTable$clusters[clustersTable$clusters == "9"] <- "newCluster"
-clustersTable$clusters[clustersTable$clusters == "10"] <- "newCluster"
-write.table(clustersTable, file.path(outputDirectory, "output_tables",                                                    paste0(experimentName, "_clusters_table.tsv")), 
-            quote = FALSE, sep = "\t")
-```
-
-Now we use *runCONCLUS* again to overwrite old marker genes and save new heatmaps. If you want to keep an old folder with marker genes, please rename it, so *runCONCLUS* will create a new *marker_genes* folder.
-```{r}
-# 5. Correcting clustering manually (optional)
-sceObjectCONCLUS <- conclus::addClusteringManually(fileName = "clusters_table.tsv", 
-    dataDirectory = outputDirectory, 
+#Correcting clustering manually
+sceObjectCONCLUS <- addClusteringManually(fileName = "clusters_table_manual.tsv", 
+    dataDirectory = dataDirectory, 
     experimentName = experimentName,
     sceObject = sceObjectCONCLUS, 
     columnName = "clusters")
-
-# 5.1 Redo the analysis with manual clustering (optional)
-sceObjectCONCLUS <- conclus::runCONCLUS(sceObjectCONCLUS, outputDirectory, experimentName, 
-                        preClustered = TRUE,
-                        tSNEalreadyGenerated = TRUE, # to use t-SNE coords from outputDirectory/tsnes
-                        tSNEresExp = experimentName,
-                        cores = 14, # 14 for servers, 1 for PC
-                        statePalette = c("bisque", "cadetblue2", 
-                                         "coral1", "cornflowerblue"))
+    
 ```
-
-```{r}
-genesNumber <- 10
-markersClusters <- getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
-                                  experimentName = experimentName,
-                                  genesNumber = genesNumber)
-orderClusters <- T # F will apply hierarchical clustering to all cells
-orderGenes <- T    # F will apply hierarchical clustering to all genes
-meanCentered <- T  # F to show normalized counts
-conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
-                experimentName, 
-                paste0("clusters",
-                       length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
-                       "_meanCentered",meanCentered,
-                       "_orderClusters",orderClusters,
-                       "_orderGenes",orderGenes,"_top",
-                       genesNumber, "markersPerCluster"), 
-                meanCentered = meanCentered, 
-                colorPalette = RColorBrewer::brewer.pal(10, "Paired"),
-                orderClusters = orderClusters,
-                orderGenes = orderGenes,
-                fontsize_row = 4,
-                statePalette = c("bisque", "cadetblue2", 
-                                 "coral1", "cornflowerblue"),
-                color = colorRampPalette(c("#023b84","#4b97fc", 
-                                           "#FEE395", 
-                                           "#F4794E", "#D73027",
-                                           "#a31008", "#921912"))(100),
-                returnPlot = TRUE,
-                width = 7, height = 5.5)
-```
-
-# Save the SingleCellExperiment object
-We recommend you to save the sceObject after running the workflow to be able to track and reproduce your analysis in the future.
-```{r}
-saveRDS(sceObjectCONCLUS, file.path(outputDirectory, paste0("output_tables/", 
-                                experimentName, "_sceObjectAfterCONCLUS.rds")))
-```
-
-
-
-
-
-
-
-!!!!!!! TO PUT IN A SPECIAL SECTION
-## Option 1: upload your clustering solution to CONCLUS
-*RunCONCLUS* can run built-in clustering or skip this step if you want to integrate your favorite clustering method. In this case, we assume that you already have a clustering solution which you can add as a column "clusters" to the *colData* of the *sceObject* like in this toy example:
-
-```{r}
-SummarizedExperiment::colData(sceObject)$clusters = factor(c(rep(1, 100), rep(2, 200), rep(3, (ncol(sceObject)-300) ) ))
-table(SummarizedExperiment::colData(sceObject)$clusters)
-```
-
-!!!!!!!!!!!!!!!!!
-
-
-
-!!!!!!!!!!! TO PUT IN A SEPARATED SECTION
-## Option 2: receive CONCLUS clustering based on dbscan
-In Section, we will use the built-in clustering method. When we set *preClustered = FALSE* in *runCONCLUS*, Sections 4.4.2 and 4.4.3 will be replaced with one function called *runClustering*:
-
-```{r}
-deepSplit = 0 # 0 to avoid cutreeDynamic, 1 to 4 to use it
-deleteOutliers = FALSE
-epsilon=c(1.3, 1.4, 1.5)
-minPoints=c(3, 4)
-cores=14
-clusteringMethod="ward.D2"
-k=10 # split the dendrogram with cutree function into 10 groups
-clusteringResults <- conclus::runClustering(tSNEResults, sceObject, outputDirectory, 
-                                       experimentName,
-                                       epsilon=epsilon, minPoints=minPoints, 
-                                       k=k, deepSplit=deepSplit,
-                                       cores=cores,
-                                       clusteringMethod=clusteringMethod,
-                                       deleteOutliers = deleteOutliers,
-                                       PCs=PCs,
-                                       perplexities=perplexities, 
-                                       randomSeed = randomSeed)
-sceObjectFiltered <- clusteringResults[[1]]
-cellsSimilarityMatrix <- clusteringResults[[2]]
-
-print(table(SummarizedExperiment::colData(sceObjectFiltered)$clusters, 
-              dnn=list("Cells distribuion by clusters")))
-```
-
-```{r fig.height=6, fig.width=7}
-colorPalette="default"
-statePalette="default"
-plotPDFcellSim = TRUE
-orderClusters = FALSE
-clustersNumber <- length(unique(SummarizedExperiment::colData(sceObjectFiltered)$clusters))
-colorPalette <- conclus::choosePalette(colorPalette, clustersNumber)
-
-# Plotting cluster stablility
-conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDirectory,
-                 experimentName, colorPalette, 
-                 orderClusters = orderClusters, 
-                 statePalette = statePalette, 
-                 clusteringMethod = clusteringMethod,
-                 plotPDF = plotPDFcellSim,
-                 returnPlot = TRUE)
-```
-
-We will call this combination *consensus clusters* and use it everywhere later. We can appreciate that *cellsSimilarityMatrix* is the first evidence showing that CONCLUS managed not only to distinguish treated cells from controls but also find subpopulations within these groups which were impossible using PCA alone. Next step would be to see the topology of the clusters in our t-SNE plots with tuned parameters. After that, we can have a look at how many genes drive this cluster separation using a heatmap with top markers.
-
-!!!!!!!!!!!!!!!!!!
-
 
 
 # Conclusion
