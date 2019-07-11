@@ -5,7 +5,7 @@ exportClusteringResults, exportMatrix, generateTSNECoordinates, getGenesInfo,
 getMarkerGenes, initialisePath, normaliseCountMatrix, plotCellHeatmap, 
 plotCellSimilarity, plotClusteredTSNE, plotClustersSimilarity, 
 plotGeneExpression, rankGenes, runCONCLUS, runClustering, runDBSCAN, 
-saveGenesInfo, saveMarkersLists, testClustering)
+saveGenesInfo, saveMarkersLists, testClustering, choosePalette)
 
 ## Import functions and packages 
 
