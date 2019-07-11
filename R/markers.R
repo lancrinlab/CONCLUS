@@ -100,29 +100,6 @@ getMarkerGenes <- function(dataDirectory, sceObject, experimentName,
 
 
 
-#' Collect genes information to one table.
-#'
-#' The function takes a data frame containing gene symbols and (or) ENSEMBL IDs and returns
-#' a data frame with such information as gene name, feature type, chromosome,
-#' gene IDs in different annotations, knockout information from MGI, a summary from NCBI 
-#' and UniProt, and whether or not a gene belongs to GO terms containing proteins on the cell surface or 
-#' involved in secretion.
-#'
-#' @param genes a data frame with the first column called "geneName" containing gene symbols and (or) ENSEMBL IDs.
-#' Other columns are optional. For example, the second column could be "clusters" with the name of the cluster 
-#' for which the gene is a marker.
-#' @param databaseDir a path to the database provided with CONCLUS called "Mmus_gene_database_secretedMol.tsv".
-#' @param groupBy a column in the input table used for grouping the genes in the output tables.
-#' This option is useful if a table contains genes from different clusters.
-#' @param orderGenes if "initial" then the order of genes will not be changed.
-#' @param getUniprot boolean, whether to get information from UniProt or not. Default is TRUE.
-#' Sometimes, the connection to the website is not reliable. 
-#' If you tried a couple of times and it failed, select FALSE. 
-#' @param silent whether to show messages from intermediate steps or not.
-#' @param coresGenes maximum number of jobs that the function can run in parallel.
-#'
-#' @return Returns a data frame.
-#' @export
 getGenesInfo <- function(genes, databaseDir = system.file("extdata", package = "conclus"), 
 		groupBy = "clusters",
 		orderGenes = "initial",
