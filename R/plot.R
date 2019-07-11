@@ -5,9 +5,9 @@
 	states <- unique(colData$state)
 	clusterNumber <- length(unique(colData$clusters))
 	
-	colorAnnotationClusters <- .choosePalette(colorPaletteParameter, clusterNumber)
+	colorAnnotationClusters <- choosePalette(colorPaletteParameter, clusterNumber)
 	#colorAnnotationState <- chooseStatePalette(length(states))
-	colorAnnotationState <- .choosePalette(statePalette, length(states))
+	colorAnnotationState <- choosePalette(statePalette, length(states))
 	names(colorAnnotationState) <- states
 	names(colorAnnotationClusters) <- clusters
 	
@@ -225,7 +225,7 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 		numberElements <- NULL
 	}else{
 		numberElements <- length(unique(SummarizedExperiment::colData(sceObject)[,columnName]))
-		colorPalette <- .choosePalette(colorPalette, numberElements)
+		colorPalette <- choosePalette(colorPalette, numberElements)
 	}
 	
 	outputDir <- file.path(dataDirectory, graphsDirectory, graphsTSNEDirectory,
