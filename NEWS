@@ -99,3 +99,4 @@ databaseDir = TRUE and modifying annotateGene accordingly
 
 - Replace coresGene parameter by cores and set default to 1 in markers.R
 
+- change how results of clusterCellsInternal are handled if preClustered is TRUE in runCONCLUS.R
