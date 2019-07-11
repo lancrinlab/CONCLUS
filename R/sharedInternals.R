@@ -67,10 +67,6 @@ choosePalette <- function(colorPalette, clustersNumber){
 }
 
 
-#' Create all needed directories for CONCLUS output.
-#'
-#' @param dataDirectory output directory for a given CONCLUS run (supposed to be the same for one experiment during the workflow).
-#' @export
 initialisePath <- function(dataDirectory){
 	# creates directories for further writing of results.
 	# names of directories are hardcoded.
