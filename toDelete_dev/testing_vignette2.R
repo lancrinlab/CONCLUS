@@ -190,7 +190,7 @@ exportData(sceObjectFiltered, outputDirectory, experimentName)
 
 ## Marker genes identification
 
-conclus::rankGenes(sceObjectFiltered, clustersSimilarityMatrix, outputDirectory, 
+rankGenes(sceObjectFiltered, clustersSimilarityMatrix, outputDirectory, 
 		experimentName)
 rankedGenesClus5 <- read.delim(file.path(outputDirectory, "marker_genes",
 				"Bergiers_cluster_5_genes.tsv"),
@@ -201,7 +201,7 @@ head(rankedGenesClus5, n = 10)
 # Plot a heatmap with positive marker genes
 
 genesNumber <- 10
-markersClusters <- conclus::getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
+markersClusters <- getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
 		experimentName = experimentName,
 		genesNumber = genesNumber)
 
@@ -209,7 +209,7 @@ orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- T  # F to show normalized counts
 
-conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
+plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
 		experimentName, 
 		paste0("clusters",
 				length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
@@ -234,7 +234,7 @@ conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory,
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- F  # F to show normalized counts
-conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
+plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
 		experimentName, 
 		paste0("clusters",
 				length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
