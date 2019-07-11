@@ -362,20 +362,6 @@ calculateClustersSimilarity <- function(cellsSimilarityMatrix, sceObject,
 
 
 
-#' addClusteringManually
-#'
-#' The function replaces the content of the column "clusters" in the colData(sceObject) 
-#' with the clustering provided in the user table.
-#' The function will return the sceObject with cells which intersect with the cells from the input table.
-#'
-#' @param fileName a file with the clustering solution (for example, from previous CONCLUS runs).
-#' @param sceObject a SingleCellExperiment object with your experiment.
-#' @param dataDirectory output directory (supposed to be the same for one experiment during the workflow).
-#' @param experimentName name of the experiment which appears in filenames (supposed to be the same for one experiment during the workflow).
-#' @param columnName name of the column with the clusters.
-#'
-#' @return A SingleCellExperiment object with the created/renewed column "clusters" in the colData(sceObject).
-#' @export
 addClusteringManually <- function(fileName, sceObject, dataDirectory,
 		experimentName, columnName = "clusters"){
 	
