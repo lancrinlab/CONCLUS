@@ -542,11 +542,10 @@ plotGeneExpression("Postn", experimentName, outputDirectory, sceObjectCONCLUS, t
 and the second column “clusters” is optional. It can have more than two columns; they will be kept in the output file. *GetGenesInfo* can recognize Gene Symbols and Ensembl IDs, genes from both annotations can be present simultaneously.
 The second argument is “databaseDir” which is a path to the “Mmus_gene_database_secretedMol.tsv” database contained in the package. Databases for other organisms than mouse will be provided in the future or on request.
 
-To ensure that the vignette runs successfully from the first attempt, in the current example, we run *getGenesInfo* without summary from UniProt. However, we recommend you to try firstly default version *getUniprot = TRUE*.
 
-```{r}
+```{r, eval = FALSE}
 result <- getGenesInfo(markersClusters, groupBy = "clusters",
-                       getUniprot = FALSE) # please change to getUniprot = TRUE
+                       getUniprot = TRUE)
 
 outputDir <- file.path(outputDirectory, "/marker_genes/getGenesInfo")
 dir.create(outputDir, showWarnings=F)
@@ -582,7 +581,7 @@ write.table(result, file = file.path(outputDir,
 The function saveMarkersLists will create data frames with top 100 (by default) top marker genes for each cluster. The first column of the output table is the gene name and the second column is the associated cluster. 
 It will create “marker_genes/markers_lists” folder and save one table per cluster. 
 
-```{r}
+```{r, eval = FALSE}
 saveMarkersLists(experimentName, outputDirectory)
 ```
 
@@ -590,7 +589,7 @@ The *saveGenesInfo* function will save results of getGenesInfo into "outputDirec
 connection to the website takes too much time, restart the saveGenesInfo from the table where it failed using the startFromFile option. As an example, we will specify “startFromFile = 10” to calculate the output only for the last 
 cluster. Hence, we reduce the computational time and the number of output messages. For your analysis, please select “startFromFile = 1”.
  
-```{r}
+```{r, eval = FALSE}
 saveGenesInfo(outputDirectory, sep = ";", header = TRUE, 
               startFromFile = 10, getUniprot = FALSE) # please change to getUniprot = TRUE
 ```
