@@ -14,12 +14,18 @@ runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData,
 		plotPDFcellSim = TRUE,
 		deleteOutliers = TRUE,
 		tSNEalreadyGenerated = FALSE,
-		tSNEresExp = ""){
+		tSNEresExp = "",
+		manualClusteringObject = NA){
 	
-	initialisePath(dataDirectory)
-	
-	sceObject <- normaliseCountMatrix(countMatrix, species = species, 
-			colData = columnsMetaData)
+	if(is.na(manualClusteringObject)){
+		
+		initialisePath(dataDirectory)
+		sceObject <- normaliseCountMatrix(countMatrix, species = species, 
+				colData = columnsMetaData)
+		
+	}else{
+		sceObject <- manualClusteringObject
+	}
 	
 	# Generating 2D tSNE plots
 	if(!tSNEalreadyGenerated){
