@@ -82,9 +82,7 @@ countMatrix <- read.delim(file.path(system.file("extdata", package = "conclus"),
                           stringsAsFactors = FALSE)
 columnsMetaData <- read.delim(file.path(system.file("extdata", package = "conclus"), 
                                 "Bergiers_colData_filtered.tsv"))
-```
 
-```{r, eval=FALSE}
 sceObjectCONCLUS <- runCONCLUS(outputDirectory, 
                                experimentName,
                                columnsMetaData,
