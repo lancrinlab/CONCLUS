@@ -598,12 +598,118 @@ sceObjectCONCLUS <- addClusteringManually(fileName = "clusters_table_manual.tsv"
     experimentName = experimentName,
     sceObject = sceObjectCONCLUS, 
     columnName = "clusters")
-    
+
+# Redo the analysis with manual clustering
+sceObjectCONCLUS <- runCONCLUS(sceObjectCONCLUS, dataDirectory, experimentName, 
+                        preClustered = TRUE, epsilon=c(1.3, 1.4, 1.5), minPoints=c(3, 4),
+                        PCs=c(4, 6, 8, 10, 20, 40, 50), perplexities=c(30,40),
+                        randomSeed = 42, cores = 1, 
+                        statePalette = c("bisque", "cadetblue2", 
+                                         "coral1", "cornflowerblue"))    
+```
+
+As previously, we can now make heatmaps of marker gene expression. 
+
+```{r}
+# Plotting heatmap displaying normalized counts
+genesNumber <- 10
+markersClusters <- getMarkerGenes(dataDirectory, sceObjectCONCLUS, 
+                                  experimentName = experimentName,
+                                  genesNumber = genesNumber)
+                                  
+orderClusters <- T # F will apply hierarchical clustering to all cells
+orderGenes <- T    # F will apply hierarchical clustering to all genes
+meanCentered <- F  
+plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory, 
+                experimentName, 
+                paste0("clusters",
+                       length(levels(colData(sceObjectCONCLUS)$clusters)),
+                       "_meanCentered",meanCentered,
+                       "_orderClusters",orderClusters,
+                       "_orderGenes",orderGenes,"_top",
+                       genesNumber, "markersPerCluster"), 
+                meanCentered = meanCentered, 
+                colorPalette = brewer.pal(10, "Paired"),
+                orderClusters = orderClusters,
+                orderGenes = orderGenes,
+                fontsize_row = 5,
+                statePalette = c("bisque", "cadetblue2", 
+                                 "coral1", "cornflowerblue"),
+                color = colorRampPalette(c("#023b84","#4b97fc", 
+                                           "#FEE395", 
+                                           "#F4794E", "#D73027",
+                                           "#a31008","#7a0f09"))(100),
+                returnPlot = TRUE)
+```
+
+```{r}
+# Plotting heatmap displaying mean-centered values
+genesNumber <- 10
+markersClusters <- getMarkerGenes(dataDirectory, sceObjectCONCLUS, 
+                                  experimentName = experimentName,
+                                  genesNumber = genesNumber)
+                                  
+orderClusters <- T # F will apply hierarchical clustering to all cells
+orderGenes <- T    # F will apply hierarchical clustering to all genes
+meanCentered <- T  # F to show normalized counts, 
+plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory, 
+                experimentName, 
+                paste0("clusters",
+                       length(levels(colData(sceObjectCONCLUS)$clusters)),
+                       "_meanCentered",meanCentered,"_orderClusters",orderClusters,
+                       "_orderGenes",orderGenes,"_top",
+                       genesNumber, "markersPerCluster"), 
+                meanCentered = meanCentered, 
+                colorPalette = brewer.pal(10, "Paired"),
+                orderClusters = orderClusters,
+                orderGenes = orderGenes,
+                fontsize_row = 5,
+                statePalette = c("bisque", "cadetblue2", 
+                                 "coral1", "cornflowerblue"),
+                color = colorRampPalette(c("#023b84","#4b97fc", 
+                                           "#FEE395", 
+                                           "#F4794E", "#D73027",
+                                           "#a31008","#7a0f09"))(100),
+                returnPlot = TRUE)
+```
+
+This heatmap shows that Cd34 and Apoe are good markers of cluster 2 (mix of old clusters 2, 3 and 4), while Ctsc and Clec4n are specific markers of cluster 5 (mix of old clusters 5 and 9). We can visualize them in the t-SNE plots below.
+
+```{r}
+# Plot gene expression in a selected tSNE plot
+# Cd34, marker gene for clusters 2 
+plotGeneExpression("Cd34", experimentName, dataDirectory, sceObjectCONCLUS,
+                   tSNEpicture = 10, returnPlot = TRUE)
+```
+
+```{r}
+# Apoe, marker gene for cluster 2
+plotGeneExpression("Apoe", experimentName, dataDirectory, sceObjectCONCLUS,
+                   tSNEpicture = 10, returnPlot = TRUE)
+```
+
+```{r}
+# Ctsc, marker gene for cluster 5
+plotGeneExpression("Ctsc", experimentName, dataDirectory, sceObjectCONCLUS,
+                   tSNEpicture = 10, returnPlot = TRUE)
+```
+
+```{r}
+# Clec4n, marker gene for cluster 5
+plotGeneExpression("Clec4n", experimentName, dataDirectory, sceObjectCONCLUS,
+                   tSNEpicture = 10, returnPlot = TRUE)
 ```
 
 
+
 # Conclusion
-Here we demonstrated how to use sc-RNA-seq CONCLUS workflow details. The tool allowed us to gain more information on the dataset of *Bergiers et al.*. In the initial analysis using PCA, two significant clusters were found (one composed of i8TFs_plus cells and another comprising E_minus, E_plus, i8TFs_minus cells). Using CONCLUS, we confirmed a big difference between the i8TFs_plus experimental group and the other three. Interestingly, CONCLUS was able to unveil heterogeneity within the i8TFs group while the previous analysis performed by *Bergiers et al.* was not able to reveal it. This analysis offers additional information on the function of these eight transcription factors. 
+
+  Here we demonstrated how to use CONCLUS and combine multiple parameters testing for sc-RNA-seq analysis. It allowed us to gain more information on the dataset of Bergiers et al and will help gaining deeper insights in others. 
+  
+  Indeed in the original analysis using PCA, two major clusters were found (one composed of i8TFs_plus cells and another comprising E_minus, E_plus, i8TFs_minus cells). Using CONCLUS, we see that there is still a big 
+difference between the i8TFs_plus experimental group and the other three. Interestingly, CONCLUS was able to unveil heterogeneity within the i8TFs group while the previous analysis performed by Bergiers et al was not able to reveal it. 
+This analysis offers additional information on the function of these eight transcription factors. 
+
 
 # Session info
 This section lists all the packages used for the CONCLUS tool.
