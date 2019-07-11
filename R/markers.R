@@ -322,40 +322,6 @@ getGenesInfo <- function(genes, databaseDir = system.file("extdata", package = "
 }
 
 
-
-
-#' Save gene information into a table or tables for multiple inputs.
-#'
-#' This function runs conclus::getGenesInfo() function for all tables into the inputDir 
-#' and saves the result into the outputDir.
-#'
-#' @param dataDirectory a directory with CONCLUS output. You can specify either 
-#' dataDirectory, then inputDir and outputDir will be hardcoded, or inputDir and outputDir only.
-#' The first is recommended during running CONCLUS workflow when the second option
-#' is comfortable when you created input tables with genes manually.
-#' @param inputDir input directory containing text files. These files can be obtained by 
-#' applying conclus::saveMarkersLists() function or created manually. Each file must be a 
-#' data frame with the first column called "geneName" containing gene symbols and (or) ENSEMBL IDs.
-#' @param pattern a pattern of file names to take.
-#' @param outputDir output directory.
-#' @param databaseDir a path to the database "Mmus_gene_database_secretedMol.tsv". It is provided with the conclus package.
-#' @param sep a parameter of read.delim() function.
-#' @param header whether or not your input files have a header.
-#' @param startFromFile number of the input file to start with. The function approaches files one by one.
-#' It uses web scraping method to collect publicly available info from MGI, NCBI and UniProt websites.
-#' Sometimes, if the Internet connection is not reliable, the function can drop. 
-#' In this case, it is comfortable to start from the failed file and not to redo the previous ones.
-#' @param groupBy a column in the input table used for grouping the genes in the output tables.
-#' @param orderGenes if "initial" then the order of genes will not be changed.
-#' @param getUniprot boolean, whether to get information from UniProt or not. Default is TRUE.
-#' Sometimes, the connection to the website is not reliable. 
-#' If you tried a couple of times and it failed, select FALSE. 
-#' @param silent whether to show messages from intermediate steps or not.
-#' @param coresGenes maximum number of jobs that the function can run in parallel.
-#'
-#' @return It saves text files either in the 'dataDirectory/marker_genes/saveGenesInfo' or outputDir 
-#' depending on whether you specify dataDirectory or (inpitDir and outputDir) explicitly.
-#' @export
 saveGenesInfo <- function(dataDirectory = "",
 		inputDir = "", 
 		outputDir = "", 
