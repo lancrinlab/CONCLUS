@@ -101,7 +101,6 @@ If an error message is thrown, re-run the function with your own color vector.
  	\code{\link{generateTSNECoordinates}}
  	\code{\link{runDBSCAN}}
  	\code{\link{clusterCellsInternal}}
- 	\code{\link{runClustering}}
  	\code{\link{plotCellSimilarity}}
  	\code{\link{plotClusteredTSNE}}
  	\code{\link{calculateClustersSimilarity}}
