@@ -536,6 +536,8 @@ plotGeneExpression("Postn", experimentName, dataDirectory, sceObjectCONCLUS, tSN
 
 # Collect publicly available info about marker genes
 
+## Collect information for the top 10 markers for each cluster
+
 *GetGenesInfo* is a function for gene information retrieval from open-source databases and websites of NCBI, MGI, and UniProt by web-scraping. It requires markersClusters data frame where the first column “geneName” is mandatory 
 and the second column “clusters” is optional. It can have more than two columns; they will be kept in the output file. *GetGenesInfo* can recognize Gene Symbols and Ensembl IDs, genes from both annotations can be present simultaneously.
 The second argument is “databaseDir” which is a path to the “Mmus_gene_database_secretedMol.tsv” database contained in the package. Databases for other organisms than mouse will be provided in the future or on request.
@@ -553,24 +555,44 @@ write.table(result, file = file.path(outputDir,
             quote = FALSE, sep = ";", row.names = FALSE)
 ```
 
-The *saveGenesInfo* function will save results of getGenesInfo into "outputDirectory/marker_genes/saveGenesInfo". It goes file by file sequentially. If you see an error message that the connection the website takes too much time, 
-restart the saveGenesInfo from the table where it failed using the startFromFile option. As an example, we will specify “startFromFile = 10” to calculate the output only for the last cluster. Hence, we reduce the computational time 
-and the number of output messages. For your analysis, please select “startFromFile = 1”.
+*result* contains the following columns:
+
+  - geneName: official gene symbol or ENSEMBL ID.
+  - clusters: The cluster to which the gene is associated.
+  - Name: The complete gene name.
+  - Feature.Type: protein coding gene, lincRNA gene, miRNA gene, unclassified non-coding RNA gene,
+                 or pseudogene.
+  - go_id: Gene Ontology (GO) identification number.
+  - name_1006: Whether or not a gene belongs to GO terms containing proteins on the cell surface or 
+               involved in secretion.
+  - MGI: Knockout information from MGI.
+  - NCBI: A summary from NCBI.
+  - chromosome_name: The chromosome on which the gene is located    
+  - Symbol: Official gene symbol
+  - Ensembl: Ensembl ID
+  - MGI.Gene.Marker.ID: MGI ID
+  - Entrez.Gene.ID: Entrez ID
+  - Uniprot.ID: Uniprot ID
+  
+
+## Collect information for the top X markers for each cluster
+
+*MarkersClusters* usually contains 10-20 top marker genes per clusters. However, it is more reliable to use at least 100 genes for cell state annotation. 
+
+The function saveMarkersLists will create data frames with top 100 (by default) top marker genes for each cluster. The first column of the output table is the gene name and the second column is the associated cluster. 
+It will create “marker_genes/markers_lists” folder and save one table per cluster. 
+
+```{r}
+saveMarkersLists(experimentName, outputDirectory)
+```
+
+The *saveGenesInfo* function will save results of getGenesInfo into "outputDirectory/marker_genes/saveGenesInfo" for each file in “marker_genes/markers_lists”. It goes file by file sequentially. If you see an error message that the 
+connection to the website takes too much time, restart the saveGenesInfo from the table where it failed using the startFromFile option. As an example, we will specify “startFromFile = 10” to calculate the output only for the last 
+cluster. Hence, we reduce the computational time and the number of output messages. For your analysis, please select “startFromFile = 1”.
  
 ```{r}
 saveGenesInfo(outputDirectory, sep = ";", header = TRUE, 
               startFromFile = 10, getUniprot = FALSE) # please change to getUniprot = TRUE
-```
-
-
-# Save info about top 100 markers for each cluster
-
-*MarkersClusters* usually contains 10-20 top marker genes per clusters. However, it is more reliable to use at least 100 genes for cell state annotation. 
-
-The function saveMarkersLists will create data frames with top 100 (by default) top marker genes for each cluster. The second column will be the name of the group. It will create “marker_genes/markers_lists” folder and save them there. 
-
-```{r}
-saveMarkersLists(experimentName, outputDirectory)
 ```
 
 
