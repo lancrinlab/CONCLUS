@@ -60,7 +60,7 @@ if(!requireNamespace("devtools"))
 library(devtools)
 
 if(!requireNamespace("conclus"))
-	install_github("PolinaPavlovich/CONCLUS", dependencies = TRUE)
+	install_github("lancrinlab/CONCLUS", dependencies = TRUE)
 ```
 
 ## Quick start
@@ -73,7 +73,8 @@ we recommend using CONCLUS if you have at least 100 cells.
 ```{r}
 library(conclus)
 
-outputDirectory <- "./YourOutputDirectory" ## Replace by the path to the directory in which results should be written
+## Replace by the path to the directory in which results should be written
+outputDirectory <- "./YourOutputDirectory"
 experimentName <- "Bergiers"
 
 countMatrix <- read.delim(file.path(system.file("extdata", package = "conclus"),
@@ -81,7 +82,9 @@ countMatrix <- read.delim(file.path(system.file("extdata", package = "conclus"),
                           stringsAsFactors = FALSE)
 columnsMetaData <- read.delim(file.path(system.file("extdata", package = "conclus"), 
                                 "Bergiers_colData_filtered.tsv"))
+```
 
+```{r, eval=FALSE}
 sceObjectCONCLUS <- runCONCLUS(outputDirectory, 
                                experimentName,
                                columnsMetaData,
@@ -168,7 +171,7 @@ p[[3]]
 
 # CONCLUS step by step
 
-The wrapper function runCONCLUS is organized into X steps:
+The wrapper function runCONCLUS is organized into 7 steps:
 
   + Normalization of the counts matrix
   + Generation of t-SNE coordinates
@@ -316,17 +319,22 @@ is used to generate all these possibilities of visualization.
 
 
 ```{r}
-tSNEclusters <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
-                    PCs=PCs, perplexities=perplexities, colorPalette = "default",
-                    columnName = "clusters", returnPlot = TRUE)
-tSNEnoColor <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
-                PCs=PCs, perplexities=perplexities, colorPalette = "default",
-                columnName = "noColor", returnPlot = TRUE)
+tSNEclusters <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, 
+                experimentName, PCs=PCs, perplexities=perplexities, 
+                colorPalette = "default", columnName = "clusters", 
+                returnPlot = TRUE)
                 
-if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered)) %in% "state")){
-  tSNEstate <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
-                    PCs=PCs, perplexities=perplexities, colorPalette = "default",
-                    columnName = "state", returnPlot = TRUE)
+tSNEnoColor <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, 
+                experimentName, PCs=PCs, perplexities=perplexities, 
+                colorPalette = "default", columnName = "noColor", 
+                returnPlot = TRUE)
+                
+if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered)) 
+   %in% "state")){
+  tSNEstate <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, 
+               experimentName, PCs=PCs, perplexities=perplexities, 
+               colorPalette = "default", columnName = "state", 
+               returnPlot = TRUE)
 }
 ```
 
@@ -357,7 +365,8 @@ colorPalette="default"
 statePalette="default"
 plotPDFcellSim = TRUE
 orderClusters = FALSE
-clustersNumber <- length(unique(SummarizedExperiment::colData(sceObjectFiltered)$clusters))
+clustersNumber <- length(unique(
+                     SummarizedExperiment::colData(sceObjectFiltered)$clusters))
 colorPalette <- conclus::choosePalette(colorPalette, clustersNumber)
 
 # Plotting stability of clusters
@@ -456,7 +465,8 @@ meanCentered <- T  # F to show normalized counts
 conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
-                       length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
+                       length(levels(
+                     SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
                        "_meanCentered",meanCentered,
                        "_orderClusters",orderClusters,
                        "_orderGenes",orderGenes,"_top",
@@ -516,22 +526,26 @@ Alternative order of clusters is by name or by hierarchical clustering as in the
 ```{r}
 # Plot gene expression in a selected tSNE plot
 # Cd34, marker gene for clusters 2, 3 and 4
-plotGeneExpression("Cd34", experimentName, outputDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
+plotGeneExpression("Cd34", experimentName, outputDirectory, sceObjectCONCLUS, 
+                  tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r}
 # Ctsc, marker gene for cluster 5
-plotGeneExpression("Ctsc", experimentName, outputDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
+plotGeneExpression("Ctsc", experimentName, outputDirectory, sceObjectCONCLUS, 
+                   tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r}
 # H19, marker gene for cluster 8
-plotGeneExpression("H19", experimentName, outputDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
+plotGeneExpression("H19", experimentName, outputDirectory, sceObjectCONCLUS, 
+                   tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r}
 # Postn, marker gene for cluster 6
-plotGeneExpression("Postn", experimentName, outputDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
+plotGeneExpression("Postn", experimentName, outputDirectory, sceObjectCONCLUS, 
+                    tSNEpicture = 10, returnPlot=T)
 ```
 
 # Collect publicly available info about marker genes
@@ -550,7 +564,7 @@ result <- getGenesInfo(markersClusters, groupBy = "clusters",
 outputDir <- file.path(outputDirectory, "/marker_genes/getGenesInfo")
 dir.create(outputDir, showWarnings=F)
 write.table(result, file = file.path(outputDir, 
-                                     "Bergiers_markersClusters_top10_clusters9_genesInfo.csv"),
+                      "Bergiers_markersClusters_top10_clusters9_genesInfo.csv"),
             quote = FALSE, sep = ";", row.names = FALSE)
 ```
 
@@ -591,7 +605,7 @@ cluster. Hence, we reduce the computational time and the number of output messag
  
 ```{r, eval = FALSE}
 saveGenesInfo(outputDirectory, sep = ";", header = TRUE, 
-              startFromFile = 10, getUniprot = FALSE) # please change to getUniprot = TRUE
+              startFromFile = 10, getUniprot = TRUE)
 ```
 
 
@@ -605,8 +619,10 @@ It is mostly obvious for clusters 2,3 and 4 and also for clusters 5 and 9. In or
 nature: i.e. combine clusters 2,3 and 4 together or combine clusters 5 and 9.
 
 ```{r}
-exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName, "clusters_table.tsv")
-clustersTable <- read.delim(file.path(outputDirectory, "output_tables", paste0(experimentName, "_clusters_table.tsv")), stringsAsFactors = FALSE) 
+exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName, 
+                        "clusters_table.tsv")
+clustersTable <- read.delim(file.path(outputDirectory, "output_tables", 
+       paste0(experimentName, "_clusters_table.tsv")), stringsAsFactors = FALSE) 
 
 #replace “3” by “2” in the clusters_table
 clustersTable$clusters[clustersTable$clusters == "3"] = "2"
@@ -617,7 +633,9 @@ clustersTable$clusters[clustersTable$clusters == "4"] = "2"
 #replace “9” by “5” in the clusters_table 
 clustersTable$clusters[clustersTable$clusters == "9"] = "5"
 
-write.table(clustersTable, file.path(outputDirectory, "output_tables", paste0(experimentName, "_clusters_table_manual.tsv")), quote = FALSE, sep = "\t")
+write.table(clustersTable, file.path(outputDirectory, "output_tables", 
+            paste0(experimentName, "_clusters_table_manual.tsv")), 
+            quote = FALSE, sep = "\t")
 ```
 
 Now we can use runCONCLUS again and overwrite old marker genes and save new heatmaps. If you want to keep an old folder with marker genes, please rename it, so runCONCLUS will create a new marker_genes folder.
@@ -651,14 +669,16 @@ meanCentered <- F
 plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
-                       length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
+                       length(levels(
+                     SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
                        "_meanCentered",meanCentered,
                        "_orderClusters",orderClusters,
                        "_orderGenes",orderGenes,"_top",
                        genesNumber, "markersPerCluster"), 
                 meanCentered = meanCentered, 
                 colorPalette = c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C",
-                 "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A"),
+                 "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", 
+                 "#6A3D9A"),
                 orderClusters = orderClusters,
                 orderGenes = orderGenes,
                 fontsize_row = 5,
@@ -677,13 +697,15 @@ meanCentered <- T  # F to show normalized counts,
 plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
-                       length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
-                       "_meanCentered",meanCentered,"_orderClusters",orderClusters,
+                       length(levels(
+                     SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
+                    "_meanCentered",meanCentered,"_orderClusters",orderClusters,
                        "_orderGenes",orderGenes,"_top",
                        genesNumber, "markersPerCluster"), 
                 meanCentered = meanCentered, 
                 colorPalette = c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C",
-                 "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A"),
+                 "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", 
+                 "#6A3D9A"),
                 orderClusters = orderClusters,
                 orderGenes = orderGenes,
                 fontsize_row = 5,
