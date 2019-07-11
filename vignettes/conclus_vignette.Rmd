@@ -317,15 +317,15 @@ is used to generate all these possibilities of visualization.
 
 ```{r}
 tSNEclusters <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
-                    PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
+                    PCs=PCs, perplexities=perplexities, colorPalette = "default",
                     columnName = "clusters", returnPlot = TRUE)
 tSNEnoColor <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
-                PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
+                PCs=PCs, perplexities=perplexities, colorPalette = "default",
                 columnName = "noColor", returnPlot = TRUE)
                 
 if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered)) %in% "state")){
   tSNEstate <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
-                    PCs=PCs, perplexities=perplexities, colorPalette = colorPalette,
+                    PCs=PCs, perplexities=perplexities, colorPalette = "default",
                     columnName = "state", returnPlot = TRUE)
 }
 ```
@@ -334,7 +334,16 @@ For visualizing the 5th (on 14) tSNE cluster:
 
 ```{r}
 tSNEclusters[[5]]
+```
+For visualizing the 5th (on 14) tSNE cluster without colors:
+
+```{r}
 tSNEnoColor[[5]]
+```
+
+For visualizing the 5th (on 14) tSNE cluster colored by state:
+
+```{r}
 tSNEstate[[5]]
 ```
 
