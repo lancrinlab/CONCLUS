@@ -104,3 +104,5 @@ databaseDir = TRUE and modifying annotateGene accordingly
 - Add a manualClusteringObject parameter to handle the case in which the clusters were modified with addClusteringManually in runCONCLUS.R
 
 - change columnsMetaData and species to optional parameters in runCONCLUS.R
+
+- set test on manualClusteringObject and preClustered parameters in runCONCLUS.R
