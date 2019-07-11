@@ -29,8 +29,26 @@ This option is useful if a table contains genes from different clusters. Default
 \item{cores}{Maximum number of jobs that the function can run in parallel. Default = 1}
 }
 \value{
-Returns a data frame with information about: gene name, feature type, chromosome,
-gene IDs in different annotations, knockout information from MGI, a summary from NCBI 
-and UniProt, and whether or not a gene belongs to GO terms containing proteins on the cell surface or 
-involved in secretion.
+Returns a data frame with different information. See details.
+}
+\details{
+
+  The output dataframe is composed of the following columns:
+  
+  - geneName: official gene symbol or ENSEMBL ID.
+  - clusters: The cluster to which the gene is associated.
+  - Name: The complete gene name.
+  - Feature.Type: protein coding gene, lincRNA gene, miRNA gene, unclassified non-coding RNA gene,
+                 or pseudogene.
+  - go_id: Gene Ontology (GO) identification number.
+  - name_1006: Whether or not a gene belongs to GO terms containing proteins on the cell surface or 
+               involved in secretion.
+  - MGI: Knockout information from MGI.
+  - NCBI: A summary from NCBI.
+  - chromosome_name: The chromosome on which the gene is located    
+  - Symbol: Official gene symbol
+  - Ensembl: Ensembl ID
+  - MGI.Gene.Marker.ID: MGI ID
+  - Entrez.Gene.ID: Entrez ID
+  - Uniprot.ID: Uniprot ID
 }
