@@ -106,6 +106,9 @@ getGenesInfo <- function(genes, databaseDir = system.file("extdata", package = "
 		getUniprot = TRUE,
 		silent = FALSE, coresGenes = 20){
 	
+	if(orderGenes != "initial" && orderGenes != "alphabetical")
+		stop("orderGenes should be 'initial' or 'alphabetical'.")
+	
 	# MGI
 	getMGIentry <- function(MGIid){
 		library('rvest')
