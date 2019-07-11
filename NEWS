@@ -120,5 +120,7 @@
 - update saveMarkersLists.Rd
 - remove saveGenesInfo doc from markers.R
 - update saveGenesInfo.Rd
+- remove addClusteringManually doc from clustering.R
+- update addClusteringManually.Rd
 
  
