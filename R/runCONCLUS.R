@@ -1,22 +1,11 @@
 
-runCONCLUS <- function(dataDirectory, experimentName, 
-		columnsMetaData = NA,
-		species = NA,
-		colorPalette="default",
-		statePalette="default",
-		clusteringMethod="ward.D2",
-		epsilon=c(1.3, 1.4, 1.5), minPoints=c(3, 4), k=0,
-		PCs=c(4, 6, 8, 10, 20, 40, 50),
-		perplexities=c(30,40),
-		randomSeed = 42,
-		deepSplit=4, preClustered = F,
-		orderClusters = FALSE,
-		cores=1,
-		plotPDFcellSim = TRUE,
-		deleteOutliers = TRUE,
-		tSNEalreadyGenerated = FALSE,
-		tSNEresExp = "",
-		manualClusteringObject = NA){
+runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData = NA,
+		species = NA, colorPalette="default", statePalette="default",
+		clusteringMethod="ward.D2", epsilon=c(1.3, 1.4, 1.5), minPoints=c(3, 4),
+		k=0, PCs=c(4, 6, 8, 10, 20, 40, 50), perplexities=c(30,40), randomSeed = 42,
+		deepSplit=4, preClustered = F, orderClusters = FALSE, cores=1,
+		plotPDFcellSim = TRUE, deleteOutliers = TRUE, tSNEalreadyGenerated = FALSE,
+		tSNEresExp = "", manualClusteringObject = NA){
 	
 	if(!is.na(manualClusteringObject) && !preClustered)
 		stop("If you submitted an object through the manualClusteringObject ",
