@@ -104,7 +104,7 @@ getGenesInfo <- function(genes, databaseDir = system.file("extdata", package = "
 		groupBy = "clusters",
 		orderGenes = "initial",
 		getUniprot = TRUE,
-		silent = FALSE, coresGenes = 20){
+		silent = FALSE, cores = 1){
 	
 	if(orderGenes != "initial" && orderGenes != "alphabetical")
 		stop("orderGenes should be 'initial' or 'alphabetical'.")
@@ -225,7 +225,7 @@ getGenesInfo <- function(genes, databaseDir = system.file("extdata", package = "
 		result <- result[order(result$geneName),]
 	}
 	
-	myCluster <- parallel::makeCluster(coresGenes, # number of cores to use
+	myCluster <- parallel::makeCluster(cores, # number of cores to use
 			type = "PSOCK") # type of cluster
 	doParallel::registerDoParallel(myCluster)
 	
@@ -366,7 +366,7 @@ saveGenesInfo <- function(dataDirectory = "",
 		groupBy = "clusters", # getGenesInfo params
 		orderGenes = "initial",
 		getUniprot = TRUE,
-		silent = FALSE, coresGenes = 20){
+		silent = FALSE, cores = 1){
 	
 	if(dataDirectory != ""){
 		inputDir = file.path(dataDirectory, "/marker_genes/markers_lists")
@@ -388,7 +388,7 @@ saveGenesInfo <- function(dataDirectory = "",
 				groupBy = groupBy,
 				orderGenes = orderGenes,
 				getUniprot = getUniprot,
-				silent = silent, coresGenes = coresGenes)
+				silent = silent, cores = cores)
 		
 		message("Writing the output file number ", file, "\n")
 		
