@@ -116,10 +116,39 @@ deepSplit = 0 # 0 to avoid cutreeDynamic, 1 to 4 to use it
 message("Calculating cells similarity matrix.")
 clusteringResults <- conclus::clusterCellsInternal(dbscanResults, sceObject, clusterNumber=k, 
 		deepSplit=deepSplit, cores=cores,
-		clusteringMethod=clusteringMethod)[[2]]
+		clusteringMethod=clusteringMethod)
 sceObjectFiltered <- clusteringResults[[1]]
 cellsSimilarityMatrix <- clusteringResults[[2]]
 
 print(table(SummarizedExperiment::colData(sceObjectFiltered)$clusters, 
 				dnn=list("Cells distribuion by clusters")))
+
+clustersSimilarityMatrix <- 
+		conclus::calculateClustersSimilarity(cellsSimilarityMatrix, 
+				sceObject = sceObjectFiltered,
+				clusteringMethod = "ward.D2")[[1]]
+
+
+## Plotting
+
+
+### t-SNE colored by clusters or conditions
+
+tSNEclusters <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
+		PCs=PCs, perplexities=perplexities, colorPalette = "default",
+		columnName = "clusters", returnPlot = TRUE)
+tSNEnoColor <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
+		PCs=PCs, perplexities=perplexities, colorPalette = "default",
+		columnName = "noColor", returnPlot = TRUE)
+
+if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered)) %in% "state")){
+	tSNEstate <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, experimentName,
+			PCs=PCs, perplexities=perplexities, colorPalette = "default",
+			columnName = "state", returnPlot = TRUE)
+}
+
+tSNEclusters[[5]]
+tSNEnoColor[[5]]
+tSNEstate[[5]]
+
 
