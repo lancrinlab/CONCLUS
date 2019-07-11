@@ -516,22 +516,22 @@ Alternative order of clusters is by name or by hierarchical clustering as in the
 ```{r}
 # Plot gene expression in a selected tSNE plot
 # Cd34, marker gene for clusters 2, 3 and 4
-plotGeneExpression("Cd34", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10)
+plotGeneExpression("Cd34", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r}
 # Ctsc, marker gene for cluster 5
-plotGeneExpression("Ctsc", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10)
+plotGeneExpression("Ctsc", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r}
 # H19, marker gene for cluster 8
-plotGeneExpression("H19", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10)
+plotGeneExpression("H19", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r}
 # Postn, marker gene for cluster 6
-plotGeneExpression("Postn", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10)
+plotGeneExpression("Postn", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
 ```
 
 # Collect publicly available info about marker genes
