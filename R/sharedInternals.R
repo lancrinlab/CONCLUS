@@ -31,16 +31,7 @@
 
 
 
-#' Depending if the number of clusters is more than 12 or not, one of two built-in palettes will be applied.
-#' If you give your vector of colors, the function will not change them.
-#' If the number of clusters is more than 26, it will copy colors to get the needed length of the palette.
-#'
-#' @param colorPalette Either "default" or a vector of colors, for example c("yellow", "#CC79A7"). 
-#' @param clustersNumber number of clusters in the output palette.
-#'
-#' @return Color palette with the number of colors equal to the clusterNumber parameter.
-#' @export
-.choosePalette <- function(colorPalette, clustersNumber){
+choosePalette <- function(colorPalette, clustersNumber){
 	
 	colorPalette26 <- c( "yellow", "darkgoldenrod1", "coral1", "deeppink",
 			"indianred", "coral4", "darkblue", "darkmagenta",
