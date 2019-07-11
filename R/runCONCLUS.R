@@ -43,10 +43,11 @@ runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData,
 		
 		# assigning cells to clusters
 		message("Calculating cells similarity matrix.")
-		cellsSimilarityMatrix <- clusterCellsInternal(dbscanResults, sceObject, clusterNumber=k,
+		clusteringResults <- clusterCellsInternal(dbscanResults, sceObject, clusterNumber=k,
 				deepSplit=deepSplit, cores=cores,
-				clusteringMethod=clusteringMethod)[[2]]
-		sceObjectFiltered <- sceObject
+				clusteringMethod=clusteringMethod)
+		sceObjectFiltered <- clusteringResults[[1]]
+		cellsSimilarityMatrix <- clusteringResults[[2]]
 	} else {
 		# Running clustering
 		clusteringResults <- .runClustering(tSNEResults, sceObject, dataDirectory,
