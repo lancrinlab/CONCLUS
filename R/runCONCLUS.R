@@ -18,6 +18,10 @@ runCONCLUS <- function(dataDirectory, experimentName,
 		tSNEresExp = "",
 		manualClusteringObject = NA){
 	
+	if(!is.na(manualClusteringObject) && !preClustered)
+		stop("If you submitted an object through the manualClusteringObject ",
+				"parameter, set preClustered = TRUE")
+	
 	if(is.na(manualClusteringObject)){
 		
 		initialisePath(dataDirectory)
