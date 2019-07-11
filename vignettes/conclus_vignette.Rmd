@@ -516,22 +516,22 @@ Alternative order of clusters is by name or by hierarchical clustering as in the
 ```{r}
 # Plot gene expression in a selected tSNE plot
 # Cd34, marker gene for clusters 2, 3 and 4
-plotGeneExpression("Cd34", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
+plotGeneExpression("Cd34", experimentName, outputDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r}
 # Ctsc, marker gene for cluster 5
-plotGeneExpression("Ctsc", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
+plotGeneExpression("Ctsc", experimentName, outputDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r}
 # H19, marker gene for cluster 8
-plotGeneExpression("H19", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
+plotGeneExpression("H19", experimentName, outputDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r}
 # Postn, marker gene for cluster 6
-plotGeneExpression("Postn", experimentName, dataDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
+plotGeneExpression("Postn", experimentName, outputDirectory, sceObjectCONCLUS, tSNEpicture = 10, returnPlot=T)
 ```
 
 # Collect publicly available info about marker genes
@@ -606,8 +606,8 @@ It is mostly obvious for clusters 2,3 and 4 and also for clusters 5 and 9. In or
 nature: i.e. combine clusters 2,3 and 4 together or combine clusters 5 and 9.
 
 ```{r}
-exportClusteringResults(sceObjectCONCLUS, dataDirectory, experimentName, "clusters_table.tsv")
-clustersTable <- read.delim(file.path(dataDirectory, "output_tables", paste0(experimentName, "_clusters_table.tsv")), stringsAsFactors = FALSE) 
+exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName, "clusters_table.tsv")
+clustersTable <- read.delim(file.path(outputDirectory, "output_tables", paste0(experimentName, "_clusters_table.tsv")), stringsAsFactors = FALSE) 
 
 #replace “3” by “2” in the clusters_table
 clustersTable$clusters[clustersTable$clusters == "3"] = "2"
@@ -618,7 +618,7 @@ clustersTable$clusters[clustersTable$clusters == "4"] = "2"
 #replace “9” by “5” in the clusters_table 
 clustersTable$clusters[clustersTable$clusters == "9"] = "5"
 
-write.table(clustersTable, file.path(dataDirectory, "output_tables", paste0(experimentName, "_clusters_table_manual.tsv")), quote = FALSE, sep = "\t")
+write.table(clustersTable, file.path(outputDirectory, "output_tables", paste0(experimentName, "_clusters_table_manual.tsv")), quote = FALSE, sep = "\t")
 ```
 
 Now we can use runCONCLUS again and overwrite old marker genes and save new heatmaps. If you want to keep an old folder with marker genes, please rename it, so runCONCLUS will create a new marker_genes folder.
@@ -626,13 +626,13 @@ Now we can use runCONCLUS again and overwrite old marker genes and save new heat
 ```{r}
 #Correcting clustering manually
 sceObjectCONCLUS <- addClusteringManually(fileName = "clusters_table_manual.tsv", 
-    dataDirectory = dataDirectory, 
+    dataDirectory = outputDirectory, 
     experimentName = experimentName,
     sceObject = sceObjectCONCLUS, 
     columnName = "clusters")
 
 # Redo the analysis with manual clustering
-sceObjectCONCLUS <- runCONCLUS(dataDirectory, experimentName, 
+sceObjectCONCLUS <- runCONCLUS(outputDirectory, experimentName, 
            statePalette= c("bisque", "cadetblue2", "coral1", "cornflowerblue"),
 		   preClustered = TRUE, manualClusteringObject = sceObjectCONCLUS)  
 ```
@@ -642,14 +642,14 @@ As previously, we can now make heatmaps of marker gene expression.
 ```{r}
 # Plotting heatmap displaying normalized counts
 genesNumber <- 10
-markersClusters <- getMarkerGenes(dataDirectory, sceObjectCONCLUS, 
+markersClusters <- getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
                                   experimentName = experimentName,
                                   genesNumber = genesNumber)
                                   
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- F  
-plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory, 
+plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
                        length(levels(colData(sceObjectCONCLUS)$clusters)),
@@ -674,7 +674,7 @@ plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory,
 ```{r}
 # Plotting heatmap displaying mean-centered values
 meanCentered <- T  # F to show normalized counts, 
-plotCellHeatmap(markersClusters, sceObjectCONCLUS, dataDirectory, 
+plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
                        length(levels(colData(sceObjectCONCLUS)$clusters)),
@@ -700,25 +700,25 @@ This heatmap shows that Cd34 and Apoe are good markers of cluster 2 (mix of old 
 ```{r}
 # Plot gene expression in a selected tSNE plot
 # Cd34, marker gene for clusters 2 
-plotGeneExpression("Cd34", experimentName, dataDirectory, sceObjectCONCLUS,
+plotGeneExpression("Cd34", experimentName, outputDirectory, sceObjectCONCLUS,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
 ```{r}
 # Apoe, marker gene for cluster 2
-plotGeneExpression("Apoe", experimentName, dataDirectory, sceObjectCONCLUS,
+plotGeneExpression("Apoe", experimentName, outputDirectory, sceObjectCONCLUS,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
 ```{r}
 # Ctsc, marker gene for cluster 5
-plotGeneExpression("Ctsc", experimentName, dataDirectory, sceObjectCONCLUS,
+plotGeneExpression("Ctsc", experimentName, outputDirectory, sceObjectCONCLUS,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
 ```{r}
 # Clec4n, marker gene for cluster 5
-plotGeneExpression("Clec4n", experimentName, dataDirectory, sceObjectCONCLUS,
+plotGeneExpression("Clec4n", experimentName, outputDirectory, sceObjectCONCLUS,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
