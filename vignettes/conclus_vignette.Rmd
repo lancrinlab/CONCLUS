@@ -284,10 +284,11 @@ clusteringMethod="ward.D2"
 k=10 # parameter for cutree
 deepSplit = 0 # 0 to avoid cutreeDynamic, 1 to 4 to use it
 message("Calculating cells similarity matrix.")
-cellsSimilarityMatrix <- conclus::clusterCellsInternal(dbscanResults, sceObject, clusterNumber=k, 
+clusteringResults <- conclus::clusterCellsInternal(dbscanResults, sceObject, clusterNumber=k, 
                                   deepSplit=deepSplit, cores=cores,
-                                  clusteringMethod=clusteringMethod)[[2]]
-sceObjectFiltered <- sceObject
+                                  clusteringMethod=clusteringMethod)
+sceObjectFiltered <- clusteringResults[[1]]
+cellsSimilarityMatrix <- clusteringResults[[2]]
 
 print(table(SummarizedExperiment::colData(sceObjectFiltered)$clusters, 
               dnn=list("Cells distribuion by clusters")))
