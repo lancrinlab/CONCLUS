@@ -1,8 +1,8 @@
 Package: conclus
 Title: ScRNA-seq workflow CONCLUS - from CONsensus CLUSters to a meaningful CONCLUSion.
 Version: 0.99.1
-Authors: Polina Pavlovich, Konstantin Chukreev, Christophe Lancrin
-Maintainer: Polina Pavlovich <pavlovich@phystech.edu>
+Authors: Polina Pavlovich, Nicolas Descostes, Konstantin Chukreev, Christophe Lancrin
+Maintainer: Nicolas Descostes <nicolas.descostes@embl.it>
 Description: CONCLUS is a tool for robust clustering, positive marker features selection 
     and collecting info about marker genes using web scraping from MGI, UniProt and NCBI 
     websites. The tool was developed to distinguish not only cell types from different tissues 
