@@ -106,3 +106,6 @@ databaseDir = TRUE and modifying annotateGene accordingly
 - change columnsMetaData and species to optional parameters in runCONCLUS.R
 
 - set test on manualClusteringObject and preClustered parameters in runCONCLUS.R
+
+- Add Descostes name to NAMESPACE
+
