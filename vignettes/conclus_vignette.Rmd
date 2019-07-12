@@ -530,8 +530,8 @@ plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectCONCLUS,
 ```
 \newline
 ```{r plotGeneExpression2}
-# Gb9, marker gene for cluster 6
-plotGeneExpression("Gb9", experimentName, outputDirectory, sceObjectCONCLUS, 
+# Gp9, marker gene for cluster 6
+plotGeneExpression("Gp9", experimentName, outputDirectory, sceObjectCONCLUS, 
                    tSNEpicture = 10, returnPlot=T)
 ```
 \newline
