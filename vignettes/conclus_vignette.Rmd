@@ -37,7 +37,7 @@ CONCLUS is organized into the following steps:
   + Use the Density-based spatial clustering of applications with noise (DBSCAN)
     algorithm for idenfication of clusters in each generated t-SNE plot.
   + All DBSCAN results are combined into a cell similarity matrix.
-  + The cell similarity matrix is used to define "CONCENSUS" clusters conserved
+  + The cell similarity matrix is used to define "CONSENSUS" clusters conserved
     accross the previously defined clustering solutions.
   + Identify marker genes for each concensus cluster.
   
@@ -102,12 +102,12 @@ Five folders will appear in your "outputDirectory":
   + *output_tables*:
   
     - _cellsSimilarityMatrix.csv: Similarity matrix used to define the consensus clusters using every cells.
-    - _clustersSimilarityMatrix.csv: Simplified similarity matrix with averaged cell values per cluster.
+    - _clustersSimilarityMatrix.csv: Simplified similarity matrix with median averaged cell values per cluster.
     - _clusters_table.tsv: Cell-cluster corresponding table for defined consensus clusters.
     - _dbscan_results.tsv: Cell-cluster corresponding table for each db-scan parameter.
     - _tSNEResults.rds: Saved RDS object containing a matrix of all t-SNE results (for different PCs and perplexities, see below).  
   
-  + *pictures*: This folder contains two similarity matrices clustering heatmaps. One using all cells and the other averaged by cluster.
+  + *pictures*: This folder contains two similarity matrices clustering heatmaps. One using all cells and the other median averaged by cluster.
                 It also contains a subfolder "tSNE_pictures" containing all tSNEs generated with different PCs and perplexity parameters,
                 and colored by condition, by cluster found, by dbscan, or uncolored (see below for details).
   + *marker_genes*: This folder contains a list of marker genes, ordered by decreasing score, for each consensus cluster.
@@ -144,21 +144,21 @@ they seemed to be a primary source of contamination.
 ## Test clustering
 
 The *TestClustering* function runs one clustering round out of the 84 (default) rounds that CONCLUS normally performs. This step can be useful to determine if the default DBSCAN parameters are suitable for your dataset. 
-By default, they are *dbscanEpsilon = c(1.3, 1.4, 1.5)*, *minPts = c(3,4)*. If the dashed horizontal line in the k-NN distance plot lays on the “knee” of the curve (as shown below), it means that optimal epsilon is equal
+By default, they are *dbscanEpsilon = c(1.3, 1.4, 1.5)* and *minPts = c(3,4)*. If the dashed horizontal line in the k-NN distance plot lays on the “knee” of the curve (as shown below), it means that optimal epsilon is equal
 to the intersection of the line to the y-axis. In our example, optimal epsilon is 1.4 for 5-NN distance where 5 corresponds to MinPts. 
 
-In the "test_clustering" folder under outputDirectory, the three plots below will be saved where one corresponds to the “distance_graph.pdf”, another one to “test_tSNE.pdf” *p[[1]]*, and the last one will be saved as 
-“test_clustering.pdf” *p[[3]]*.
+In the "test_clustering" folder under outputDirectory, the three plots below will be saved where one corresponds to the “distance_graph.pdf”, another one to “test_tSNE.pdf” (*p[[1]]*), and the last one will be saved as 
+“test_clustering.pdf” (*p[[3]]*).
 
 
-```{r fig.height=5, fig.width=6}
+```{r normalization_1, results="hide", warning = FALSE}
 sceObject <- conclus::normaliseCountMatrix(countMatrix, species = "mmu", 
                                   colData = columnsMetaData)
-
-p <- conclus::testClustering(sceObject, outputDirectory, experimentName)
 ```
 
-```{r fig.height=5, fig.width=6}
+```{r testClustering, fig.height=5, fig.width=6}
+p <- conclus::testClustering(sceObject, outputDirectory, experimentName)
+
 # saved as "outputDirectory/test_clustering/test_tSNE.pdf"
 p[[1]]
 # saved as "outputDirectory/test_clustering/test_clustering.pdf"
@@ -186,24 +186,23 @@ To facilitate analysis, one needs to perform a step of normalization which allow
 sc-RNA-seq [normalization](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5549838/)).
 
 CONCLUS uses Scran and Scater packages for normalization. Beforehand, the function will annotate genes creating *rowData* and add statistics about cells into *columnsMetaData*. If you already have *columnsMetaData* and *rowData*, 
-you can give it to the function (see manual). It will keep your columns and add new ones at the end. If you do not want to lose any cells after quality metrics check, select *alreadyCellFiltered = TRUE*, by default it is *FALSE*. 
+you can give it to the function (see manual). It will keep your columns and add new ones at the end. If you do not want to lose any cell after quality metrics check, select *alreadyCellFiltered = TRUE*, by default it is *FALSE*. 
 Before *scran* and *scater* normalization, the function will call *scran::quickCluster* (see manual for details). If you want to skip this step, type *runQuickCluster = FALSE*, by default it is *TRUE*. 
 We recommend to use *runQuickCluster = TRUE* for medium-size datasets with 500-10000 cells. However, it can take a significant amount of time for a larger amount of cells and will not be useful for small sets of 200-300 samples. 
 
 This function is currently limited to human and mouse.
-
-```{r}
-# 1. Normalisation
+\newline
+```{r normalization_2, results="hide", warning = FALSE}
 sceObject <- conclus::normaliseCountMatrix(countMatrix, species = "mmu", 
                                   colData = columnsMetaData)
 ```
 
-The function *normaliseCountMatrix* returns an *sceObject* with slots *counts*, *exprs*, *colData*, *rowData*. *rowData* keeps information about GO terms containing genes on the cell surface or involved in secretion. 
-This information can help to study cross-talk between cell types or find surface protein-coding marker genes suitable for flow cytometry. The columns with the GO terms are *go_id* and *name_1006*.
+The function *normaliseCountMatrix* returns a *sceObject* with slots *counts*, *exprs*, *colData*, and *rowData*. *rowData* keeps information about GO terms containing genes on the cell surface or involved in secretion. 
+This information can help to study cross-talk between cell types or find surface protein-coding marker genes suitable for flow cytometry. The columns with the GO terms are *go_id* and *name_1006* (see manual).
 
 The slots can be accessed as indicated below:
-
-```{r}
+\newline
+```{r normalization_results}
 # checking what changed after the normalisation
 dim(sceObject)
 
@@ -225,13 +224,13 @@ head(rowdataSCE)
 
 ## Generation of t-SNE coordinates
 
-**runCONCLUS** creates needed output folders (if you did not run *testClustering* beforehand). Then it generates an object of fourteen (by default) tables with tSNE coordinates. Fourteen because it will vary seven values of 
+*runCONCLUS* creates needed output folders (if you did not run *testClustering* beforehand). Then it generates an object of fourteen (by default) tables with tSNE coordinates. Fourteen because it will vary seven values of 
 principal components *PCs=c(4, 6, 8, 10, 20, 40, 50)* and two values of perplexity *perplexities=c(30, 40)* in all possible combinations. 
 
 The chosen values of PCs and perplexities can be changed if necessary. We found that this combination works well for sc-RNA-seq datasets with 400-2000 cells. If you have 4000-9000 cells and expect more than 15 clusters, 
-we recommend you to take more first PCs and higher perplexity, for example, *PCs=c(8, 10, 20, 40, 50, 80, 100)* and *perplexities=c(200, 240)*. For details about perplexities parameter see ‘?Rtsne’.
-
-```{r}
+we recommend to use more first PCs and higher perplexity, for example, *PCs=c(8, 10, 20, 40, 50, 80, 100)* and *perplexities=c(200, 240)*. For details about perplexities parameter see ‘?Rtsne’.
+\newline
+```{r tsne_generation, results="hide", warning = FALSE}
 initialisePath(outputDirectory)
 # default parameters, can be selected by a user
 PCs=c(4, 6, 8, 10, 20, 40, 50)
@@ -244,8 +243,8 @@ tSNEResults <- generateTSNECoordinates(sceObject, outputDirectory,
 ```
 
 Results can be explored as follows:
-
-```{r}
+\newline
+```{r tsne_showResults}
 ncol(tSNEResults)
 # the third matrix of t-SNE coordinates with PC = 8 and perplixities = 30
 # it is saved as "tsnes/Bergiers_tsne_coordinates_3_8PCs_30perp.tsv"
@@ -256,14 +255,13 @@ head(tSNEResults[1,3][[1]])
 ## Clustering with DB-SCAN
 
 Following the calculation of t-SNE coordinates, DBSCAN is run with a range of epsilon and MinPoints values which will yield a total of 84 clustering solutions (PCs x perplexities x MinPoints x epsilon). *minPoints* is the minimum 
-cluster size which you assume to be meaningful for your experiment and *epsilon* is the radius around the cell where the algorithm will try to find *minPoints* dots. Optimal *epsilon* must lay one the knee of the k-NN function as 
+cluster size which you assume to be meaningful for your experiment and *epsilon* is the radius around the cell where the algorithm will try to find *minPoints* dots. Optimal *epsilon* must lay on the knee of the k-NN function as 
 shown in the "test_clustering/distance_graph.pdf" (See Test clustering section above). 
-
-```{r}
+\newline
+```{r runDBSScan, results="hide", warning = FALSE}
 epsilon=c(1.3, 1.4, 1.5)
 minPoints=c(3, 4)
 cores=1
-message("Running dbscan using ", cores, " cores.")
 dbscanResults <- conclus::runDBSCAN(tSNEResults, sceObject, outputDirectory, 
                            experimentName, epsilon=epsilon, 
                            minPoints=minPoints,
@@ -274,12 +272,12 @@ dbscanResults <- conclus::runDBSCAN(tSNEResults, sceObject, outputDirectory,
 ## Cell and cluster similarity matrix calculation
 
 The above calculated results are combined together in a matrix called “cell similarity matrix”. *RunDBSCAN* function returns a matrix where columns are cells and rows are 84 clustering solutions (which is equal to number of 
-PCs x perplexities x MinPoints x epsilon). Since the range of cluster varies from the result to result, there is no exact match between numbers in different rows of the returned matrix. Cells having the same number within a row are 
-guaranteed to be in one cluster. We can calculate how many times out of 84 clustering solutions, every two cells were in one cluster and that is how we come to the similarity matrix of cells. We want to underline, that zero in the 
+PCs x perplexities x MinPoints x epsilon). Since the range of cluster varies from result to result, there is no exact match between numbers in different rows of the returned matrix. Cells having the same number within a row are 
+guaranteed to be in one cluster. We can calculate how many times out of 84 clustering solutions, every two cells were in one cluster and that is how we come to the similarity matrix of cells. We want to underline that zero in the 
 *dbscanResults* means that a cell was not assigned to any cluster, so two cells with zeros were not necessarily similar, that is why we count clusters starting from one. *clusterCellsInternal* is a general function which returns a 
 *sceObject* with new clusters and calculated *cellsSimilarityMatrix*. 
-
-```{r}
+\newline
+```{r clusterCellsInternal, results="hide", warning = FALSE}
 clusteringMethod="ward.D2"
 k=10 # parameter for cutree
 deepSplit = 0 # 0 to avoid cutreeDynamic, 1 to 4 to use it
@@ -289,15 +287,16 @@ clusteringResults <- conclus::clusterCellsInternal(dbscanResults, sceObject, clu
                                   clusteringMethod=clusteringMethod)
 sceObjectFiltered <- clusteringResults[[1]]
 cellsSimilarityMatrix <- clusteringResults[[2]]
-
+```
+```{r clusterCellsInternal_showResults}
 print(table(SummarizedExperiment::colData(sceObjectFiltered)$clusters, 
               dnn=list("Cells distribuion by clusters")))
 ```
 
 After looking at the similarity between elements on the single-cell level, which is useful if we want to understand if there is any substructure which we did not highlight with our clustering, a "bulk" level where we pool all cells 
 from a cluster into a representative "pseudo cell" can also be generated. This gives a *clusterSimilarityMatrix*:
-
-```{r}
+\newline
+```{r clustersSimilarityMatrix}
 clustersSimilarityMatrix <- 
       conclus::calculateClustersSimilarity(cellsSimilarityMatrix, 
           sceObject = sceObjectFiltered,
@@ -313,9 +312,9 @@ clustersSimilarityMatrix <-
 
 CONCLUS generated 14 tSNE combining different values of PCs and perplexities. Each tSNE can be visualized either using coloring reflecting the results of DBScan clustering, the conditions or without colors. Here *plotClusteredTSNE*
 is used to generate all these possibilities of visualization. 
+\newline
 
-
-```{r}
+```{r plotClustered}
 tSNEclusters <- conclus::plotClusteredTSNE(sceObjectFiltered, outputDirectory, 
                 experimentName, PCs=PCs, perplexities=perplexities, 
                 colorPalette = "default", columnName = "clusters", 
@@ -334,30 +333,30 @@ if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered))
                returnPlot = TRUE)
 }
 ```
-
+\newline
 For visualizing the 5th (on 14) tSNE cluster:
-
-```{r}
+\newline
+```{r plotClustered_visualization1}
 tSNEclusters[[5]]
 ```
+\newline
 For visualizing the 5th (on 14) tSNE cluster without colors:
-
-```{r}
+\newline
+```{r plotClustered_visualization2}
 tSNEnoColor[[5]]
 ```
-
+\newline
 For visualizing the 5th (on 14) tSNE cluster colored by state:
-
-```{r}
+\newline
+```{r plotClustered_visualization3}
 tSNEstate[[5]]
 ```
 
 ### Cell similarity heatmap
 
 The *cellsSimilarityMatrix* is then used to generate a heatmap summarizing the results of the clustering and to show how stable the cell clusters are accross the 84 solutions.
-
-
-```{r fig.height=6, fig.width=7}
+\newline
+```{r plotCellSimilarity, fig.height=6, fig.width=7, warning = FALSE}
 colorPalette="default"
 statePalette="default"
 plotPDFcellSim = TRUE
@@ -375,14 +374,14 @@ conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDire
                  plotPDF = plotPDFcellSim,
                  returnPlot = TRUE)
 ```
-
+\newline
 *CellsSimilarityMatrix* is symmetrical and its size proportional of to the "number of cells x number of cells". Each vertical or horizontal tiny strip is a cell. Intersection shows the proportion of clustering iterations in which a 
 pair of cells were in one cluster (score between 0 and 1, between blue and red). We will call this combination "consensus clusters" and use them everywhere later. We can appreciate that cellsSimilarityMatrix is the first evidence 
 showing that CONCLUS managed not only to distinguish i8TFs_plus cells from the three other groups (as in the original publication) but also find subpopulations within these groups which were impossible using PCA alone.
 
 ### Cluster similarity heatmap
 
-```{r fig.height=5.3, fig.width=6.5}  
+```{r plotClustersSimilarity, fig.height=5.3, fig.width=6.5, warning = FALSE, message = FALSE}  
 conclus::plotClustersSimilarity(clustersSimilarityMatrix, 
                        sceObjectFiltered,
                        dataDirectory = outputDirectory, 
@@ -392,25 +391,25 @@ conclus::plotClustersSimilarity(clustersSimilarityMatrix,
                        clusteringMethod = clusteringMethod,
                        returnPlot = TRUE)
 ```
-
-In the *clusterSimilarityMatrix*, we can still see two major families of clusters: clusters with 2, 3 and 4 on one side and 1, 5, 7, 8, 9 and 10 on the other. Almost all clusters have a high value of similarity across all clustering 
-solutions. Only cluster 10 has a quite low similarity value. Red color on the diagonal means that the group is homogenous, and usually, it is what we want to get. The yellow on the diagonal indicates that either 
+\newline
+In the *clusterSimilarityMatrix*, we can still see two major families of clusters: clusters with 6, 8, 9, and 10 on one side and 1, 2, 3, 4, 5, and 7, on the other. Almost all clusters have a high value of similarity across all clustering 
+solutions. Only cluster 6 has a quite low similarity value. Red color on the diagonal means that the group is homogenous, and usually, it is what we want to get. The yellow on the diagonal indicates that either 
 that group consists of two or more equal sized subgroups. Bluish color points to a cluster of dbscan "outliers" that usually surrounds dense clouds of cells in t-SNE plots. 
 
 
 ## Results export
 
   *runCONCLUS* is saving *cellsSimilarityMatrix* and *clustersSimilarityMatrix* to the subfolder *output_tables*.
-
-```{r}
+\newline
+```{r exportMatrix}
 conclus::exportMatrix(cellsSimilarityMatrix, outputDirectory, experimentName, 
            "cellsSimilarityMatrix")
 conclus::exportMatrix(clustersSimilarityMatrix, outputDirectory, experimentName, 
            "clustersSimilarityMatrix")
 ```
   The exportData function enables to save the normalized expression matrix, columns and row data as the full workspace to the *output_tables* subfolder.
-  
-```{r}
+\newline  
+```{r exportData}
 conclus::exportData(sceObjectFiltered, outputDirectory, experimentName)
 ```
 
@@ -426,13 +425,16 @@ sceObjectFiltered and rank them according to a score reflecting a FDR power. It 
 
 In summary, the function *conclus::rankGenes()* gives a list of marker genes for each cluster, ordered by their significance. See ?conclus::rankGenes for more details.   
 
-
-```{r}
+\newline
+```{r rankGenes, message = FALSE}
 conclus::rankGenes(sceObjectFiltered, clustersSimilarityMatrix, outputDirectory, 
             experimentName)
 rankedGenesClus5 <- read.delim(file.path(outputDirectory, "marker_genes",
                                "Bergiers_cluster_5_genes.tsv"),
                                stringsAsFactors = FALSE)
+```
+
+```{r rankGenes_result}
 head(rankedGenesClus5, n = 10)
 ```
 
@@ -448,8 +450,8 @@ types. In this particular example, we have a list of 88 genes.
 
 We ask the function *plotCellHeatmap* to order clusters and genes by similarity (the same order as in the *clusterSimilarityMatrix*) and show mean-centered normalized data. Mean-centering allows seeing the relative expression of a 
 gene compared to the mean.
-
-```{r}
+\newline
+```{r plotCellHeatmap_marker1, warning=FALSE}
 genesNumber <- 10
 markersClusters <- conclus::getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
                                   experimentName = experimentName,
@@ -485,8 +487,8 @@ conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory,
 
 The second heatmap below also shows the order of genes and clusters by similarity but for normalized expression data. As you can see, genes expressed at a level of seven and nine look very similar. It is hard to highlight all the 
 differences in expression of both lowly and highly detected genes in one heatmap using normalized data. For this reason, mean-centering helps to solve this issue.
-
-```{r}
+\newline
+```{r plotCellHeatmap_marker2, warning=FALSE}
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- F  # F to show normalized counts
@@ -518,30 +520,30 @@ Alternative order of clusters is by name or by hierarchical clustering as in the
 # Plot t-SNE colored by expression of a selected gene
 
 
-*PlotGeneExpression* allows visualizing the normalized expression of one gene in a t-SNE plot. It can be useful to inspect the specificity of top markers.
-
-```{r}
+*PlotGeneExpression* allows visualizing the normalized expression of one gene in a t-SNE plot. It can be useful to inspect the specificity of top markers. Below are examples of marker genes that define a particular cluster.
+\newline
+```{r plotGeneExpression1}
 # Plot gene expression in a selected tSNE plot
-# Cd34, marker gene for clusters 2, 3 and 4
-plotGeneExpression("Cd34", experimentName, outputDirectory, sceObjectCONCLUS, 
+# Ccl3, marker gene for clusters 2
+plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectCONCLUS, 
                   tSNEpicture = 10, returnPlot=T)
 ```
-
-```{r}
-# Ctsc, marker gene for cluster 5
-plotGeneExpression("Ctsc", experimentName, outputDirectory, sceObjectCONCLUS, 
+\newline
+```{r plotGeneExpression2}
+# Gb9, marker gene for cluster 6
+plotGeneExpression("Gb9", experimentName, outputDirectory, sceObjectCONCLUS, 
                    tSNEpicture = 10, returnPlot=T)
 ```
-
-```{r}
-# H19, marker gene for cluster 8
-plotGeneExpression("H19", experimentName, outputDirectory, sceObjectCONCLUS, 
+\newline
+```{r plotGeneExpression3}
+# Fn1, marker gene for cluster 7
+plotGeneExpression("Fn1", experimentName, outputDirectory, sceObjectCONCLUS, 
                    tSNEpicture = 10, returnPlot=T)
 ```
-
-```{r}
-# Postn, marker gene for cluster 6
-plotGeneExpression("Postn", experimentName, outputDirectory, sceObjectCONCLUS, 
+\newline
+```{r plotGeneExpression4}
+# Alox5ap, marker gene for cluster 9
+plotGeneExpression("Alox5ap", experimentName, outputDirectory, sceObjectCONCLUS, 
                     tSNEpicture = 10, returnPlot=T)
 ```
 
@@ -553,8 +555,8 @@ plotGeneExpression("Postn", experimentName, outputDirectory, sceObjectCONCLUS,
 and the second column “clusters” is optional. It can have more than two columns; they will be kept in the output file. *GetGenesInfo* can recognize Gene Symbols and Ensembl IDs, genes from both annotations can be present simultaneously.
 The second argument is “databaseDir” which is a path to the “Mmus_gene_database_secretedMol.tsv” database contained in the package. Databases for other organisms than mouse will be provided in the future or on request.
 
-
-```{r, eval = FALSE}
+\newline
+```{r getGenesInfo, eval = FALSE}
 result <- getGenesInfo(markersClusters, groupBy = "clusters",
                        getUniprot = TRUE)
 
@@ -577,7 +579,7 @@ write.table(result, file = file.path(outputDir,
                involved in secretion.
   - MGI: Knockout information from MGI.
   - NCBI: A summary from NCBI.
-  - chromosome_name: The chromosome on which the gene is located    
+  - chromosome_name: The chromosome on which the gene is located
   - Symbol: Official gene symbol
   - Ensembl: Ensembl ID
   - MGI.Gene.Marker.ID: MGI ID
@@ -589,18 +591,18 @@ write.table(result, file = file.path(outputDir,
 
 *MarkersClusters* usually contains 10-20 top marker genes per clusters. However, it is more reliable to use at least 100 genes for cell state annotation. 
 
-The function saveMarkersLists will create data frames with top 100 (by default) top marker genes for each cluster. The first column of the output table is the gene name and the second column is the associated cluster. 
+The function saveMarkersLists will create a data frames with top 100 marker genes for each cluster (by default). The first column of the output table is the gene name and the second column is the associated cluster. 
 It will create “marker_genes/markers_lists” folder and save one table per cluster. 
-
-```{r, eval = FALSE}
+\newline
+```{r saveMarkersLists, eval = FALSE}
 saveMarkersLists(experimentName, outputDirectory)
 ```
-
+\newline
 The *saveGenesInfo* function will save results of getGenesInfo into "outputDirectory/marker_genes/saveGenesInfo" for each file in “marker_genes/markers_lists”. It goes file by file sequentially. If you see an error message that the 
 connection to the website takes too much time, restart the saveGenesInfo from the table where it failed using the startFromFile option. As an example, we will specify “startFromFile = 10” to calculate the output only for the last 
 cluster. Hence, we reduce the computational time and the number of output messages. For your analysis, please select “startFromFile = 1”.
  
-```{r, eval = FALSE}
+```{r saveGenesInfo, eval = FALSE}
 saveGenesInfo(outputDirectory, sep = ";", header = TRUE, 
               startFromFile = 10, getUniprot = TRUE)
 ```
@@ -612,23 +614,23 @@ Until now, we have been using CONCLUS in an unsupervised fashion. This is a good
 This is why we have included in CONCLUS, additional options to do supervised analysis (or “manual” clustering) to allow the researcher to use her/his biological knowledge in the CONCLUS workflow. Going back to the example of the 
 Bergiers et al. dataset above (cluster similarity heatmap), one can see that some clusters clearly belong to the same family of cells after examining the clusters_similarity matrix generated by CONCLUS.
 
-It is mostly obvious for clusters 2,3 and 4 and also for clusters 5 and 9. In order to figure out what marker genes are defining these families of clusters, one can use manual clustering in CONCLUS to fuse clusters of similar 
-nature: i.e. combine clusters 2,3 and 4 together or combine clusters 5 and 9.
-
-```{r}
+It is mostly obvious for clusters 2 and 3, and also for clusters 8, 9, and 10. In order to figure out what marker genes are defining these families of clusters, one can use manual clustering in CONCLUS to fuse clusters of similar 
+nature: i.e. combine clusters 2 and 3 together, and combine clusters 8, 9,  and 10.
+\newline
+```{r merging_clusters}
 exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName, 
                         "clusters_table.tsv")
 clustersTable <- read.delim(file.path(outputDirectory, "output_tables", 
        paste0(experimentName, "_clusters_table.tsv")), stringsAsFactors = FALSE) 
 
-#replace “3” by “2” in the clusters_table
+#replace “3” by “2” in the clusters_table to merge clusters 2/3
 clustersTable$clusters[clustersTable$clusters == "3"] = "2"
 
-#replace “4” by “2” in the clusters_table 
-clustersTable$clusters[clustersTable$clusters == "4"] = "2"
+#replace “9” by “8” in the clusters_table to merge 8/9/10
+clustersTable$clusters[clustersTable$clusters == "9"] = "8"
 
-#replace “9” by “5” in the clusters_table 
-clustersTable$clusters[clustersTable$clusters == "9"] = "5"
+#replace “10” by “8” in the clusters_table to merge 8/9/10
+clustersTable$clusters[clustersTable$clusters == "10"] = "8"
 
 write.table(clustersTable, file.path(outputDirectory, "output_tables", 
             paste0(experimentName, "_clusters_table_manual.tsv")), 
@@ -636,8 +638,8 @@ write.table(clustersTable, file.path(outputDirectory, "output_tables",
 ```
 
 Now we can use runCONCLUS again and overwrite old marker genes and save new heatmaps. If you want to keep an old folder with marker genes, please rename it, so runCONCLUS will create a new marker_genes folder.
-
-```{r}
+\newline
+```{r addClusteringManually_runCONCLUS, results = "hide", message = FALSE, warning = FALSE}
 #Correcting clustering manually
 sceObjectCONCLUS <- addClusteringManually(fileName = "clusters_table_manual.tsv", 
     dataDirectory = outputDirectory, 
@@ -650,45 +652,11 @@ sceObjectCONCLUS <- runCONCLUS(outputDirectory, experimentName,
            statePalette= c("bisque", "cadetblue2", "coral1", "cornflowerblue"),
 		   preClustered = TRUE, manualClusteringObject = sceObjectCONCLUS)  
 ```
-
+\newline
 As previously, we can now make heatmaps of marker gene expression. 
+\newline
 
-```{r}
-# Plotting heatmap displaying normalized counts
-genesNumber <- 10
-markersClusters <- getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
-                                  experimentName = experimentName,
-                                  genesNumber = genesNumber)
-                                  
-orderClusters <- T # F will apply hierarchical clustering to all cells
-orderGenes <- T    # F will apply hierarchical clustering to all genes
-meanCentered <- F  
-plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
-                experimentName, 
-                paste0("clusters",
-                       length(levels(
-                     SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
-                       "_meanCentered",meanCentered,
-                       "_orderClusters",orderClusters,
-                       "_orderGenes",orderGenes,"_top",
-                       genesNumber, "markersPerCluster"), 
-                meanCentered = meanCentered, 
-                colorPalette = c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C",
-                 "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", 
-                 "#6A3D9A"),
-                orderClusters = orderClusters,
-                orderGenes = orderGenes,
-                fontsize_row = 5,
-                statePalette = c("bisque", "cadetblue2", 
-                                 "coral1", "cornflowerblue"),
-                color = colorRampPalette(c("#023b84","#4b97fc", 
-                                           "#FEE395", 
-                                           "#F4794E", "#D73027",
-                                           "#a31008","#7a0f09"))(100),
-                returnPlot = TRUE)
-```
-
-```{r}
+```{r plotCellHeatmap_manualClustering, warning = FALSE}
 # Plotting heatmap displaying mean-centered values
 meanCentered <- T  # F to show normalized counts, 
 plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
@@ -714,6 +682,7 @@ plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory,
                                            "#a31008","#7a0f09"))(100),
                 returnPlot = TRUE)
 ```
+------------- TO MODIFY BELOW -----
 
 This heatmap shows that Cd34 and Apoe are good markers of cluster 2 (mix of old clusters 2, 3 and 4), while Ctsc and Clec4n are specific markers of cluster 5 (mix of old clusters 5 and 9). We can visualize them in the t-SNE plots below.
 
