@@ -102,18 +102,3 @@ If an error message is thrown, re-run the function with your own color vector.
   
 }
 \keyword{CONCLUS}
-\seealso{
-    \code{\link{initialisePath}}
- 	\code{\link{normaliseCountMatrix}}
- 	\code{\link{generateTSNECoordinates}}
- 	\code{\link{runDBSCAN}}
- 	\code{\link{clusterCellsInternal}}
- 	\code{\link{plotCellSimilarity}}
- 	\code{\link{plotClusteredTSNE}}
- 	\code{\link{calculateClustersSimilarity}}
- 	\code{\link{exportMatrix}}
- 	\code{\link{plotClustersSimilarity}}
- 	\code{\link{rankGenes}
-}
-
-
