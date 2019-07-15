@@ -52,7 +52,7 @@ her Ph.D at the Max Planck Institute of Immunobiology and Epigenetics.
 
 ## Installation
 
-```{r loading_conclus, results="hide", warning = FALSE}
+```{r loading_conclus, results="hide", warning = FALSE, message = FALSE}
 # required R >= 3.4.
 if(!requireNamespace("devtools"))
 	install.packages("devtools")
@@ -71,7 +71,8 @@ If you get a message such as: *packages ‘BiocParallel’, ‘scran’, ‘scat
 please run the following commands:
 
 ```{r, eval = FALSE}
-install(c("BiocParallel", "scran", "scater", "monocle", "SingleCellExperiment", "KEGGREST", "AnnotationDbi", "biomaRt", "org.Mm.eg.db", "S4Vectors", "Biobase"))
+install(c("BiocParallel", "scran", "scater", "monocle", "SingleCellExperiment", 
+"KEGGREST", "AnnotationDbi", "biomaRt", "org.Mm.eg.db", "S4Vectors", "Biobase"))
 install_github("lancrinlab/CONCLUS", dependencies = TRUE)
 ```
 
