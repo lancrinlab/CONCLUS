@@ -117,4 +117,3 @@ If an error message is thrown, re-run the function with your own color vector.
 }
 
 
- 	
