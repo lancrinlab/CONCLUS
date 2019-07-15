@@ -57,11 +57,24 @@ her Ph.D at the Max Planck Institute of Immunobiology and Epigenetics.
 if(!requireNamespace("devtools"))
 	install.packages("devtools")
 
+if(!requireNamespace("BiocManager"))
+	install.packages("BiocManager")
+
 library(devtools)
+library(BiocManager)
 
 if(!requireNamespace("conclus"))
 	install_github("lancrinlab/CONCLUS", dependencies = TRUE)
 ```
+
+If you get a message such as: *packages ‘BiocParallel’, ‘scran’, ‘scater’, ‘monocle’, ‘SingleCellExperiment’, ‘KEGGREST’, ‘AnnotationDbi’, ‘biomaRt’, ‘org.Mm.eg.db’, ‘S4Vectors’, ‘Biobase’ are not available (for R version 3.6.0)*,
+please run the following commands:
+
+```{r, eval = FALSE}
+install(c("BiocParallel", "scran", "scater", "monocle", "SingleCellExperiment", "KEGGREST", "AnnotationDbi", "biomaRt", "org.Mm.eg.db", "S4Vectors", "Biobase"))
+install_github("lancrinlab/CONCLUS", dependencies = TRUE)
+```
+
 
 ## Quick start
 
