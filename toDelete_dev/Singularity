@@ -1,0 +1,31 @@
+Bootstrap: debootstrap
+OSVersion: bionic
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+
+%help
+        This is the container for installing CONCLUS
+
+%environment
+        export LC_ALL=C.UTF-8
+        export LANG=C.UTF-8
+
+%post
+
+        apt update
+        apt install -y wget gcc g++ gfortran libreadline-dev xorg-dev make unzip \
+        libkrb5-3 texlive-latex-base bzip2 libbz2-dev liblzma-dev libpcre3-dev curl \
+        libcurl4-openssl-dev default-jre default-jdk libxml2-dev libssl-dev libcairo2-dev
+
+        # ~~~~~ R 3.6.0 ~~~~~ #
+        cd /root
+        wget https://cran.r-project.org/src/base/R-3/R-3.6.0.tar.gz
+        tar -xvzf R-3.6.0.tar.gz && cd R-3.6.0 && ./configure && make && make install
+        
+        R CMD javareconf -e
+        LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$JAVA_LD_LIBRARY_PATH
+        
+        
+
+%labels
+  Author Nicolas Descostes
+  Version v0.0.1
