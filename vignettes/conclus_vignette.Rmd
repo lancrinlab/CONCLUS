@@ -44,7 +44,7 @@ CONCLUS is organized into the following steps:
 
 # Getting help
 
-Issues can be submitted directly on github: -- complete with address---. To contact us directly write to christophe.lancrin@embl.it. This package was developed by Polina Pavlovich who is now doing
+Issues can be submitted directly on github: https://github.com/lancrinlab/CONCLUS/issues. To contact us directly write to christophe.lancrin@embl.it. This package was developed by Polina Pavlovich who is now doing
 her Ph.D at the Max Planck Institute of Immunobiology and Epigenetics.
 
 
