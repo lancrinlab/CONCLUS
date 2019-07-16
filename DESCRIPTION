@@ -1,6 +1,6 @@
 Package: conclus
 Title: ScRNA-seq workflow CONCLUS - from CONsensus CLUSters to a meaningful CONCLUSion.
-Version: 0.99.1
+Version: 0.99.2
 Authors: Polina Pavlovich, Nicolas Descostes, Konstantin Chukreev, Christophe Lancrin
 Maintainer: Nicolas Descostes <nicolas.descostes@embl.it>
 Description: CONCLUS is a tool for robust clustering, positive marker features selection 
