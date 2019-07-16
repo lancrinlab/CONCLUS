@@ -11,6 +11,7 @@ library(conclus)
 Note: if you install conclus on a local Linux machine you might need to install rJava. A simple instruction how to do it you can find here https://www.r-bloggers.com/installing-rjava-on-ubuntu/. On Windows PC, during the installation of conclus, in case if needed, R will return you a link to the website of Java Oracle to download the update.
 
 ## Introduction
+
 CONCLUS is a tool for robust clustering and positive marker features selection.
 The motivation was to create a user-friendly tool for single-cell RNA sequencing (scRNA-seq) data which can distinguish not only cell types from different tissues but also characterize heterogeneity within a tissue or capture in detail stages of a 
 differentiation process. Most of the existing tools offer only one clustering solution when a slight change of
@@ -24,15 +25,9 @@ GetGenesInfo performs web scraping and collects information about knockout pheno
 SaveGenesInfo is a wrapper of getGeneInfo which allows saving tables for multiple input files. These two functions can be applied not only to marker genes from scRNA-seq but also for DESeq2 results in bulk RNA-seq.
 
 
-CONCLUS was developed by Polina Pavlovich and Konstantin Chukreev in the laboratory of Christophe Lancrin
-in the European Molecular Biology Laboratory, EMBL Rome.
+CONCLUS was developed by Polina Pavlovich, Nicolas Descostes and Konstantin Chukreev in the laboratory of Christophe Lancrin
+at the European Molecular Biology Laboratory, EMBL Rome.
 
-The pdf reference manual for CONCLUS is 'conclus_manual.pdf'.  
-The vignette 'conclus_vignette.html' is located in the 'vignettes' folder. We are sorry that currently we cannot render our vignette directly on GitHub because the file is too big but you can open the html file with your browser after cloning or downloading the CONCLUS folder to your computer.
-
-If you do not want to download the folder with the entire package but quickly get only the documentation, you can check the project https://github.com/PolinaPavlovich/CONCLUS_documentation with the files 'conclus_manual.pdf' and 'conclus_vignette.html.'
-
-If you have any questions about the tool or suggestions, please contact Polina Pavlovich by *pavlovich@phystech.edu*. 
 
 ## Authors contribution:
 
