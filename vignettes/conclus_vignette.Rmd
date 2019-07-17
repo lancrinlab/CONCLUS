@@ -465,7 +465,7 @@ gene compared to the mean.
 \newline
 ```{r plotCellHeatmap_marker1, warning=FALSE}
 genesNumber <- 10
-markersClusters <- conclus::getMarkerGenes(outputDirectory, sceObjectCONCLUS, 
+markersClusters <- conclus::getMarkerGenes(outputDirectory, sceObjectFiltered, 
                                   experimentName = experimentName,
                                   genesNumber = genesNumber)
                                   
@@ -473,11 +473,11 @@ orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- T  # F to show normalized counts
 
-conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
+conclus::plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
                        length(levels(
-                     SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
+                     SummarizedExperiment::colData(sceObjectFiltered)$clusters)),
                        "_meanCentered",meanCentered,
                        "_orderClusters",orderClusters,
                        "_orderGenes",orderGenes,"_top",
@@ -504,10 +504,10 @@ differences in expression of both lowly and highly detected genes in one heatmap
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- F  # F to show normalized counts
-conclus::plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
+conclus::plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
-                       length(levels(SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
+                       length(levels(SummarizedExperiment::colData(sceObjectFiltered)$clusters)),
                        "_meanCentered",meanCentered,
                        "_orderClusters",orderClusters,
                        "_orderGenes",orderGenes,"_top",
@@ -537,25 +537,25 @@ Alternative order of clusters is by name or by hierarchical clustering as in the
 ```{r plotGeneExpression1}
 # Plot gene expression in a selected tSNE plot
 # Ccl3, marker gene for clusters 2
-plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectCONCLUS, 
+plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectFiltered, 
                   tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r plotGeneExpression2}
 # Gp9, marker gene for cluster 6
-plotGeneExpression("Gp9", experimentName, outputDirectory, sceObjectCONCLUS, 
+plotGeneExpression("Gp9", experimentName, outputDirectory, sceObjectFiltered, 
                    tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r plotGeneExpression3}
 # Fn1, marker gene for cluster 7
-plotGeneExpression("Fn1", experimentName, outputDirectory, sceObjectCONCLUS, 
+plotGeneExpression("Fn1", experimentName, outputDirectory, sceObjectFiltered, 
                    tSNEpicture = 10, returnPlot=T)
 ```
 
 ```{r plotGeneExpression4}
 # Alox5ap, marker gene for cluster 9
-plotGeneExpression("Alox5ap", experimentName, outputDirectory, sceObjectCONCLUS, 
+plotGeneExpression("Alox5ap", experimentName, outputDirectory, sceObjectFiltered, 
                     tSNEpicture = 10, returnPlot=T)
 ```
 
@@ -629,7 +629,7 @@ It is mostly obvious for clusters 2 and 3, and also for clusters 8, 9, and 10. I
 nature: i.e. combine clusters 2 and 3 together, and combine clusters 8, 9,  and 10.
 \newline
 ```{r merging_clusters}
-exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName, 
+exportClusteringResults(sceObjectFiltered, outputDirectory, experimentName, 
                         "clusters_table.tsv")
 clustersTable <- read.delim(file.path(outputDirectory, "output_tables", 
        paste0(experimentName, "_clusters_table.tsv")), stringsAsFactors = FALSE) 
