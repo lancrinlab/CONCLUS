@@ -142,7 +142,7 @@ after adding doxycycline (dox). The Empty ESC line did not have any transgene.
 There were **four conditions**: E_minus (Empty no dox), E_plus (Empty with dox), i8TFs_minus (i8TFs no dox) and i8TFs_plus 
 (i8TFs with dox). 
 
-This sc-RNA-seq experiment was performed using the SMARTer ICELL8 Single-Cell System. The protocol was based on 3' end RNA 
+This sc-RNA-seq experiment was performed using the SMARTer ICELL8 Single-Cell System ([Click here for more info](https://www.takarabio.com/learning-centers/automation-systems/icell8-introduction/icell8-technology-overview)). The protocol was based on 3' end RNA 
 sequencing where each mRNA molecule is labeled with a unique molecular identifier (UMI) during reverse transcription in every 
 single cell. The analysis performed by *Bergiers et al.* was based on the dimensionality reduction algorithm called Principal 
 Component Analysis (PCA), and they found that there was a major gene expression difference between i8TFs_plus and the other three 
@@ -196,8 +196,8 @@ The wrapper function runCONCLUS is organized into 7 steps:
 ## Normalization of the counts matrix
 
 sc-RNA-seq datasets are quite challenging notably because of sparsity (many genes are not detected consistently yielding expression matrices with many zeroes) and also because of technical noise. 
-To facilitate analysis, one needs to perform a step of normalization which allows the correction of unwanted technical and biological noises (for more info see this overview on 
-sc-RNA-seq [normalization](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5549838/)).
+To facilitate analysis, one needs to perform a step of normalization which allows the correction of unwanted technical and biological noises (click [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5549838/) for a complete review on
+normalization techniques).
 
 CONCLUS uses Scran and Scater packages for normalization. Beforehand, the function will annotate genes creating *rowData* and add statistics about cells into *columnsMetaData*. If you already have *columnsMetaData* and *rowData*, 
 you can give it to the function (see manual). It will keep your columns and add new ones at the end. If you do not want to lose any cell after quality metrics check, select *alreadyCellFiltered = TRUE*, by default it is *FALSE*. 
