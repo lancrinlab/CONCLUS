@@ -175,7 +175,10 @@ sceObject <- conclus::normaliseCountMatrix(countMatrix, species = "mmu",
 p <- conclus::testClustering(sceObject, outputDirectory, experimentName)
 ```
 
-![k-NN distance plot](./vignette/figures/fig1_KNN.png)
+<img src="vignettes/figures/fig1_KNN.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
 
 ```{r testClustering_result1, eval = FALSE}
 # saved as "outputDirectory/test_clustering/test_tSNE.pdf"
