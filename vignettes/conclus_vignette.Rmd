@@ -161,8 +161,8 @@ The *TestClustering* function runs one clustering round out of the 84 (default) 
 By default, they are *dbscanEpsilon = c(1.3, 1.4, 1.5)* and *minPts = c(3,4)*. If the dashed horizontal line in the k-NN distance plot lays on the “knee” of the curve (as shown below), it means that optimal epsilon is equal
 to the intersection of the line to the y-axis. In our example, optimal epsilon is 1.4 for 5-NN distance where 5 corresponds to MinPts. 
 
-In the "test_clustering" folder under outputDirectory, the three plots below will be saved where one corresponds to the “distance_graph.pdf”, another one to “test_tSNE.pdf” (*p[[1]]*), and the last one will be saved as 
-“test_clustering.pdf” (*p[[3]]*).
+In the "test_clustering" folder under outputDirectory, the three plots below will be saved where one corresponds to the “distance_graph.pdf” (Figure1), another one to “test_tSNE.pdf” (*p[[1]]*, Figure2), and the last one will be saved as 
+“test_clustering.pdf” (*p[[3]]*, Figure3).
 
 
 ```{r normalization_1, results="hide", warning = FALSE}
@@ -170,15 +170,26 @@ sceObject <- conclus::normaliseCountMatrix(countMatrix, species = "mmu",
                                   colData = columnsMetaData)
 ```
 
-```{r testClustering, fig.height=5, fig.width=6}
-p <- conclus::testClustering(sceObject, outputDirectory, experimentName)
 
+```{r testClustering, fig.height=5, fig.width=6, fig.keep = 'none'}
+p <- conclus::testClustering(sceObject, outputDirectory, experimentName)
+```
+
+![k-NN distance plot \label{figure1}](figures/fig1_KNN.png)
+
+```{r testClustering_result1, eval = FALSE}
 # saved as "outputDirectory/test_clustering/test_tSNE.pdf"
 p[[1]]
+```
+
+![tSNE result \label{figure2}](figures/fig2_tSNEnoColor.png)
+
+```{r testClustering_result2, eval = FALSE}
 # saved as "outputDirectory/test_clustering/test_clustering.pdf"
 p[[3]]
 ```
 
+![tSNE result colored by dbSCAN clustering \label{figure3}](figures/fig3_tSNEdbScan.png)
 
 # CONCLUS step by step
 
@@ -347,29 +358,38 @@ if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered))
 }
 ```
 
-For visualizing the 5th (on 14) tSNE cluster:
+For visualizing the 5th (on 14) tSNE cluster (figure 4):
 \newline
-```{r plotClustered_visualization1}
+```{r plotClustered_visualization1, eval = FALSE}
 tSNEclusters[[5]]
 ```
+
+![tSNE result colored by dbSCAN clustering for the 5th cluster \label{figure4}](figures/fig4_tSNEColor_clusters.png)
+
+
+For visualizing the 5th (on 14) tSNE cluster without colors (figure 5):
 \newline
-For visualizing the 5th (on 14) tSNE cluster without colors:
-\newline
-```{r plotClustered_visualization2}
+```{r plotClustered_visualization2, eval = FALSE}
 tSNEnoColor[[5]]
 ```
+
+![tSNE result without colors for the 5th cluster \label{figure5}](figures/fig5_tSNEnoColor.png)
+
+
+For visualizing the 5th (on 14) tSNE cluster colored by state (figure 6):
 \newline
-For visualizing the 5th (on 14) tSNE cluster colored by state:
-\newline
-```{r plotClustered_visualization3}
+```{r plotClustered_visualization3, eval = FALSE}
 tSNEstate[[5]]
 ```
 
+![tSNE result colored by states for the 5th cluster \label{figure6}](figures/fig6_tSNEState.png)
+
+
 ### Cell similarity heatmap
 
-The *cellsSimilarityMatrix* is then used to generate a heatmap summarizing the results of the clustering and to show how stable the cell clusters are accross the 84 solutions.
+The *cellsSimilarityMatrix* is then used to generate a heatmap (Figure 7) summarizing the results of the clustering and to show how stable the cell clusters are accross the 84 solutions.
 \newline
-```{r plotCellSimilarity, fig.height=6, fig.width=7, warning = FALSE}
+```{r plotCellSimilarity, warning = FALSE, fig.keep = 'none'}
 colorPalette="default"
 statePalette="default"
 plotPDFcellSim = TRUE
@@ -388,13 +408,15 @@ conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDire
                  returnPlot = TRUE)
 ```
 
+![Cell similarity matrix \label{figure7}](figures/fig7_plotCellSimilarity.png)
+
 *CellsSimilarityMatrix* is symmetrical and its size proportional of to the "number of cells x number of cells". Each vertical or horizontal tiny strip is a cell. Intersection shows the proportion of clustering iterations in which a 
 pair of cells were in one cluster (score between 0 and 1, between blue and red). We will call this combination "consensus clusters" and use them everywhere later. We can appreciate that cellsSimilarityMatrix is the first evidence 
 showing that CONCLUS managed not only to distinguish i8TFs_plus cells from the three other groups (as in the original publication) but also find subpopulations within these groups which were impossible using PCA alone.
 
 ### Cluster similarity heatmap
 
-```{r plotClustersSimilarity, fig.height=5.3, fig.width=6.5, warning = FALSE, message = FALSE}  
+```{r plotClustersSimilarity, warning = FALSE, message = FALSE, eval = FALSE}  
 conclus::plotClustersSimilarity(clustersSimilarityMatrix, 
                        sceObjectFiltered,
                        dataDirectory = outputDirectory, 
@@ -404,6 +426,8 @@ conclus::plotClustersSimilarity(clustersSimilarityMatrix,
                        clusteringMethod = clusteringMethod,
                        returnPlot = TRUE)
 ```
+
+![Cluster similarity matrix \label{figure8}](figures/fig8_plotClustersSimilarity.png)
 
 In the *clusterSimilarityMatrix*, we can still see two major families of clusters: clusters with 8, 9, and 10 on one side and 1, 2, 3, 4, 5, 6 and 7, on the other. Almost all clusters have a high value of similarity across all clustering 
 solutions. Only clusters 5-6 have a quite low similarity value. Red color on the diagonal means that the group is homogenous, and usually, it is what we want to get. The yellow on the diagonal indicates that either 
