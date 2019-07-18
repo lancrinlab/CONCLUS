@@ -334,37 +334,13 @@ sceObjectFiltered <- addClusteringManually(fileName = "clusters_table_manual.tsv
 		columnName = "clusters")
 
 # Redo the analysis with manual clustering
-sceObjectFiltered2 <- runCONCLUS(outputDirectory, experimentName, 
+sceObjectFiltered <- runCONCLUS(outputDirectory, experimentName, 
 		statePalette= c("bisque", "cadetblue2", "coral1", "cornflowerblue"),
-		preClustered = TRUE, manualClusteringObject = sceObjectFiltered, k=7, cores=10)
-
-
-dataDirectory = outputDirectory 
-statePalette= c("bisque", "cadetblue2", "coral1", "cornflowerblue")
-preClustered = TRUE
-manualClusteringObject = sceObjectFiltered
-cores=10
-columnsMetaData = NA
-species = NA
-colorPalette="default"
-clusteringMethod="ward.D2"
-epsilon=c(1.3, 1.4, 1.5)
-minPoints=c(3, 4)
-k=7
-PCs=c(4, 6, 8, 10, 20, 40, 50)
-perplexities=c(30,40)
-randomSeed = 42
-deepSplit=4
-orderClusters = FALSE
-plotPDFcellSim = TRUE
-deleteOutliers = TRUE
-tSNEalreadyGenerated = FALSE
-tSNEresExp = ""
-
-
-
+		preClustered = TRUE, manualClusteringObject = sceObjectFiltered, cores=10)
 
 meanCentered <- T  # F to show normalized counts, 
+
+png(paste0(outputDirectory, "fig15_plotCellHeatmapMeanCentered_manual.png"), width = 700, height=700, res = 150)
 plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory, 
 		experimentName, 
 		paste0("clusters",
@@ -386,5 +362,26 @@ plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory,
 						"#F4794E", "#D73027",
 						"#a31008","#7a0f09"))(100),
 		returnPlot = TRUE)
+dev.off()
+
+png(paste0(outputDirectory, "fig16_tSNE_manual_Ccl3.png"), width = 700, height=700, res = 100)
+plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectFiltered,
+		tSNEpicture = 10, returnPlot = TRUE)
+dev.off()
+
+png(paste0(outputDirectory, "fig17_tSNE_manual_Cd14.png"), width = 700, height=700, res = 100)
+plotGeneExpression("Cd14", experimentName, outputDirectory, sceObjectFiltered,
+		tSNEpicture = 10, returnPlot = TRUE)
+dev.off()
+
+png(paste0(outputDirectory, "fig18_tSNE_manual_Gm2830.png"), width = 700, height=700, res = 100)
+plotGeneExpression("Gm2830", experimentName, outputDirectory, sceObjectFiltered,
+		tSNEpicture = 10, returnPlot = TRUE)
+dev.off()
+
+png(paste0(outputDirectory, "fig19_tSNE_manual_Ak1.png"), width = 700, height=700, res = 100)
+plotGeneExpression("Ak1", experimentName, outputDirectory, sceObjectFiltered,
+		tSNEpicture = 10, returnPlot = TRUE)
+dev.off()
 
 
