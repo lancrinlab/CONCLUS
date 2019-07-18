@@ -91,7 +91,7 @@ library(conclus)
 outputDirectory <- "./YourOutputDirectory"
 experimentName <- "Bergiers"
 
-countMatrix <- read.delim(file.path(system.file("extdata", package = "conclus"),
+countMatrix <- read.delim(file.path(system.file("extdata", package = "conclus"),		
                                     "Bergiers_counts_matrix_filtered.tsv"), 
                           stringsAsFactors = FALSE)
 columnsMetaData <- read.delim(file.path(system.file("extdata", package = "conclus"), 
@@ -480,14 +480,14 @@ To understand the nature of the consensus clusters identified by CONCLUS, it is 
 called “marker_genes” is automatically generated in your dataDirectory. It contains one Tab Separated Values (tsv) file for each cluster. Each tsv file contains a list of genes ranked according to how high these genes are expressed 
 in a given cluster in comparison to all the other clusters.
 
-CONCLUS offers the option to visualize the marker genes on a heatmap. Below we chose to select 10 marker genes per cluster which should generate a heatmap with 100 genes (10 marker genes x 10 clusters) which is convenient for 
+CONCLUS offers the option to visualize the marker genes on a heatmap (Figure 9). Below we chose to select 10 marker genes per cluster which should generate a heatmap with 100 genes (10 marker genes x 10 clusters) which is convenient for 
 visualization. In practice, the number of genes in this heatmap will be less than 100 because some genes have been classified as markers for more than one cluster. This can happen when several clusters correspond to similar cellular 
 types. In this particular example, we have a list of 88 genes.
 
 We ask the function *plotCellHeatmap* to order clusters and genes by similarity (the same order as in the *clusterSimilarityMatrix*) and show mean-centered normalized data. Mean-centering allows seeing the relative expression of a 
 gene compared to the mean.
 \newline
-```{r plotCellHeatmap_marker1, warning=FALSE}
+```{r plotCellHeatmap_marker1, warning=FALSE, fig.keep = 'none'}
 genesNumber <- 10
 markersClusters <- conclus::getMarkerGenes(outputDirectory, sceObjectFiltered, 
                                   experimentName = experimentName,
@@ -521,10 +521,12 @@ conclus::plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory,
                 width = 7.5, height = 6.5)
 ```
 
-The second heatmap below also shows the order of genes and clusters by similarity but for normalized expression data. As you can see, genes expressed at a level of seven and nine look very similar. It is hard to highlight all the 
+![Heatmap of cells with marker genes \label{figure9}](figures/fig9_positivemarkers.png)
+
+The second heatmap (Figure 10) below also shows the order of genes and clusters by similarity but for normalized expression data. As you can see, genes expressed at a level of seven and nine look very similar. It is hard to highlight all the 
 differences in expression of both lowly and highly detected genes in one heatmap using normalized data. For this reason, mean-centering helps to solve this issue.
 \newline
-```{r plotCellHeatmap_marker2, warning=FALSE}
+```{r plotCellHeatmap_marker2, warning=FALSE, fig.keep = 'none'}
 orderClusters <- T # F will apply hierarchical clustering to all cells
 orderGenes <- T    # F will apply hierarchical clustering to all genes
 meanCentered <- F  # F to show normalized counts
@@ -550,38 +552,48 @@ conclus::plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory,
                 returnPlot = TRUE)
 ```
 
+![Heatmap of cells with marker genes without mean normalization \label{figure10}](figures/fig10_positivemarkers-unnorm.png)
+
 Alternative order of clusters is by name or by hierarchical clustering as in the default pheatmap function.
 
 
 # Plot t-SNE colored by expression of a selected gene
 
 
-*PlotGeneExpression* allows visualizing the normalized expression of one gene in a t-SNE plot. It can be useful to inspect the specificity of top markers. Below are examples of marker genes that define a particular cluster.
+*PlotGeneExpression* allows visualizing the normalized expression of one gene in a t-SNE plot. It can be useful to inspect the specificity of top markers. Below are examples of marker genes that define a particular cluster (Figures 11-14).
 \newline
-```{r plotGeneExpression1}
+```{r plotGeneExpression1, eval = FALSE}
 # Plot gene expression in a selected tSNE plot
 # Ccl3, marker gene for clusters 2
 plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectFiltered, 
                   tSNEpicture = 10, returnPlot=T)
 ```
 
-```{r plotGeneExpression2}
+![tSNE colored by Ccl3 gene expression \label{figure11}](figures/fig11_positivemarkers-ccl3.png)
+
+```{r plotGeneExpression2, eval = FALSE}
 # Gp9, marker gene for cluster 6
 plotGeneExpression("Gp9", experimentName, outputDirectory, sceObjectFiltered, 
                    tSNEpicture = 10, returnPlot=T)
 ```
 
-```{r plotGeneExpression3}
+![tSNE colored by Gp9 gene expression \label{figure12}](figures/fig12_positivemarkers-Gp9.png)
+
+```{r plotGeneExpression3, eval = FALSE}
 # Fn1, marker gene for cluster 7
 plotGeneExpression("Fn1", experimentName, outputDirectory, sceObjectFiltered, 
                    tSNEpicture = 10, returnPlot=T)
 ```
 
-```{r plotGeneExpression4}
+![tSNE colored by Fn1 gene expression \label{figure13}](figures/fig13_positivemarkers-Fn1.png)
+
+```{r plotGeneExpression4, eval = FALSE}
 # Alox5ap, marker gene for cluster 9
 plotGeneExpression("Alox5ap", experimentName, outputDirectory, sceObjectFiltered, 
                     tSNEpicture = 10, returnPlot=T)
 ```
+
+![tSNE colored by Alox5ap gene expression \label{figure14}](figures/fig14_positivemarkers-Alox5ap.png)
 
 # Collect publicly available info about marker genes
 
@@ -651,7 +663,6 @@ Bergiers et al. dataset above (cluster similarity heatmap), one can see that som
 
 It is mostly obvious for clusters 9 and 10. In order to figure out what marker genes are defining these families of clusters, one can use manual clustering in CONCLUS to fuse clusters of similar 
 nature: i.e. combine clusters 9 and 10 together.
-
 \newline
 ```{r merging_clusters}
 exportClusteringResults(sceObjectFiltered, outputDirectory, experimentName, 
@@ -669,7 +680,7 @@ write.table(clustersTable, file.path(outputDirectory, "output_tables",
 
 Now we can use runCONCLUS again and overwrite old marker genes and save new heatmaps. If you want to keep an old folder with marker genes, please rename it, so runCONCLUS will create a new marker_genes folder.
 \newline
-```{r addClusteringManually_runCONCLUS, results = "hide", message = FALSE, warning = FALSE}
+```{r addClusteringManually_runCONCLUS, results = "hide", message = FALSE, warning = FALSE, fig.keep = 'none'}
 #Correcting clustering manually
 sceObjectFiltered <- addClusteringManually(fileName = "clusters_table_manual.tsv", 
     dataDirectory = outputDirectory, 
@@ -683,9 +694,9 @@ sceObjectFiltered <- runCONCLUS(outputDirectory, experimentName,
 		   preClustered = TRUE, manualClusteringObject = sceObjectFiltered)  
 ```
 
-As previously, we can now make heatmaps of marker gene expression. 
+As previously, we can now make heatmaps of marker gene expression (Figure 15). 
 \newline
-```{r plotCellHeatmap_manualClustering, warning = FALSE}
+```{r plotCellHeatmap_manualClustering, warning = FALSE, fig.keep = 'none'}
 # Plotting heatmap displaying mean-centered values
 meanCentered <- T  # F to show normalized counts, 
 plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory, 
@@ -711,21 +722,27 @@ plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory,
                 returnPlot = TRUE)
 ```
 
+![Heatmap of cells with marker genes after clusters merge \label{figure15}](figures/fig15_plotCellHeatmapMeanCentered_manual.png)
 
 This heatmap shows that Cd52 and Alox5ap are good markers of cluster 9 (mix of old clusters 9 and 10). We can visualize them in the t-SNE plots below.
 \newline
-```{r}
+```{r, eval = FALSE}
 # Plot gene expression in a selected tSNE plot
 # Cd52, marker gene for clusters 9 (mix of old clusters 9 and 10)
 plotGeneExpression("Cd52", experimentName, outputDirectory, sceObjectFiltered,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
-```{r}
+![tSNE colored by Cd52 gene expression \label{figure16}](figures/fig16_tSNE_manual_Cd52.png)
+
+```{r, eval = FALSE}
 # Alox5ap, marker gene for cluster 9 (mix of old clusters 9 and 10)
 plotGeneExpression("Alox5ap", experimentName, outputDirectory, sceObjectFiltered,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
+
+![tSNE colored by Cd52 gene expression \label{figure17}](figures/fig17_tSNE_manual_Alox5ap.png)
+
 
 # Conclusion
 
