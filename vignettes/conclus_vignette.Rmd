@@ -652,16 +652,16 @@ Now we can use runCONCLUS again and overwrite old marker genes and save new heat
 \newline
 ```{r addClusteringManually_runCONCLUS, results = "hide", message = FALSE, warning = FALSE}
 #Correcting clustering manually
-sceObjectCONCLUS <- addClusteringManually(fileName = "clusters_table_manual.tsv", 
+sceObjectFiltered <- addClusteringManually(fileName = "clusters_table_manual.tsv", 
     dataDirectory = outputDirectory, 
     experimentName = experimentName,
-    sceObject = sceObjectCONCLUS, 
+    sceObject = sceObjectFiltered, 
     columnName = "clusters")
 
 # Redo the analysis with manual clustering
-sceObjectCONCLUS <- runCONCLUS(outputDirectory, experimentName, 
+sceObjectFiltered <- runCONCLUS(outputDirectory, experimentName, 
            statePalette= c("bisque", "cadetblue2", "coral1", "cornflowerblue"),
-		   preClustered = TRUE, manualClusteringObject = sceObjectCONCLUS, k = 7)  
+		   preClustered = TRUE, manualClusteringObject = sceObjectFiltered)  
 ```
 
 As previously, we can now make heatmaps of marker gene expression. 
@@ -669,11 +669,11 @@ As previously, we can now make heatmaps of marker gene expression.
 ```{r plotCellHeatmap_manualClustering, warning = FALSE}
 # Plotting heatmap displaying mean-centered values
 meanCentered <- T  # F to show normalized counts, 
-plotCellHeatmap(markersClusters, sceObjectCONCLUS, outputDirectory, 
+plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory, 
                 experimentName, 
                 paste0("clusters",
                        length(levels(
-                     SummarizedExperiment::colData(sceObjectCONCLUS)$clusters)),
+                     SummarizedExperiment::colData(sceObjectFiltered)$clusters)),
                     "_meanCentered",meanCentered,"_orderClusters",orderClusters,
                        "_orderGenes",orderGenes,"_top",
                        genesNumber, "markersPerCluster"), 
@@ -698,13 +698,13 @@ This heatmap shows that Ccl3 and Cd14 are good markers of cluster 2 (mix of old 
 ```{r}
 # Plot gene expression in a selected tSNE plot
 # Ccl3, marker gene for clusters 2 
-plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectCONCLUS,
+plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectFiltered,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
 ```{r}
 # Cd14, marker gene for cluster 2
-plotGeneExpression("Cd14", experimentName, outputDirectory, sceObjectCONCLUS,
+plotGeneExpression("Cd14", experimentName, outputDirectory, sceObjectFiltered,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
