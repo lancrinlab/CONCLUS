@@ -27,12 +27,22 @@ exportClusteringResults(sceObjectCONCLUS, outputDirectory, experimentName,
 
 ## Test clustering
 
+
 sceObject <- conclus::normaliseCountMatrix(countMatrix, species = "mmu", 
 		colData = columnsMetaData)
-p <- conclus::testClustering(sceObject, outputDirectory, experimentName)
 
-ggsave(filename = paste0(outputDirectory, "fig1_TestClustering_tSNEnoColor.svg"), plot = p[[1]], device = svg)
-ggsave(filename = paste0(outputDirectory, "fig1_TestClustering_tSNEdbScan.svg"), plot = p[[3]], device = svg)
+
+png(paste0(outputDirectory, "fig1_KNN.png"), width = 700, height=700, res=100)
+p <- conclus::testClustering(sceObject, outputDirectory, experimentName)
+dev.off()
+
+png(paste0(outputDirectory, "fig2_tSNEnoColor.png"), width = 700, height=700, res=100, type = "cairo-png")
+p[[1]]
+dev.off()
+
+png(paste0(outputDirectory, "fig3_tSNEdbScan.png"), width = 700, height=700, res=100, type = "cairo-png")
+p[[3]]
+dev.off()
 
 
 # CONCLUS step by step
@@ -126,6 +136,146 @@ if(any(colnames(SummarizedExperiment::colData(sceObjectFiltered))
 ggsave(filename = paste0(outputDirectory, "fig3_tSNEColor_clusters.svg"), plot = tSNEclusters[[5]], device = svg)
 ggsave(filename = paste0(outputDirectory, "fig4_tSNEnoColor.svg"), plot = tSNEnoColor[[5]], device = svg)
 ggsave(filename = paste0(outputDirectory, "fig5_tSNEState.svg"), plot = tSNEstate[[5]], device = svg)
+
+
+### Cell similarity heatmap
+
+
+colorPalette="default"
+statePalette="default"
+plotPDFcellSim = TRUE
+orderClusters = FALSE
+clustersNumber <- length(unique(
+				SummarizedExperiment::colData(sceObjectFiltered)$clusters))
+colorPalette <- conclus::choosePalette(colorPalette, clustersNumber)
+
+png(paste0(outputDirectory, "fig6_plotCellSimilarity.png"), width = 700, height=700, res = 100)
+conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDirectory,
+		experimentName, colorPalette, 
+		orderClusters = orderClusters, 
+		statePalette = statePalette, 
+		clusteringMethod = clusteringMethod,
+		plotPDF = plotPDFcellSim,
+		returnPlot = TRUE)
+dev.off()
+
+### Cluster similarity heatmap
+
+png(paste0(outputDirectory, "fig7_plotClustersSimilarity.png"), width = 700, height=700)
+conclus::plotClustersSimilarity(clustersSimilarityMatrix, 
+		sceObjectFiltered,
+		dataDirectory = outputDirectory, 
+		experimentName = experimentName, 
+		colorPalette = colorPalette,
+		statePalette = statePalette,
+		clusteringMethod = clusteringMethod,
+		returnPlot = TRUE)
+dev.off()
+
+## Results export
+
+conclus::exportMatrix(cellsSimilarityMatrix, outputDirectory, experimentName, 
+		"cellsSimilarityMatrix")
+conclus::exportMatrix(clustersSimilarityMatrix, outputDirectory, experimentName, 
+		"clustersSimilarityMatrix")
+conclus::exportData(sceObjectFiltered, outputDirectory, experimentName)
+
+
+## Marker genes identification
+
+conclus::rankGenes(sceObjectFiltered, clustersSimilarityMatrix, outputDirectory, 
+		experimentName)
+rankedGenesClus5 <- read.delim(file.path(outputDirectory, "marker_genes",
+				"Bergiers_cluster_5_genes.tsv"),
+		stringsAsFactors = FALSE)
+head(rankedGenesClus5, n = 10)
+
+
+# Plot a heatmap with positive marker genes
+
+genesNumber <- 10
+markersClusters <- conclus::getMarkerGenes(outputDirectory, sceObjectFiltered, 
+		experimentName = experimentName,
+		genesNumber = genesNumber)
+
+orderClusters <- T # F will apply hierarchical clustering to all cells
+orderGenes <- T    # F will apply hierarchical clustering to all genes
+meanCentered <- T  # F to show normalized counts
+
+png(paste0(outputDirectory, "fig8_positivemarkers.png"), width = 700, height=700, res = 150)
+conclus::plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory, 
+		experimentName, 
+		paste0("clusters",
+				length(levels(
+								SummarizedExperiment::colData(sceObjectFiltered)$clusters)),
+				"_meanCentered",meanCentered,
+				"_orderClusters",orderClusters,
+				"_orderGenes",orderGenes,"_top",
+				genesNumber, "markersPerCluster"), 
+		meanCentered = meanCentered, 
+		colorPalette = RColorBrewer::brewer.pal(10, "Paired"),
+		orderClusters = orderClusters,
+		orderGenes = orderGenes,
+		fontsize_row = 4,
+		statePalette = c("bisque", "cadetblue2", 
+				"coral1", "cornflowerblue"),
+		color = colorRampPalette(c("#023b84","#4b97fc", 
+						"#FEE395", 
+						"#F4794E", "#D73027",
+						"#a31008","#7a0f09"))(100),
+		returnPlot = TRUE,
+		width = 7.5, height = 6.5)
+dev.off()
+
+
+
+orderClusters <- T # F will apply hierarchical clustering to all cells
+orderGenes <- T    # F will apply hierarchical clustering to all genes
+meanCentered <- F  # F to show normalized counts
+
+png(paste0(outputDirectory, "fig9_positivemarkers-unnorm.png"), width = 700, height=700, res = 150)
+conclus::plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory, 
+		experimentName, 
+		paste0("clusters",
+				length(levels(SummarizedExperiment::colData(sceObjectFiltered)$clusters)),
+				"_meanCentered",meanCentered,
+				"_orderClusters",orderClusters,
+				"_orderGenes",orderGenes,"_top",
+				genesNumber, "markersPerCluster"), 
+		meanCentered = meanCentered, 
+		colorPalette = RColorBrewer::brewer.pal(10, "Paired"),
+		orderClusters = orderClusters,
+		orderGenes = orderGenes,
+		fontsize_row = 4,
+		statePalette = c("bisque", "cadetblue2", 
+				"coral1", "cornflowerblue"),
+		color = colorRampPalette(c("#023b84","#4b97fc", 
+						"#FEE395", 
+						"#F4794E", "#D73027",
+						"#a31008","#7a0f09"))(100),
+		returnPlot = TRUE)
+dev.off()
+
+
+
+# Plot t-SNE colored by expression of a selected gene
+
+
+ccl3 <- plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectFiltered, 
+		tSNEpicture = 10, returnPlot=T)
+
+ggsave(filename = paste0(outputDirectory, "fig10_tSNESccl3.svg"), plot = ccl3, device = svg)
+
+
+plotGeneExpression("Gp9", experimentName, outputDirectory, sceObjectFiltered, 
+		tSNEpicture = 10, returnPlot=T)
+
+plotGeneExpression("Fn1", experimentName, outputDirectory, sceObjectFiltered, 
+		tSNEpicture = 10, returnPlot=T)
+
+plotGeneExpression("Alox5ap", experimentName, outputDirectory, sceObjectFiltered, 
+		tSNEpicture = 10, returnPlot=T)
+		```
 
 
 
