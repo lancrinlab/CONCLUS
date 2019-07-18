@@ -10,7 +10,7 @@
   <sup>*</sup>Current maintainer. <br/>
   
 
-A pretty doc version of this vignette is available [here]( http://htmlpreview.github.com/?https://github.com/lancrinlab/CONCLUS/blob/master/vignettes/html_format/conclus_vignette.html) 
+A pretty doc version of this vignette is available <a href="http://htmlpreview.github.com/?https://github.com/lancrinlab/CONCLUS/blob/master/vignettes/html_format/conclus_vignette.html" target="_blank"> here </a>. 
 
 
 # Introduction
@@ -176,14 +176,21 @@ p <- conclus::testClustering(sceObject, outputDirectory, experimentName)
 p[[1]]
 ```
 
-![tSNE result \label{figure2}](figures/fig2_tSNEnoColor.png)
+<img src="vignettes/figures/fig2_tSNEnoColor.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
+
 
 ```{r testClustering_result2, eval = FALSE}
 # saved as "outputDirectory/test_clustering/test_clustering.pdf"
 p[[3]]
 ```
 
-![tSNE result colored by dbSCAN clustering \label{figure3}](figures/fig3_tSNEdbScan.png)
+<img src="vignettes/figures/fig3_tSNEdbScan.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
 
 # CONCLUS step by step
 
@@ -358,7 +365,9 @@ For visualizing the 5th (on 14) tSNE cluster (figure 4):
 tSNEclusters[[5]]
 ```
 
-![tSNE result colored by dbSCAN clustering for the 5th cluster \label{figure4}](figures/fig4_tSNEColor_clusters.png)
+<img src="vignettes/figures/fig4_tSNEColor_clusters.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
 
 
 For visualizing the 5th (on 14) tSNE cluster without colors (figure 5):
@@ -367,7 +376,9 @@ For visualizing the 5th (on 14) tSNE cluster without colors (figure 5):
 tSNEnoColor[[5]]
 ```
 
-![tSNE result without colors for the 5th cluster \label{figure5}](figures/fig5_tSNEnoColor.png)
+<img src="vignettes/figures/fig5_tSNEnoColor.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
 
 
 For visualizing the 5th (on 14) tSNE cluster colored by state (figure 6):
@@ -376,7 +387,10 @@ For visualizing the 5th (on 14) tSNE cluster colored by state (figure 6):
 tSNEstate[[5]]
 ```
 
-![tSNE result colored by states for the 5th cluster \label{figure6}](figures/fig6_tSNEState.png)
+<img src="vignettes/figures/fig6_tSNEState.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
 
 
 ### Cell similarity heatmap
@@ -402,7 +416,11 @@ conclus::plotCellSimilarity(sceObjectFiltered, cellsSimilarityMatrix, outputDire
                  returnPlot = TRUE)
 ```
 
-![Cell similarity matrix \label{figure7}](figures/fig7_plotCellSimilarity.png)
+<img src="vignettes/figures/fig7_plotCellSimilarity.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
+
 
 *CellsSimilarityMatrix* is symmetrical and its size proportional of to the "number of cells x number of cells". Each vertical or horizontal tiny strip is a cell. Intersection shows the proportion of clustering iterations in which a 
 pair of cells were in one cluster (score between 0 and 1, between blue and red). We will call this combination "consensus clusters" and use them everywhere later. We can appreciate that cellsSimilarityMatrix is the first evidence 
@@ -421,7 +439,9 @@ conclus::plotClustersSimilarity(clustersSimilarityMatrix,
                        returnPlot = TRUE)
 ```
 
-![Cluster similarity matrix \label{figure8}](figures/fig8_plotClustersSimilarity.png)
+<img src="vignettes/figures/fig8_plotClustersSimilarity.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
 
 In the *clusterSimilarityMatrix*, we can still see two major families of clusters: clusters with 8, 9, and 10 on one side and 1, 2, 3, 4, 5, 6 and 7, on the other. Almost all clusters have a high value of similarity across all clustering 
 solutions. Only clusters 5-6 have a quite low similarity value. Red color on the diagonal means that the group is homogenous, and usually, it is what we want to get. The yellow on the diagonal indicates that either 
@@ -515,7 +535,10 @@ conclus::plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory,
                 width = 7.5, height = 6.5)
 ```
 
-![Heatmap of cells with marker genes \label{figure9}](figures/fig9_positivemarkers.png)
+<img src="vignettes/figures/fig9_positivemarkers.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
 
 The second heatmap (Figure 10) below also shows the order of genes and clusters by similarity but for normalized expression data. As you can see, genes expressed at a level of seven and nine look very similar. It is hard to highlight all the 
 differences in expression of both lowly and highly detected genes in one heatmap using normalized data. For this reason, mean-centering helps to solve this issue.
@@ -546,7 +569,11 @@ conclus::plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory,
                 returnPlot = TRUE)
 ```
 
-![Heatmap of cells with marker genes without mean normalization \label{figure10}](figures/fig10_positivemarkers-unnorm.png)
+<img src="vignettes/figures/fig10_positivemarkers-unnorm.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
+
 
 Alternative order of clusters is by name or by hierarchical clustering as in the default pheatmap function.
 
@@ -563,23 +590,29 @@ plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectFiltered,
                   tSNEpicture = 10, returnPlot=T)
 ```
 
-![tSNE colored by Ccl3 gene expression \label{figure11}](figures/fig11_positivemarkers-ccl3.png)
+<img src="vignettes/figures/fig11_positivemarkers-ccl3.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
 
 ```{r plotGeneExpression2, eval = FALSE}
 # Gp9, marker gene for cluster 6
 plotGeneExpression("Gp9", experimentName, outputDirectory, sceObjectFiltered, 
                    tSNEpicture = 10, returnPlot=T)
 ```
+<img src="vignettes/figures/fig12_positivemarkers-Gp9.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
 
-![tSNE colored by Gp9 gene expression \label{figure12}](figures/fig12_positivemarkers-Gp9.png)
 
 ```{r plotGeneExpression3, eval = FALSE}
 # Fn1, marker gene for cluster 7
 plotGeneExpression("Fn1", experimentName, outputDirectory, sceObjectFiltered, 
                    tSNEpicture = 10, returnPlot=T)
 ```
+<img src="vignettes/figures/fig13_positivemarkers-Fn1.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
 
-![tSNE colored by Fn1 gene expression \label{figure13}](figures/fig13_positivemarkers-Fn1.png)
 
 ```{r plotGeneExpression4, eval = FALSE}
 # Alox5ap, marker gene for cluster 9
@@ -587,7 +620,10 @@ plotGeneExpression("Alox5ap", experimentName, outputDirectory, sceObjectFiltered
                     tSNEpicture = 10, returnPlot=T)
 ```
 
-![tSNE colored by Alox5ap gene expression \label{figure14}](figures/fig14_positivemarkers-Alox5ap.png)
+<img src="vignettes/figures/fig14_positivemarkers-Alox5ap.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
 
 # Collect publicly available info about marker genes
 
@@ -716,7 +752,11 @@ plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory,
                 returnPlot = TRUE)
 ```
 
-![Heatmap of cells with marker genes after clusters merge \label{figure15}](figures/fig15_plotCellHeatmapMeanCentered_manual.png)
+<img src="vignettes/figures/fig15_plotCellHeatmapMeanCentered_manual.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
+
 
 This heatmap shows that Cd52 and Alox5ap are good markers of cluster 9 (mix of old clusters 9 and 10). We can visualize them in the t-SNE plots below.
 \newline
@@ -727,7 +767,9 @@ plotGeneExpression("Cd52", experimentName, outputDirectory, sceObjectFiltered,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
-![tSNE colored by Cd52 gene expression \label{figure16}](figures/fig16_tSNE_manual_Cd52.png)
+<img src="vignettes/figures/fig16_tSNE_manual_Cd52.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
 
 ```{r, eval = FALSE}
 # Alox5ap, marker gene for cluster 9 (mix of old clusters 9 and 10)
@@ -735,7 +777,11 @@ plotGeneExpression("Alox5ap", experimentName, outputDirectory, sceObjectFiltered
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
-![tSNE colored by Cd52 gene expression \label{figure17}](figures/fig17_tSNE_manual_Alox5ap.png)
+<img src="vignettes/figures/fig17_tSNE_manual_Alox5ap.png"
+     alt="k-NN distance plot"
+     style="float: left; margin-right: 10px;" />
+
+
 
 
 # Conclusion
