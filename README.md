@@ -1,26 +1,14 @@
----
-title: "ScRNA-seq workflow CONCLUS: from CONsensus CLUSters to a meaningful CONCLUSion"
-header-includes: \usepackage{graphicx}
-author: | 
-  | Polina Pavlovich$^1$$^2$$^3$, Nicolas Descostes$^1$*, and Christophe Lancrin$^1$
-  |
-  | $^1$European Molecular Biology Laboratory, EMBL, Rome, Italy
-  | $^2$Moscow Institute of Physics and Technology, MIPT,  Moscow, Russia
-  | $^3$Current address: Max Planck Institute of Immunobiology and Epigenetics, MPI-IE, Freiburg, Germany
-  | * Current maintainer.
-output:
-  prettydoc::html_pretty:
-    toc: true # table of content true
-    toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
-    number_sections: true  ## if you want number sections at each table header
-    fig_width: 7
-    fig_height: 6
-vignette: >
-  %\VignetteIndexEntry{ScRNA-seq workflow CONCLUS: from CONsensus CLUSters to a meaningful CONCLUSion}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
----
+# title: "ScRNA-seq workflow CONCLUS: from CONsensus CLUSters to a meaningful CONCLUSion"
 
+## author:
+  
+  Polina Pavlovich$^1$$^2$$^3$, Nicolas Descostes$^1$*, and Christophe Lancrin$^1$
+  
+  $^1$European Molecular Biology Laboratory, EMBL, Rome, Italy
+  $^2$Moscow Institute of Physics and Technology, MIPT,  Moscow, Russia
+  $^3$Current address: Max Planck Institute of Immunobiology and Epigenetics, MPI-IE, Freiburg, Germany
+  * Current maintainer.
+  
 
 # Introduction
 
