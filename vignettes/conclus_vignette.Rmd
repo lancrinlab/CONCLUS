@@ -697,14 +697,29 @@ This heatmap shows that Ccl3 and Cd14 are good markers of cluster 2 (mix of old 
 \newline
 ```{r}
 # Plot gene expression in a selected tSNE plot
-# Ccl3, marker gene for clusters 2 
+# Ccl3, marker gene for clusters 2 (mix of old clusters 2 and 3)
 plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectFiltered,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
 ```{r}
-# Cd14, marker gene for cluster 2
+# Cd14, marker gene for cluster 2 (mix of old clusters 2 and 3)
 plotGeneExpression("Cd14", experimentName, outputDirectory, sceObjectFiltered,
+                   tSNEpicture = 10, returnPlot = TRUE)
+```
+
+Gm2830 and Pfn are good markers of cluster 8 (mix of old clusters 8, 9 and 10). We can visualize them in the t-SNE plots below.
+\newline
+```{r}
+# Plot gene expression in a selected tSNE plot
+# Gm2830, marker gene for clusters 8 (mix of old clusters 8, 9 and 10)
+plotGeneExpression("Gm2830", experimentName, outputDirectory, sceObjectFiltered,
+                   tSNEpicture = 10, returnPlot = TRUE)
+```
+
+```{r}
+# Ak1, marker gene for cluster 8 (mix of old clusters 8, 9 and 10)
+plotGeneExpression("Ak1", experimentName, outputDirectory, sceObjectFiltered,
                    tSNEpicture = 10, returnPlot = TRUE)
 ```
 
