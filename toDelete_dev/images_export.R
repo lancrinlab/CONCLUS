@@ -317,9 +317,8 @@ exportClusteringResults(sceObjectFiltered, outputDirectory, experimentName,
 clustersTable <- read.delim(file.path(outputDirectory, "output_tables", 
 				paste0(experimentName, "_clusters_table.tsv")), stringsAsFactors = FALSE) 
 
-clustersTable$clusters[clustersTable$clusters == "3"] = "2"
-clustersTable$clusters[clustersTable$clusters == "9"] = "8"
-clustersTable$clusters[clustersTable$clusters == "10"] = "8"
+#replace “10” by “9” in the clusters_table to merge 9/10
+clustersTable$clusters[clustersTable$clusters == "10"] = "9"
 
 write.table(clustersTable, file.path(outputDirectory, "output_tables", 
 				paste0(experimentName, "_clusters_table_manual.tsv")), 
@@ -338,8 +337,9 @@ sceObjectFiltered <- runCONCLUS(outputDirectory, experimentName,
 		statePalette= c("bisque", "cadetblue2", "coral1", "cornflowerblue"),
 		preClustered = TRUE, manualClusteringObject = sceObjectFiltered, cores=10)
 
-meanCentered <- T  # F to show normalized counts, 
 
+
+meanCentered <- T  # F to show normalized counts, 
 png(paste0(outputDirectory, "fig15_plotCellHeatmapMeanCentered_manual.png"), width = 700, height=700, res = 150)
 plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory, 
 		experimentName, 
@@ -351,7 +351,7 @@ plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory,
 				genesNumber, "markersPerCluster"), 
 		meanCentered = meanCentered, 
 		colorPalette = c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C",
-				"#FB9A99", "#E31A1C", "#FDBF6F"),
+				"#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6"),
 		orderClusters = orderClusters,
 		orderGenes = orderGenes,
 		fontsize_row = 5,
@@ -364,24 +364,15 @@ plotCellHeatmap(markersClusters, sceObjectFiltered, outputDirectory,
 		returnPlot = TRUE)
 dev.off()
 
-png(paste0(outputDirectory, "fig16_tSNE_manual_Ccl3.png"), width = 700, height=700, res = 100)
-plotGeneExpression("Ccl3", experimentName, outputDirectory, sceObjectFiltered,
+
+		
+
+png(paste0(outputDirectory, "fig16_tSNE_manual_Cd52.png"), width = 700, height=700, res = 100)
+plotGeneExpression("Cd52", experimentName, outputDirectory, sceObjectFiltered,
 		tSNEpicture = 10, returnPlot = TRUE)
 dev.off()
 
-png(paste0(outputDirectory, "fig17_tSNE_manual_Cd14.png"), width = 700, height=700, res = 100)
-plotGeneExpression("Cd14", experimentName, outputDirectory, sceObjectFiltered,
+png(paste0(outputDirectory, "fig17_tSNE_manual_Alox5ap.png"), width = 700, height=700, res = 100)
+plotGeneExpression("Alox5ap", experimentName, outputDirectory, sceObjectFiltered,
 		tSNEpicture = 10, returnPlot = TRUE)
 dev.off()
-
-png(paste0(outputDirectory, "fig18_tSNE_manual_Gm2830.png"), width = 700, height=700, res = 100)
-plotGeneExpression("Gm2830", experimentName, outputDirectory, sceObjectFiltered,
-		tSNEpicture = 10, returnPlot = TRUE)
-dev.off()
-
-png(paste0(outputDirectory, "fig19_tSNE_manual_Ak1.png"), width = 700, height=700, res = 100)
-plotGeneExpression("Ak1", experimentName, outputDirectory, sceObjectFiltered,
-		tSNEpicture = 10, returnPlot = TRUE)
-dev.off()
-
-
