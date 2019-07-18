@@ -1,3 +1,7 @@
+## 0.99.3
+
+- Correct bug in runCONCLUS to handle manual clustering
+
 ## 0.99.2
 
 - Project moved to lancrinlab account
