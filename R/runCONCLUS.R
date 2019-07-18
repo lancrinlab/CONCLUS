@@ -46,7 +46,12 @@ runCONCLUS <- function(dataDirectory, experimentName, columnsMetaData = NA,
 		clusteringResults <- clusterCellsInternal(dbscanResults, sceObject, clusterNumber=k,
 				deepSplit=deepSplit, cores=cores,
 				clusteringMethod=clusteringMethod)
-		sceObjectFiltered <- clusteringResults[[1]]
+		
+		if(is.na(manualClusteringObject))
+			sceObjectFiltered <- clusteringResults[[1]]
+		else
+			sceObjectFiltered <- sceObject
+		
 		cellsSimilarityMatrix <- clusteringResults[[2]]
 	} else {
 		# Running clustering
