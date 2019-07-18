@@ -1,6 +1,6 @@
 # title: "ScRNA-seq workflow CONCLUS: from CONsensus CLUSters to a meaningful CONCLUSion"
 
-## author:
+
   
   Polina Pavlovich<sup>1,2,3</sup>, Nicolas Descostes<sup>1*</sup>, and Christophe Lancrin<sup>1</sup>
   
@@ -9,6 +9,9 @@
   <sup>3</sup>Current address: Max Planck Institute of Immunobiology and Epigenetics, MPI-IE, Freiburg, Germany <br/>
   <sup>*</sup>Current maintainer. <br/>
   
+
+A pretty doc version of this vignette is available [here]( http://htmlpreview.github.com/?https://github.com/lancrinlab/CONCLUS/blob/master/vignettes/html_format/conclus_vignette.html) 
+
 
 # Introduction
 
