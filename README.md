@@ -2,12 +2,12 @@
 
 ## author:
   
-  Polina Pavlovich$^1$$^2$$^3$, Nicolas Descostes$^1$*, and Christophe Lancrin$^1$
+  Polina Pavlovich<sup>1,2,3</sup>, Nicolas Descostes<sup>1*</sup>, and Christophe Lancrin<sup>1</sup>
   
-  $^1$European Molecular Biology Laboratory, EMBL, Rome, Italy
-  $^2$Moscow Institute of Physics and Technology, MIPT,  Moscow, Russia
-  $^3$Current address: Max Planck Institute of Immunobiology and Epigenetics, MPI-IE, Freiburg, Germany
-  * Current maintainer.
+  <sup>1</sup>European Molecular Biology Laboratory, EMBL, Rome, Italy <br/>
+  <sup>2</sup>Moscow Institute of Physics and Technology, MIPT,  Moscow, Russia <br/>
+  <sup>3</sup>Current address: Max Planck Institute of Immunobiology and Epigenetics, MPI-IE, Freiburg, Germany <br/>
+  <sup>*</sup>Current maintainer. <br/>
   
 
 # Introduction
