@@ -1,6 +1,8 @@
 ## 0.99.3
 
 - Correct bug in runCONCLUS to handle manual clustering
+- Update vignette
+- Provide vignette on welcome page of github repository and link it to the prettydoc version
 
 ## 0.99.2
 
