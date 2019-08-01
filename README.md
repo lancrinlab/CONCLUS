@@ -797,4 +797,106 @@ This analysis offers additional information on the function of these eight trans
 This section lists all the packages used for the CONCLUS tool.
 ```{r}
 sessionInfo()
+
+## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.2 LTS
+## 
+## Matrix products: default
+## BLAS:   /opt/R/3.6.0/lib/R/lib/libRblas.so
+## LAPACK: /opt/R/3.6.0/lib/R/lib/libRlapack.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8          LC_NUMERIC=C                 
+##  [3] LC_TIME=it_IT.UTF-8           LC_COLLATE=en_US.UTF-8       
+##  [5] LC_MONETARY=it_IT.UTF-8       LC_MESSAGES=en_US.UTF-8      
+##  [7] LC_PAPER=it_IT.UTF-8          LC_NAME=it_IT.UTF-8          
+##  [9] LC_ADDRESS=it_IT.UTF-8        LC_TELEPHONE=it_IT.UTF-8     
+## [11] LC_MEASUREMENT=it_IT.UTF-8    LC_IDENTIFICATION=it_IT.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] prettydoc_0.2.1    conclus_0.99.3     BiocManager_1.30.4
+## [4] usethis_1.5.0      devtools_2.0.2     rmarkdown_1.13    
+## 
+## loaded via a namespace (and not attached):
+##   [1] backports_1.1.4             VGAM_1.1-1                 
+##   [3] plyr_1.8.4                  igraph_1.2.4.1             
+##   [5] lazyeval_0.2.2              splines_3.6.0              
+##   [7] BiocParallel_1.18.0         densityClust_0.3           
+##   [9] GenomeInfoDb_1.20.0         fastICA_1.2-1              
+##  [11] ggplot2_3.2.0               scater_1.12.2              
+##  [13] digest_0.6.19               foreach_1.4.4              
+##  [15] htmltools_0.3.6             viridis_0.5.1              
+##  [17] magrittr_1.5                memoise_1.1.0              
+##  [19] xlsx_0.6.1                  cluster_2.1.0              
+##  [21] doParallel_1.0.14           limma_3.40.2               
+##  [23] remotes_2.1.0               Biostrings_2.52.0          
+##  [25] matrixStats_0.54.0          docopt_0.6.1               
+##  [27] prettyunits_1.0.2           colorspace_1.4-1           
+##  [29] blob_1.1.1                  rvest_0.3.4                
+##  [31] ggrepel_0.8.1               xfun_0.8                   
+##  [33] dplyr_0.8.1                 sparsesvd_0.1-4            
+##  [35] callr_3.2.0                 crayon_1.3.4               
+##  [37] RCurl_1.95-4.12             org.Mm.eg.db_3.8.2         
+##  [39] zoo_1.8-6                   iterators_1.0.10           
+##  [41] glue_1.3.1                  gtable_0.3.0               
+##  [43] zlibbioc_1.30.0             XVector_0.24.0             
+##  [45] DelayedArray_0.10.0         kernlab_0.9-27             
+##  [47] pkgbuild_1.0.3              BiocSingular_1.0.0         
+##  [49] SingleCellExperiment_1.6.0  DEoptimR_1.0-8             
+##  [51] prabclus_2.3-1              BiocGenerics_0.30.0        
+##  [53] scales_1.0.0                pheatmap_1.0.12            
+##  [55] mvtnorm_1.0-11              DBI_1.0.0                  
+##  [57] edgeR_3.26.5                Rcpp_1.0.1                 
+##  [59] progress_1.2.2              viridisLite_0.3.0          
+##  [61] dqrng_0.2.1                 bit_1.1-14                 
+##  [63] rsvd_1.0.1                  mclust_5.4.3               
+##  [65] stats4_3.6.0                httr_1.4.0                 
+##  [67] FNN_1.1.3                   RColorBrewer_1.1-2         
+##  [69] fpc_2.2-2                   modeltools_0.2-22          
+##  [71] factoextra_1.0.5            rJava_0.9-11               
+##  [73] XML_3.98-1.20               pkgconfig_2.0.2            
+##  [75] flexmix_2.3-15              nnet_7.3-12                
+##  [77] locfit_1.5-9.1              dynamicTreeCut_1.63-1      
+##  [79] labeling_0.3                tidyselect_0.2.5           
+##  [81] rlang_0.4.0                 reshape2_1.4.3             
+##  [83] AnnotationDbi_1.46.0        munsell_0.5.0              
+##  [85] tools_3.6.0                 cli_1.1.0                  
+##  [87] dbscan_1.1-3                RSQLite_2.1.1              
+##  [89] evaluate_0.14               stringr_1.4.0              
+##  [91] yaml_2.2.0                  processx_3.3.1             
+##  [93] knitr_1.23                  bit64_0.9-7                
+##  [95] fs_1.3.1                    robustbase_0.93-5          
+##  [97] DDRTree_0.1.5               purrr_0.3.2                
+##  [99] RANN_2.6.1                  KEGGREST_1.24.0            
+## [101] monocle_2.12.0              slam_0.1-45                
+## [103] scran_1.12.1                xml2_1.2.0                 
+## [105] biomaRt_2.40.0              compiler_3.6.0             
+## [107] beeswarm_0.2.3              curl_3.3                   
+## [109] png_0.1-7                   ggsignif_0.5.0             
+## [111] tibble_2.1.3                statmod_1.4.32             
+## [113] stringi_1.4.3               ps_1.3.0                   
+## [115] desc_1.2.0                  lattice_0.20-38            
+## [117] Matrix_1.2-17               HSMMSingleCell_1.4.0       
+## [119] pillar_1.4.1                combinat_0.0-8             
+## [121] BiocNeighbors_1.2.0         data.table_1.12.2          
+## [123] bitops_1.0-6                irlba_2.3.3                
+## [125] GenomicRanges_1.36.0        R6_2.4.0                   
+## [127] gridExtra_2.3               vipor_0.4.5                
+## [129] IRanges_2.18.1              sessioninfo_1.1.1          
+## [131] codetools_0.2-16            MASS_7.3-51.4              
+## [133] assertthat_0.2.1            pkgload_1.0.2              
+## [135] xlsxjars_0.6.1              SummarizedExperiment_1.14.0
+## [137] rprojroot_1.3-2             withr_2.1.2                
+## [139] qlcMatrix_0.9.7             S4Vectors_0.22.0           
+## [141] GenomeInfoDbData_1.2.1      hms_0.4.2                  
+## [143] diptest_0.75-7              parallel_3.6.0             
+## [145] DataCombine_0.2.21          grid_3.6.0                 
+## [147] class_7.3-15                DelayedMatrixStats_1.6.0   
+## [149] Cairo_1.5-10                Rtsne_0.15                 
+## [151] ggpubr_0.2.1                Biobase_2.44.0             
+## [153] tinytex_0.14                ggbeeswarm_0.6.0
 ```
