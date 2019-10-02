@@ -285,6 +285,96 @@ plotClusteredTSNE <- function(sceObject, dataDirectory, experimentName,
 	rm(PCA, perp)
 }
 
+plotClusteredUMAP <- function(sceObject, dataDirectory, experimentName,
+                              UMAPresExp = "",
+                              colorPalette = "default",
+                              PCs=c(4, 6, 8, 10, 20, 40, 50),
+                              neighbors=c(30, 40),
+                              columnName="clusters",
+                              returnPlot = FALSE,
+                              width=6, height=5, onefile=FALSE, ...){
+  # plots picture based on UMAP coordinates from
+  # generateUMAPCoordinates() and clustering results
+  # from clusterCellsInternal() or runClustering()
+  
+  if(columnName != "clusters" && columnName != "noColor" && 
+     columnName != "state")
+    stop("columnName should be: clusters, noColor, or state.")
+  
+  UMAPdirectory <- "tsnes"
+  graphsDirectory <- "pictures"
+  graphsUMAPdirectory <- "UMAP_pictures"
+  
+  if(UMAPresExp == ""){
+    UMAPresExp <- experimentName
+  }
+  
+  ### Plot all precalculated pUMAPSs to show your clusters ###
+  
+  if(columnName == "noColor"){
+    numberElements <- NULL
+  }else{
+    numberElements <- length(unique(SummarizedExperiment::colData(sceObject)[,columnName]))
+    colorPalette <- choosePalette(colorPalette, numberElements)
+  }
+  
+  outputDir <- file.path(dataDirectory, graphsDirectory, graphsUMAPdirectory,
+                         paste("UMAP", numberElements, columnName, sep="_"))
+  dir.create(outputDir, showWarnings = F)
+  
+  filesList <- list.files(outputDir, pattern = "_umap_coordinates_")
+  deletedFiles <- sapply(filesList, function(fileName) 
+    file.remove(file.path(outputDir, fileName)))
+  
+  PCA <- rep(PCs, length(neighbors))
+  perp <- rep(neighbors, each=length(PCs))
+  
+  UMAPplots <- rep(list(NA),(length(PCs)*length(neighbors)))
+  
+  for(i in 1:(length(PCs)*length(neighbors))){
+    
+    coordinatesName <- paste0(UMAPresExp, '_umap_coordinates_', i, "_",
+                              PCA[i], "PCs_", perp[i], "perp")
+    
+    #fns <- list.files(file.path(dataDirectory, tSNEDirectory), full.names = TRUE)
+    
+    UMAPres <- read.delim(file.path(dataDirectory, UMAPdirectory,
+                                    paste0(coordinatesName, ".tsv")),
+                          stringsAsFactors = FALSE)
+    #TSNEres <- read.delim(fns[grepl(paste0(PCA[i], "PCs_", perp[i], "perp.tsv"), fns)],
+    #                            stringsAsFactors = FALSE)
+    
+    UMAPres <- UMAPres[rownames(UMAPres) %in% SummarizedExperiment::colData(sceObject)$cellName, ]
+    
+    if(columnName != "noColor"){
+      UMAPres[columnName] <- factor(SummarizedExperiment::colData(sceObject)[,columnName])
+    }
+    
+    pdf(file.path(dataDirectory, graphsDirectory, graphsUMAPdirectory,
+                  paste("UMAP", numberElements, columnName, sep="_"),
+                  paste0(coordinatesName, ".pdf")),
+        width=width, height=height, onefile=onefile, ...)
+    if(columnName == "noColor"){
+      tmp <- ggplot2::ggplot(UMAPres, aes_string(x=names(UMAPres)[1],
+                                                 y=names(UMAPres)[2])) +
+        geom_point(size=I(1)) + theme_bw()
+    }else{
+      tmp <- ggplot2::ggplot(UMAPres, aes_string(x=names(UMAPres)[1],
+                                                 y=names(UMAPres)[2],
+                                                 color=columnName)) +
+        geom_point(size=I(1)) +
+        scale_color_manual(values=colorPalette) + theme_bw()
+    }
+    print(tmp)
+    dev.off()
+    UMAPplots[[i]] <- tmp
+  }
+  if(returnPlot){
+    return(UMAPplots)
+  }
+  rm(PCA, perp)
+}
+
 
 .orderCellsInCluster <- function(cluster, colData, mtx,
 		clusteringMethod="ward.D2"){
