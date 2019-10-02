@@ -1,4 +1,4 @@
-Package: conclus
+Package: conclus_test
 Title: ScRNA-seq workflow CONCLUS - from CONsensus CLUSters to a meaningful CONCLUSion.
 Version: 0.99.3
 Authors: Polina Pavlovich, Nicolas Descostes, Konstantin Chukreev, Christophe Lancrin
