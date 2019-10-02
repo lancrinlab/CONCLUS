@@ -28,8 +28,39 @@
 					"2D-tSNE plots."))
 	return(tSNECoordinates)
 }
+### this function calculates PCA and then UMAP with PCs and nearest neighbors ###
+### it returns a list of pUMAP = PCA+UMAP results ###
+### to get XY coordinates call pumap_res[1,i][[1]] ###
+### i = [1:length(PCs)*length(neighbors)] is a number of iteration ###
 
-
+.getUMAPresults <- function(expressionMatrix, cores=1,
+                            PCs=c(4, 6, 8, 10, 20, 40, 50),
+                            neighbors=c(10, 15),Metric="euclidean",
+                            Spread=1,Min_dist=0.15){
+  
+  PCAData <- prcomp(t(expressionMatrix))$x
+  myCluster <- parallel::makeCluster(cores, # number of cores to use
+                                     type = "PSOCK") # type of cluster
+  doParallel::registerDoParallel(myCluster)
+  UMAPcoordinates <- foreach::foreach(PCA=rep(PCs, length(neighbors)),
+                                      perp=rep(neighbors, each=length(PCs)),
+                                      .combine='cbind') %dopar% {
+                                        library(ggplot2)
+                                        tmp <- uwot::umap(X=(PCAData[,1:PCA]),
+                                          n_neighbors=perp,metric = Metric,
+                                          spread = Spread, min_dist = Min_dist)
+                                        tmp <- data.frame(tmp)
+                                        colnames(tmp) <- c("UMAP_1","UMAP_2")
+                                        rownames(tmp) <- rownames(PCAData)
+                                        tmp <- ggplot(data = tmp,aes(x=UMAP_1,y=UMAP_2))
+                                        return(tmp)
+                                      
+                                      }
+  parallel::stopCluster(myCluster)
+  message(paste("Calculated", length(PCs)*length(neighbors),
+                "UMAP plots."))
+  return(UMAPcoordinates)
+}
 
 choosePalette <- function(colorPalette, clustersNumber){
 	
